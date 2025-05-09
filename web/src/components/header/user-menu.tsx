@@ -50,7 +50,7 @@ export default function UserMenu() {
   if (!user) {
     return (
       <Link href="/login" className="button">
-        <Image src={iconAuth} width={20} height={20} alt={t("navigation.login")} />
+        <Image src={iconAuth} width={20} height={20} alt={t("navigation.login")} style={{ marginRight: '5px' }} />
         <span className="icon"> {t("navigation.login")}</span>
       </Link>
     );

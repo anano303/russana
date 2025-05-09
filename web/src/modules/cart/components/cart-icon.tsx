@@ -11,7 +11,11 @@ export function CartIcon() {
 
   return (
     <Link href="/cart" className="cart-icon-container">
-      <ShoppingCart size={20} className="shopping-cart-icon" />
+      <ShoppingCart
+        size={20}
+        className="shopping-cart-icon"
+        style={{ marginRight: "5px" }}
+      />
       <span className="cart-text">{t("cart.title")}</span>
       {itemCount > 0 && <span className="cartIconsSpan">{itemCount}</span>}
     </Link>
