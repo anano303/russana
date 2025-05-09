@@ -519,12 +519,12 @@ export function CreateProductForm({
       const data = await response.json();
       console.log("Server response:", data);
       const successMessage = isEdit
-        ? "ნამუშევარი წარმატებით განახლდა!"
-        : "ნამუშევარი წარმატებით დაემატა!";
+        ? "პროდუქტი წარმატებით განახლდა!"
+        : "პროდუქტი წარმატებით დაემატა!";
       setSuccess(successMessage);
 
       toast({
-        title: isEdit ? "ნამუშევარი განახლდა" : "ნამუშევარი დაემატა",
+        title: isEdit ? "პროდუქტი განახლდა" : "პროდუქტი დაემატა",
         description: "წარმატებით!",
       });
 
@@ -574,7 +574,7 @@ export function CreateProductForm({
           </div>
         )}
         <div>
-          <label htmlFor="name">ნამუშევარის სახელი (ქართულად)</label>
+          <label htmlFor="name">პროდუქტის სახელი (ქართულად)</label>
           <input
             id="name"
             name="name"
@@ -587,7 +587,7 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="nameEn">ნამუშევარის სახელი (ინგლისურად)</label>
+          <label htmlFor="nameEn">პროდუქტის სახელი (ინგლისურად)</label>
           <input
             id="nameEn"
             name="nameEn"
