@@ -56,9 +56,6 @@ export const TRANSLATIONS: Translations = {
       ref: "Ref:",
       reviews: "შეფასებები",
       dimensions: "ნამუშევრის ზომები",
-      deliveryInfo: "მიწოდების ინფორმაცია",
-      sellerDelivery: "მიწოდება ავტორისგან",
-      courierDelivery: "მიწოდება SoulArt-ის კურიერით",
       deliveryTime: "მიწოდების ვადა",
       days: "დღე",
       tryInRoom: "მოარგე ოთახს",
@@ -195,7 +192,7 @@ export const TRANSLATIONS: Translations = {
 
     // Footer
     footer: {
-      copyright: "© 2023 SoulArt. ყველა უფლება დაცულია.",
+      copyright: "© 2025 BestSoft. ყველა უფლება დაცულია.",
       description:
         "აღმოაჩინე და შეიძინე უნიკალური ხელოვნების ნიმუშები ნიჭიერი ხელოვანებისგან მსოფლიოს სხვადასხვა კუთხიდან. შექმენი შენი პირადი გალერეა და გახდი კოლექციონერი ან ხელოვანი.",
       quickLinks: "სწრაფი ბმულები",
@@ -203,7 +200,7 @@ export const TRANSLATIONS: Translations = {
       privacyPolicy: "კონფიდენციალურობის პოლიტიკა",
       contact: "კონტაქტი",
       address: "მისამართი: თბილისი, საქართველო",
-      email: "ელ-ფოსტა: info@soulart.ge",
+      email: "ელ-ფოსტა: info@russana.ge",
       phone: "ტელეფონი: +995 XXX XXX XXX",
       socialMedia: "სოციალური ქსელები",
       follow: "მოგვყევით",
@@ -273,7 +270,7 @@ export const TRANSLATIONS: Translations = {
       createAccount: "შექმენით ანგარიში",
       loginWelcome: "შედით თქვენი ანგარიშით",
       loginSubtitle: "კეთილი იყოს თქვენი დაბრუნება!",
-      registerWelcome: "მოგესალებით SoulArt-ის სამყაროში!",
+      registerWelcome: "მოგესალებით ჩვენს სამყაროში!",
       registerSubtitle: "გთხოვთ, შეავსოთ რეგისტრაციის ფორმა",
       requiredField: "სავალდებულო ველი",
       invalidEmail: "არასწორი ელ-ფოსტა",
@@ -296,6 +293,7 @@ export const TRANSLATIONS: Translations = {
       orContinueWith: "ან გააგრძელეთ",
       forgotPasswordTitle: "განაახლეთ პაროლი",
       forgotPasswordSubtitle: "გთხოვთ, შეავსოთ პაროლის აღდგენის ფორმა",
+      welcomeBack: "კეთილი იყოს თქვენი დაბრუნება!",
     },
 
     // Contact form
@@ -455,9 +453,7 @@ export const TRANSLATIONS: Translations = {
       ref: "Ref:",
       reviews: "Reviews",
       dimensions: "Artwork Dimensions",
-      deliveryInfo: "Delivery Information",
-      sellerDelivery: "Delivery by Artist",
-      courierDelivery: "Delivery by SoulArt Courier",
+
       deliveryTime: "Delivery Time",
       days: "Days",
       tryInRoom: "Try in Room",
@@ -561,7 +557,7 @@ export const TRANSLATIONS: Translations = {
 
     // Footer
     footer: {
-      copyright: "© 2023 SoulArt. All rights reserved.",
+      copyright: "© 2025 BestSoft. All rights reserved.",
       description:
         "Discover and purchase unique art pieces from talented artists around the world. Create your personal gallery and become a collector or artist.",
       quickLinks: "Quick Links",
@@ -569,7 +565,7 @@ export const TRANSLATIONS: Translations = {
       privacyPolicy: "Privacy Policy",
       contact: "Contact",
       address: "Address: Tbilisi, Georgia",
-      email: "Email: info@soulart.ge",
+      email: "Email: info@russana.ge",
       phone: "Phone: +995 XXX XXX XXX",
       socialMedia: "Social Media",
       follow: "Follow us",
@@ -638,7 +634,7 @@ export const TRANSLATIONS: Translations = {
       createAccount: "Create Account",
       loginWelcome: "Sign into your account",
       loginSubtitle: "Welcome back!",
-      registerWelcome: "Welcome to SoulArt's World!",
+      registerWelcome: "Welcome to Our World!",
       registerSubtitle: "Please fill in the registration form",
       requiredField: "This field is required",
       invalidEmail: "Invalid email address",
@@ -661,6 +657,7 @@ export const TRANSLATIONS: Translations = {
       orContinueWith: "or continue with",
       forgotPasswordTitle: "Reset Your Password",
       forgotPasswordSubtitle: "Please fill in the password recovery form",
+      welcomeBack: "Welcome back!",
     },
 
     // Contact form

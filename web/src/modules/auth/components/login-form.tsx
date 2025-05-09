@@ -1,190 +1,144 @@
 "use client";
 
-import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "../validation";
-import { useLogin } from "../hooks/use-auth";
-import { FaGoogle } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import "./login-form.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useLogin } from "../hooks/use-auth";
+import { FaGoogle, FaEnvelope, FaLock, FaHeart } from "react-icons/fa";
 import { toast } from "@/hooks/use-toast";
+import "./login-form.css";
 import { useLanguage } from "@/hooks/LanguageContext";
 
-import type * as z from "zod";
+const schema = z.object({
+  email: z.string().email({ message: "არასწორი ელ-ფოსტის ფორმატი" }),
+  password: z.string().min(6, { message: "მინიმუმ 6 სიმბოლო" }),
+});
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type LoginFormValues = z.infer<typeof schema>;
 
 export function LoginForm() {
   const { t } = useLanguage();
-  const { mutate: login, isLoading, error: hookError } = useLogin();
-  const [loginError, setLoginError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
   const router = useRouter();
-  const [returnUrl, setReturnUrl] = useState("/");
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const url = params.get("returnUrl") || params.get("redirect") || "/";
-    setReturnUrl(url);
-  }, []);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
-  // Watch for errors from the hook
-  useEffect(() => {
-    if (hookError) {
-      const errorMessage =
-        hookError instanceof Error
-          ? hookError.message
-          : "ავტორიზაცია ვერ მოხერხდა";
-      setLoginError(errorMessage);
-    }
-  }, [hookError]);
+  const { login, isPending } = useLogin();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
-    setLoginError(null); // Clear previous errors
+  const onSubmit = async (data: LoginFormValues) => {
+    setLoginError(null);
 
-    try {
-      login(data, {
-        onSuccess: (response) => {
-          if (response.success) {
-            // Successfully logged in
-            toast({
-              title: "წარმატებული ავტორიზაცია",
-              description: "კეთილი იყოს თქვენი დაბრუნება!",
-              variant: "default",
-            });
-            router.push(returnUrl);
-          } else {
-            // Login was processed but returned an error
-            const errorMessage = response.error || "ავტორიზაცია ვერ მოხერხდა";
-            setLoginError(errorMessage);
-            toast({
-              title: "ავტორიზაციის შეცდომა",
-              description: errorMessage,
-              variant: "destructive",
-            });
-          }
-        },
-        onError: (error) => {
-          // Display detailed error message from backend
-          const errorMessage =
-            error instanceof Error ? error.message : "ავტორიზაცია ვერ მოხერხდა";
+    login(data, {
+      onSuccess: () => {
+        toast({
+          title: t("auth.loginSuccess"),
+          variant: "default",
+        });
 
-          setLoginError(errorMessage);
-
-          toast({
-            title: "ავტორიზაციის შეცდომა",
-            description: errorMessage,
-            variant: "destructive",
-          });
-        },
-      });
-    } catch (error) {
-      // Handle unexpected client-side errors
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "სისტემური შეცდომა, გთხოვთ სცადოთ მოგვიანებით";
-
-      setLoginError(errorMessage);
-
-      toast({
-        title: "ავტორიზაციის შეცდომა",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleGoogleAuth = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+        // Redirect to the page user was trying to access
+        router.push(redirect);
+      },
+      onError: (error) => {
+        setLoginError(
+          error.message || "შესვლა ვერ მოხერხდა. სცადეთ მოგვიანებით."
+        );
+        toast({
+          title: t("auth.loginFailed"),
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    });
   };
 
   return (
     <div className="login-container">
-      <form onSubmit={handleSubmit(onSubmit)} className="login-form">
-        <div className="input-group">
-          <label htmlFor="email">{t("auth.email")}</label>
-          <input
-            id="email"
-            type="email"
-            placeholder="name@example.com"
-            {...register("email")}
-            className={errors.email || loginError ? "error-input" : ""}
-          />
-          {errors.email && <p className="error-text">{errors.email.message}</p>}
-        </div>
+      <div className="login-wave"></div>
 
-        <div className="input-group">
-          <label htmlFor="password">{t("auth.password")}</label>
-          <input
-            id="password"
-            type="password"
-            placeholder="********"
-            {...register("password")}
-            className={errors.password || loginError ? "error-input" : ""}
-          />
-          {errors.password && (
-            <p className="error-text">{errors.password.message}</p>
-          )}
-        </div>
-
-        {/* Enhanced error message display */}
-        {loginError && (
-          <div className="error-message">
-            <p className="error-text">{loginError}</p>
+      <div className="login-content">
+        <div className="login-greeting">
+          <div className="login-greeting-icon">
+            <FaHeart />
           </div>
-        )}
-
-        <button type="submit" className="login-button" disabled={isLoading}>
-          {isLoading ? (
-            <span className="loading-spinner"></span>
-          ) : (
-            t("auth.loginButton")
-          )}
-        </button>
-
-        <div className="separator">
-          <span className="separator-text">{t("auth.orLoginWith")}</span>
+          <p className="login-greeting-text">{t("auth.welcomeBack")}</p>
         </div>
 
-        <div className="social-buttons">
-          <button
-            type="button"
-            onClick={handleGoogleAuth}
-            className="social-button google-btn"
-          >
-            <FaGoogle className="icon" />
-            <span className="google-text">
-              <span>G</span>
-              <span>o</span>
-              <span>o</span>
-              <span>g</span>
-              <span>l</span>
-              <span>e</span>
-            </span>
+        {loginError && <div className="login-error">{loginError}</div>}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+          <div className="login-field">
+            <label htmlFor="email">{t("auth.email")}</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="youremail@example.com"
+              {...register("email")}
+            />
+            <FaEnvelope className="login-field-icon" />
+            {errors.email && (
+              <p className="error-text">{errors.email.message}</p>
+            )}
+          </div>
+
+          <div className="login-field">
+            <label htmlFor="password">{t("auth.password")}</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              {...register("password")}
+            />
+            <FaLock className="login-field-icon" />
+            {errors.password && (
+              <p className="error-text">{errors.password.message}</p>
+            )}
+          </div>
+
+          <Link href="/forgot-password" className="forgot-password">
+            {t("auth.forgotPassword")}
+          </Link>
+
+          <button type="submit" className="login-button" disabled={isPending}>
+            {isPending ? (
+              <>
+                <span className="login-loading"></span>
+                {t("auth.loggingIn")}...
+              </>
+            ) : (
+              t("auth.loginButton")
+            )}
+          </button>
+        </form>
+
+        <div className="login-divider">
+          <span>{t("auth.orContinueWith")}</span>
+        </div>
+
+        <div className="social-login">
+          <button className="social-button google-button">
+            <FaGoogle />
+            <span>Google</span>
           </button>
         </div>
-      </form>
-      <div className="forgot-password signup-text">
-        <Link href="/forgot-password" className="signup-link">
-          {t("auth.forgotPassword")}
-        </Link>
-      </div>
 
-      <div className="signup-text">
-        {t("auth.dontHaveAccount")}{" "}
-        <Link href="/register" className="signup-link">
-          {t("auth.createAccount")}
-        </Link>
+        <div className="register-prompt">
+          {t("auth.dontHaveAccount")}{" "}
+          <Link href="/register" className="register-link">
+            {t("auth.createAccount")}
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,90 +1,42 @@
 "use client";
 
-import { FaCheckCircle, FaGoogle } from "react-icons/fa";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "../validation";
-import { useRegister } from "../hooks/use-auth";
 import Link from "next/link";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaGoogle, FaCheck } from "react-icons/fa";
 import { toast } from "@/hooks/use-toast";
+import { useRegister } from "../hooks/use-auth";
 import "./register-form.css";
-import type * as z from "zod";
-import { useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/LanguageContext";
 
-type RegisterFormData = z.infer<typeof registerSchema>;
+// Import the schema directly from validation.ts
+import { registerSchema, type RegisterSchema } from "../validation";
 
 export function RegisterForm() {
   const { t } = useLanguage();
-  const router = useRouter();
-  const { mutate: register, isPending } = useRegister();
-  const [registerError, setRegisterError] = useState<string | null>(null);
+  const [registrationError, setRegistrationError] = useState<string | null>(
+    null
+  );
+
   const [isSuccess, setIsSuccess] = useState(false);
+  const router = useRouter();
+
+  const { register: registerUser, isPending } = useRegister();
 
   const {
-    register: registerField,
+    register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormData>({
+  } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
   });
 
-  const [emailSent, setEmailSent] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
-  const [email, setEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [canSendEmail, setCanSendEmail] = useState(false);
+  const onSubmit = async (data: RegisterSchema) => {
+    setRegistrationError(null);
 
-  useEffect(() => {
-    setCanSendEmail(email.trim().length > 0);
-  }, [email]);
-
-  const sendVerificationEmail = async () => {
-    if (!email) return;
-    const res = await fetch("/api/send-verification", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    if (res.ok) {
-      setEmailSent(true);
-      setErrorMessage(""); // Clear any previous errors
-    }
-  };
-
-  const verifyCode = async () => {
-    const res = await fetch("/api/verify-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, code: verificationCode }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      setIsVerified(true);
-      setErrorMessage("");
-    } else {
-      setErrorMessage(t("auth.invalidVerificationCode"));
-    }
-  };
-
-  const resendCode = () => {
-    setVerificationCode("");
-    setEmailSent(false);
-    setErrorMessage("");
-    sendVerificationEmail();
-  };
-
-  const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
-    setRegisterError(null);
-    if (!isVerified) {
-      setErrorMessage(t("auth.pleaseVerifyEmail"));
-      return;
-    }
-    setErrorMessage("");
-
-    register(data, {
+    registerUser(data, {
       onSuccess: () => {
         setIsSuccess(true);
         toast({
@@ -99,158 +51,141 @@ export function RegisterForm() {
         }, 2000);
       },
       onError: (error) => {
-        // Display the error from the backend
-        const errorMessage = error.message;
-        setRegisterError(errorMessage);
-
+        setRegistrationError(
+          error.message || "Registration failed. Please try again."
+        );
         toast({
           title: t("auth.registrationFailed"),
-          description: errorMessage,
+          description: error.message,
           variant: "destructive",
         });
       },
     });
   };
 
-  const handleGoogleAuth = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
-  };
-
   if (isSuccess) {
     return (
-      <div className="form-container">
-        <div className="success-message">
-          <h3>{t("auth.registrationSuccessful")}</h3>
-          <p>{t("auth.accountCreatedSuccessfully")}</p>
-          <p>{t("auth.redirectingToLogin")}</p>
+      <div className="register-container">
+        <div className="register-content">
+          <div className="register-success">
+            <div className="register-success-icon">
+              <FaCheck />
+            </div>
+            <h3 className="register-success-title">
+              {t("auth.registrationSuccessful")}
+            </h3>
+            <p className="register-success-text">
+              {t("auth.accountCreatedSuccessfully")}
+            </p>
+            <p className="register-success-text">
+              {t("auth.redirectingToLogin")}
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="form-container">
-      <form onSubmit={handleSubmit(onSubmit)} className="form">
-        <div className="input-group">
-          <label htmlFor="name">{t("auth.fullName")}</label>
-          <input
-            id="name"
-            type="text"
-            placeholder={t("auth.enterName")}
-            {...registerField("name")}
-          />
-          {errors.name && <p className="error-text">{errors.name.message}</p>}
+    <div className="register-container">
+      <div className="register-decoration"></div>
+      <div className="register-circles"></div>
+
+      <div className="register-content">
+        <div className="register-header">
+          <h2 className="register-title">{t("auth.createAccount")}</h2>
+          <p className="register-subtitle">{t("auth.joinOurCommunity")}</p>
         </div>
 
-        <div className="input-group">
-          <label htmlFor="email">{t("auth.email")}</label>
-          <div className="email-container">
+        {registrationError && (
+          <div className="register-error-message">{registrationError}</div>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="register-form">
+          <div className="register-field">
+            <label className="register-label" htmlFor="name">
+              {t("auth.fullName")}
+            </label>
             <input
+              className="register-input"
+              id="name"
+              type="text"
+              placeholder="John Doe"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="register-error">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div className="register-field">
+            <label className="register-label" htmlFor="email">
+              {t("auth.email")}
+            </label>
+            <input
+              className="register-input"
               id="email"
               type="email"
               placeholder="name@example.com"
-              disabled={isVerified} // Disable the input if email is verified
-              className={isVerified ? "verified-input" : ""} // Add a class for styling
-              {...registerField("email", {
-                onChange: (e) => !isVerified && setEmail(e.target.value), // Only update email if not verified
-              })}
+              {...register("email")}
             />
-            {isVerified && <FaCheckCircle className="verified-icon" />}
-          </div>
-          {errors.email && <p className="error-text">{errors.email.message}</p>}
-
-          {canSendEmail && !emailSent && !isVerified && (
-            <button
-              className="verifBtn"
-              type="button"
-              onClick={sendVerificationEmail}
-            >
-              {t("auth.sendVerificationCode")}
-            </button>
-          )}
-        </div>
-
-        {emailSent && !isVerified && (
-          <div className="input-group">
-            <label htmlFor="verification-code">
-              {t("auth.verificationCode")}
-            </label>
-            <input
-              id="verification-code"
-              type="text"
-              placeholder={t("auth.enterCode")}
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-            />
-            <button className="verifBtn" type="button" onClick={verifyCode}>
-              {t("auth.verify")}
-            </button>
-            {errorMessage && <p className="error-text">{errorMessage}</p>}
-            {errorMessage && (
-              <button className="verifBtn" type="button" onClick={resendCode}>
-                {t("auth.resendCode")}
-              </button>
+            {errors.email && (
+              <p className="register-error">{errors.email.message}</p>
             )}
           </div>
-        )}
 
-        <div className="input-group">
-          <label htmlFor="password">{t("auth.password")}</label>
-          <input
-            id="password"
-            type="password"
-            placeholder="********"
-            {...registerField("password")}
-          />
-          {errors.password && (
-            <p className="error-text">{errors.password.message}</p>
-          )}
-        </div>
-
-        {registerError && (
-          <div className="error-message">
-            <p className="error-text">{registerError}</p>
+          <div className="register-field">
+            <label className="register-label" htmlFor="password">
+              {t("auth.password")}
+            </label>
+            <input
+              className="register-input"
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              {...register("password")}
+            />
+            {errors.password && (
+              <p className="register-error">{errors.password.message}</p>
+            )}
           </div>
-        )}
 
-        <button
-          type="submit"
-          className="submit-btn"
-          disabled={isPending || !isVerified}
-        >
-          {isPending ? t("auth.creatingAccount") : t("auth.createAccount")}
-        </button>
+          <button
+            type="submit"
+            className="register-button"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                <span className="register-loading"></span>
+                {t("auth.registering")}...
+              </>
+            ) : (
+              <>{t("auth.register")}</>
+            )}
+          </button>
+        </form>
 
-        <div className="divider">
+        <div className="register-separator">
           <span>{t("auth.orContinueWith")}</span>
         </div>
 
         <div className="social-buttons">
-          <button
-            type="button"
-            onClick={handleGoogleAuth}
-            className="social-btn google-btn"
-            disabled={isPending}
-          >
-            <FaGoogle className="icon" />
-            <span className="google-text">
-              <span>G</span>
-              <span>o</span>
-              <span>o</span>
-              <span>g</span>
-              <span>l</span>
-              <span>e</span>
+          <button className="social-button">
+            <span className="google-icon">
+              <FaGoogle />
             </span>
+            Google
           </button>
         </div>
 
-        <div className="text-center">
+        <div className="register-footer">
           {t("auth.alreadyHaveAccount")}{" "}
           <Link href="/login" className="login-link">
             {t("auth.login")}
           </Link>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
