@@ -1,0 +1,177 @@
+.orders-container {
+  background-color: #faf6f2;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 20px rgba(122, 94, 65, 0.08);
+  color: #4a3f35;
+  font-family: 'Georgia', serif;
+}
+
+.orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e0d5c8;
+  padding-bottom: 1rem;
+}
+
+.orders-title {
+  font-size: 2rem;
+  font-weight: normal;
+  color: #5d4037;
+  letter-spacing: 1px;
+  font-family: 'Playfair Display', serif;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.orders-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #5d4037;
+  background-color: #e0d5c8;
+  border-bottom: 2px solid #d7c9b8;
+  font-family: 'Playfair Display', serif;
+}
+
+.orders-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0d5c8;
+  color: #4a3f35;
+}
+
+.orders-table tr {
+  background-color: #f5f0e9;
+  transition: background-color 0.2s;
+}
+
+.orders-table tr:nth-child(even) {
+  background-color: #f9f5f0;
+}
+
+.orders-table tr:hover {
+  background-color: #efe6da;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+}
+
+.status-badge.success {
+  background-color: #d7e0c8;
+  color: #4f5d37;
+}
+
+.status-badge.error {
+  background-color: #e2c0c0;
+  color: #a65d5d;
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+}
+
+.view-link {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  background-color: #8d6e63;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.view-link:hover {
+  background-color: #6d4c41;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(109, 76, 65, 0.3);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.pagination-btn {
+  background-color: #f5f0e9;
+  color: #6d4c41;
+  border: 1px solid #e0d5c8;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #e0d5c8;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #7d6e63;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .orders-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+.delivery-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.delivery-badge .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.delivery-badge.seller {
+  background-color: #ffecb3;
+  color: #b7791f;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.delivery-badge.soulart {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.delivery-time {
+  font-size: 0.8em;
+  display: block;
+  margin-top: 2px;
+  color: #6b7280;
+}

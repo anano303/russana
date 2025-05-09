@@ -1,0 +1,19 @@
+.cartIconButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.cartIconsSpan {
+  position: relative;
+  top: -23px;
+  right: -30px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-style: bold;
+  color: yellow;
+  padding: 2px 4px;
+
+  border: 1px solid yellow;
+}

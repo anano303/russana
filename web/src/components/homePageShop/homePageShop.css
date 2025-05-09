@@ -1,0 +1,75 @@
+.homePageShop {
+  padding: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+/* .homePageShopH1 {
+    color: black;
+    margin-bottom: 40px;
+} */
+.productGrid {
+  display: grid;
+  max-width: 90vw;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding-bottom: 50px;
+}
+.see-more {
+  margin-right: 4%;
+  margin-bottom: 5%;
+  cursor: pointer;
+}
+
+.see-more-btn {
+  border: none;
+  background: transparent;
+  color: #012645;
+  font-weight: bold;
+  float: right;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+.see-more-btn:hover {
+  color: #2a5530;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1200px) {
+  .productGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding-bottom: 30px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .productGrid {
+    width: 90%;
+    grid-template-columns: 1fr; /* მხოლოდ ერთი ქარდი ხაზში */
+    gap: 10px;
+    padding-bottom: 20px;
+  }
+
+  .forumPageLink {
+    margin: 15px auto;
+    display: block;
+    text-align: center;
+  }
+}

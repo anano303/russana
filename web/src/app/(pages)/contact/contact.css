@@ -1,0 +1,123 @@
+.contact-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  color: #012645;
+  background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border: 2px solid #014f86;
+  margin-top: 5%;
+  margin-bottom: 5%;
+
+}
+
+.contact-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #014f86;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.contact-description {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 2.5rem;
+  color: #012645;
+  line-height: 1.6;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #012645;
+}
+
+.form-input,
+.form-textarea {
+  padding: 1rem;
+  font-size: 1rem;
+  border: 1px solid #d1e7f3;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: #ffffff;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: #014f86;
+  box-shadow: 0 0 8px rgba(1, 79, 134, 0.5);
+}
+
+.form-textarea {
+  resize: none;
+  height: 150px;
+}
+
+.error-border {
+  border-color: #e63946;
+}
+
+.form-error {
+  color: #e63946;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.form-button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f8f9fa;
+  background: linear-gradient(135deg, #014f86, #012645);
+  border: none;
+  border-radius: 10px;
+  cursor: url('/brush.png'), pointer; 
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.form-button:hover {
+  background: linear-gradient(135deg, #012645, #014f86);
+  transform: translateY(-2px);
+}
+
+.form-button:active {
+  transform: translateY(0);
+}
+
+.contact-container::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  z-index: -1;
+  background: linear-gradient(135deg, #014f86, #012645);
+  border-radius: 20px;
+  filter: blur(20px);
+}
+
+@media screen and (max-width: 768px) {
+  .contact-container {
+    max-width: 80vw;
+  }
+  
+  
+}

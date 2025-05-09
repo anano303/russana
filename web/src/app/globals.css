@@ -1,0 +1,99 @@
+@import "@fontsource/firago";
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* background-color: #f9f9f9;
+  color: #333; */
+  font-family: "firaGo", sans-serif;
+  font-style: normal;
+  cursor: url("/brush.png"), auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  min-height: 100vh;
+  max-width: 100%;
+}
+.container {
+  width: 100%;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  color: #012645;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination-button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.pagination-button:hover {
+  background: #f0f0f0;
+}
+
+.pagination-button.active {
+  background: #0070f3;
+  color: white;
+  border-color: #0070f3;
+}
+
+.pagination-button.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.pagination-ellipsis {
+  font-size: 14px;
+  color: #888;
+}
+
+.paint-trail {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 0, 0, 1),
+    rgba(255, 255, 0, 0.5)
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

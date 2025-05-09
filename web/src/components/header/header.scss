@@ -1,0 +1,197 @@
+/* styles/Header.scss */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #012645;
+
+  .logo {
+    margin-right: 5%;
+    align-self: center;
+    a {
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: bold;
+      color: #f2ebeb;
+    }
+  }
+
+  .main-nav {
+    flex-grow: 2;
+    ul {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      justify-content: flex-start;
+      list-style: none;
+      gap: min(10%);
+      .mobileAuth {
+        display: none;
+      }
+      a {
+        text-decoration: none;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .auth-cart {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .language-switcher-container {
+      margin-right: 8px;
+    }
+
+    a {
+      white-space: nowrap;
+      text-decoration: none;
+      color: #ffffff;
+    }
+    .d-none {
+      margin-right: 20px;
+    }
+  }
+
+  .mobile-nav-btn {
+    display: none;
+  }
+
+  .shop-dropdown {
+    position: relative;
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #012645;
+      min-width: 180px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 100;
+      overflow: hidden;
+
+      a {
+        display: block;
+        padding: 12px 20px;
+        color: #ffffff; /* Match the same color as other header links */
+        border-bottom: none;
+        width: 100%;
+        text-align: left;
+        font-family: "firaGo", sans-serif; /* Use firaGo font */
+        font-size: inherit; /* Inherit font size from parent */
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1); /* Subtle hover background */
+          color: #e0d849; /* Change text color on hover to match other links */
+        }
+      }
+    }
+
+    &:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+
+  .mobile-only-nav {
+    display: none;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 811px) {
+    .main-nav ul {
+      display: flex;
+      flex-direction: column;
+      background-color: #012645 + cc;
+      position: absolute;
+      // top: 60px;
+      right: 0;
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      max-height: 0; /* Initially collapsed */
+      overflow: hidden; /* Hide overflow */
+      transition: max-height 0.7s ease-out;
+      z-index: 999;
+      li {
+        padding: 15px 35px;
+      }
+      .mobileAuth {
+        display: flex;
+      }
+    }
+
+    .auth-cart {
+      display: none;
+    }
+
+    /* Mobile menu icon (Hamburger) */
+    .mobile-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      width: 1.625rem;
+      font-size: 24px;
+      z-index: 10;
+    }
+
+    .hamburger-icon {
+      font-size: 30px;
+      transition: transform 0.3s ease-in-out;
+      color: #ffffff;
+    }
+
+    .hamburger-icon.close {
+      transform: rotate(90deg); /* Rotation effect for X */
+    }
+
+    /* Toggle navigation when active */
+    &.mobile-nav-active .main-nav ul {
+      max-height: 500px;
+    }
+
+    .auth-cart {
+      display: flex;
+      .d-none {
+        display: none;
+      }
+      a {
+        padding: 10px;
+        font-size: 1.875rem;
+      }
+    }
+
+    .shop-dropdown .dropdown-menu {
+      display: none;
+    }
+
+    .mobile-only-nav {
+      display: block;
+    }
+  }
+}
+
+// Mobile support for language switcher
+@media (max-width: 768px) {
+  .auth-cart {
+    .language-switcher-container {
+      margin-right: 4px;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .logo {
+    img {
+      width: 160px;
+    }
+  }
+}
