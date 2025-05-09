@@ -23,7 +23,7 @@ export function RegisterForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter();
 
-  const { register: registerUser, isPending } = useRegister();
+  const { mutate: registerUser, isPending } = useRegister();
 
   const {
     register,
@@ -36,31 +36,36 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterSchema) => {
     setRegistrationError(null);
 
+    interface RegisterUserOptions {
+      onSuccess: () => void;
+      onError: (error: { message?: string }) => void;
+    }
+
     registerUser(data, {
       onSuccess: () => {
-        setIsSuccess(true);
-        toast({
-          title: t("auth.registrationSuccessful"),
-          description: t("auth.accountCreatedSuccessfully"),
-          variant: "default",
-        });
+      setIsSuccess(true);
+      toast({
+        title: t("auth.registrationSuccessful"),
+        description: t("auth.accountCreatedSuccessfully"),
+        variant: "default",
+      });
 
-        // Redirect to login page after 2 seconds
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
+      // Redirect to login page after 2 seconds
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
       },
-      onError: (error) => {
-        setRegistrationError(
-          error.message || "Registration failed. Please try again."
-        );
-        toast({
-          title: t("auth.registrationFailed"),
-          description: error.message,
-          variant: "destructive",
-        });
+      onError: (error: { message?: string }) => {
+      setRegistrationError(
+        error.message || "Registration failed. Please try again."
+      );
+      toast({
+        title: t("auth.registrationFailed"),
+        description: error.message,
+        variant: "destructive",
+      });
       },
-    });
+    } as RegisterUserOptions);
   };
 
   if (isSuccess) {
@@ -94,7 +99,6 @@ export function RegisterForm() {
       <div className="register-content">
         <div className="register-header">
           <h2 className="register-title">{t("auth.createAccount")}</h2>
-          <p className="register-subtitle">{t("auth.joinOurCommunity")}</p>
         </div>
 
         {registrationError && (

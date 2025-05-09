@@ -27,7 +27,7 @@ export function LoginForm() {
 
   const [loginError, setLoginError] = useState<string | null>(null);
 
-  const { login, isPending } = useLogin();
+  const { mutate: loginUser, isPending } = useLogin();
 
   const {
     register,
@@ -40,20 +40,17 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
     setLoginError(null);
 
-    login(data, {
+    loginUser(data, {
       onSuccess: () => {
         toast({
           title: t("auth.loginSuccess"),
+          description: t("auth.welcomeBack"),
           variant: "default",
         });
-
-        // Redirect to the page user was trying to access
         router.push(redirect);
       },
-      onError: (error) => {
-        setLoginError(
-          error.message || "შესვლა ვერ მოხერხდა. სცადეთ მოგვიანებით."
-        );
+      onError: (error: { message?: string }) => {
+        setLoginError(error.message || "Login failed. Please try again.");
         toast({
           title: t("auth.loginFailed"),
           description: error.message,
