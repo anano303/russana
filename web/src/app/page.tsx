@@ -7,6 +7,12 @@ const Home = () => {
     <div>
       <HomePagesHead />
       <TopItems />
+      <div
+        className="site-timer-container"
+        style={{ position: "relative", zIndex: 20 }}
+      >
+        {/* ...existing site-timer code... */}
+      </div>
       {/* <Navbar/> */}
       <HomePageShop />
     </div>
