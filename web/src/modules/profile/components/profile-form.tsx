@@ -23,10 +23,6 @@ const formSchema = z
       .optional()
       .or(z.literal("")),
     confirmPassword: z.string().optional().or(z.literal("")),
-    storeName: z.string().optional(),
-    phoneNumber: z.string().optional(),
-    identificationNumber: z.string().optional(),
-    accountNumber: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -46,13 +42,9 @@ export function ProfileForm() {
   const queryClient = useQueryClient();
   const [shouldFetchUser, setShouldFetchUser] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [storeLogo, setStoreLogo] = useState<string | null>(null);
-  const [isSellerAccount, setIsSellerAccount] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [logoError, setLogoError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const logoInputRef = useRef<HTMLInputElement>(null);
   const { user, isLoading } = useUser();
   const { t } = useLanguage();
 
@@ -77,23 +69,10 @@ export function ProfileForm() {
         name: user.name,
         role: user.role,
         hasProfileImage: !!user.profileImage,
-        hasStoreLogo: !!user.storeLogo,
-        storeLogo: user.storeLogo,
       });
 
       if (user.profileImage) {
         setProfileImage(`${user.profileImage}`);
-      }
-
-      setIsSellerAccount(user.role?.toUpperCase() === "SELLER");
-
-      if (user.storeLogo) {
-        setLogoError(false);
-        console.log("Setting store logo:", user.storeLogo);
-        setStoreLogo(user.storeLogo);
-      } else {
-        console.log("No store logo found in user data");
-        setStoreLogo(null);
       }
     }
   }, [user]);
@@ -105,10 +84,6 @@ export function ProfileForm() {
       email: user?.email || "",
       password: "",
       confirmPassword: "",
-      storeName: user?.storeName || "",
-      phoneNumber: user?.phoneNumber || "",
-      identificationNumber: user?.identificationNumber || "",
-      accountNumber: user?.accountNumber || "",
     },
   });
 
@@ -127,36 +102,6 @@ export function ProfileForm() {
 
         if (values.password) {
           payload.password = values.password;
-        }
-
-        if (user && user.role?.toUpperCase() === "SELLER") {
-          if (
-            values.storeName !== undefined &&
-            values.storeName !== user?.storeName
-          ) {
-            payload.storeName = values.storeName;
-          }
-
-          if (
-            values.phoneNumber !== undefined &&
-            values.phoneNumber !== user?.phoneNumber
-          ) {
-            payload.phoneNumber = values.phoneNumber;
-          }
-
-          if (
-            values.identificationNumber !== undefined &&
-            values.identificationNumber !== user?.identificationNumber
-          ) {
-            payload.identificationNumber = values.identificationNumber;
-          }
-
-          if (
-            values.accountNumber !== undefined &&
-            values.accountNumber !== user?.accountNumber
-          ) {
-            payload.accountNumber = values.accountNumber;
-          }
         }
 
         if (Object.keys(payload).length === 0) {
@@ -237,64 +182,9 @@ export function ProfileForm() {
     }
   };
 
-  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files[0]) return;
-
-    try {
-      setIsUploading(true);
-      setLogoError(false);
-
-      const file = e.target.files[0];
-      const formData = new FormData();
-      formData.append("file", file);
-
-      console.log("Uploading logo file:", file.name);
-
-      const response = await apiClient.post("/users/seller-logo", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log("Logo upload response:", response.data);
-
-      if (response.data && response.data.logoUrl) {
-        console.log("Setting new logo URL:", response.data.logoUrl);
-        setStoreLogo(response.data.logoUrl);
-        setUploadSuccess(true);
-
-        // Use the refreshUserData function instead of refetch
-        refreshUserData();
-
-        toast({
-          title: t("profile.logoUploadSuccess"),
-          description: t("profile.logoUploadSuccessDescription"),
-        });
-      } else {
-        throw new Error("Logo URL not found in response");
-      }
-    } catch (error) {
-      console.error("Error uploading store logo:", error);
-      setLogoError(true);
-      toast({
-        title: t("profile.logoUploadError"),
-        description: t("profile.logoUploadErrorDescription"),
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   const triggerFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
-    }
-  };
-
-  const triggerLogoInput = () => {
-    if (logoInputRef.current) {
-      logoInputRef.current.click();
     }
   };
 
@@ -470,157 +360,6 @@ export function ProfileForm() {
             </span>
           )}
         </div>
-
-        {user &&
-          user.role &&
-          (user.role.toUpperCase() === "SELLER" || isSellerAccount) && (
-            <div className="seller-section">
-              <h2 className="seller-section-title">
-                {t("profile.sellerInfo")}
-              </h2>
-
-              <div className="seller-logo-container">
-                {isUploading ? (
-                  <div className="loading-logo">{t("profile.logoLoading")}</div>
-                ) : (
-                  <>
-                    {logoError ? (
-                      <div className="logo-error">{t("profile.logoError")}</div>
-                    ) : storeLogo ? (
-                      <div
-                        className="logo-wrapper"
-                        style={{
-                          position: "relative",
-                          width: "120px",
-                          height: "120px",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        <Image
-                          src={storeLogo}
-                          alt={t("profile.storeName") as string}
-                          width={120}
-                          height={120}
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: "50%",
-                          }}
-                          onError={() => {
-                            console.error("Logo failed to load:", storeLogo);
-                            setLogoError(true);
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className="no-logo-placeholder"
-                        style={{
-                          width: "120px",
-                          height: "120px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          backgroundColor: "#f0f0f0",
-                          borderRadius: "8px",
-                          fontSize: "14px",
-                          color: "#666",
-                        }}
-                      >
-                        {t("profile.noLogo")}
-                      </div>
-                    )}
-                  </>
-                )}
-                <button
-                  type="button"
-                  onClick={triggerLogoInput}
-                  className="upload-button"
-                  disabled={isUploading}
-                >
-                  {isUploading
-                    ? t("profile.uploading")
-                    : t("profile.uploadLogo")}
-                </button>
-                <input
-                  type="file"
-                  ref={logoInputRef}
-                  onChange={handleLogoChange}
-                  accept="image/*"
-                  className="file-input"
-                />
-              </div>
-
-              <div className="seller-form-grid">
-                <div className="form-field">
-                  <label htmlFor="storeName" className="label">
-                    {t("profile.storeName")}
-                  </label>
-                  <input
-                    id="storeName"
-                    {...form.register("storeName")}
-                    className="input"
-                  />
-                  {form.formState.errors.storeName && (
-                    <span className="error-message">
-                      {form.formState.errors.storeName.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="phoneNumber" className="label">
-                    {t("profile.phoneNumber")}
-                  </label>
-                  <input
-                    id="phoneNumber"
-                    {...form.register("phoneNumber")}
-                    className="input"
-                    placeholder={t("profile.phoneNumberPlaceholder") as string}
-                  />
-                  {form.formState.errors.phoneNumber && (
-                    <span className="error-message">
-                      {form.formState.errors.phoneNumber.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="identificationNumber" className="label">
-                    {t("profile.idNumber")}
-                  </label>
-                  <input
-                    id="identificationNumber"
-                    {...form.register("identificationNumber")}
-                    className="input"
-                  />
-                  {form.formState.errors.identificationNumber && (
-                    <span className="error-message">
-                      {form.formState.errors.identificationNumber.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="accountNumber" className="label">
-                    {t("profile.accountNumber")}
-                  </label>
-                  <input
-                    id="accountNumber"
-                    {...form.register("accountNumber")}
-                    className="input"
-                    placeholder={
-                      t("profile.accountNumberPlaceholder") as string
-                    }
-                  />
-                  {form.formState.errors.accountNumber && (
-                    <span className="error-message">
-                      {form.formState.errors.accountNumber.message}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
 
         <button
           type="submit"

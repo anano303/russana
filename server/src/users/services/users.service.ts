@@ -14,7 +14,7 @@ import { hashPassword } from '@/utils/password';
 import { generateUsers } from '@/utils/seed-users';
 import { PaginatedResponse } from '@/types';
 import { Role } from '@/types/role.enum';
-import { SellerRegisterDto } from '../dtos/seller-register.dto';
+
 import { AdminProfileDto } from '../dtos/admin.profile.dto';
 import { AwsS3Service } from '@/aws-s3/aws-s3.service';
 
@@ -253,88 +253,6 @@ export class UsersService {
     return this.createMany(generatedUsers);
   }
 
-  async createSeller(dto: SellerRegisterDto): Promise<UserDocument> {
-    try {
-      const existingUser = await this.findByEmail(dto.email.toLowerCase());
-      if (existingUser) {
-        throw new ConflictException('User with this email already exists');
-      }
-
-      const sellerData = {
-        ...dto,
-        name: dto.storeName,
-        email: dto.email.toLowerCase(),
-        role: Role.Seller,
-        password: dto.password,
-      };
-
-      return await this.create(sellerData);
-    } catch (error: any) {
-      this.logger.error(`Failed to create seller: ${error.message}`);
-
-      if (error.code === 11000) {
-        throw new ConflictException('User with this email already exists');
-      }
-
-      throw error;
-    }
-  }
-
-  async createSellerWithLogo(
-    dto: SellerRegisterDto,
-    logoFile?: Express.Multer.File,
-  ): Promise<UserDocument> {
-    try {
-      const existingUser = await this.findByEmail(dto.email.toLowerCase());
-      if (existingUser) {
-        throw new ConflictException('User with this email already exists');
-      }
-
-      // Create the seller account first
-      const sellerData = {
-        ...dto,
-        name: dto.storeName,
-        email: dto.email.toLowerCase(),
-        role: Role.Seller,
-        password: dto.password,
-      };
-
-      const seller = await this.create(sellerData);
-
-      // If logo file is provided, upload it to S3
-      if (logoFile) {
-        try {
-          const timestamp = Date.now();
-          const filePath = `seller-logos/${timestamp}-${logoFile.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-
-          // Upload logo to S3
-          const storeLogoPath = await this.awsS3Service.uploadImage(
-            filePath,
-            logoFile.buffer,
-          );
-
-          // Update the seller record with the logo path
-          await this.userModel.findByIdAndUpdate(seller._id, { storeLogoPath });
-
-          this.logger.log(`Logo uploaded for seller ${seller._id}`);
-        } catch (error) {
-          this.logger.error(`Failed to upload seller logo: ${error.message}`);
-          // Continue even if logo upload fails - the account has been created
-        }
-      }
-
-      return seller;
-    } catch (error: any) {
-      this.logger.error(`Failed to create seller: ${error.message}`);
-
-      if (error.code === 11000) {
-        throw new ConflictException('User with this email already exists');
-      }
-
-      throw error;
-    }
-  }
-
   async updateProfileImage(
     userId: string,
     filePath: string,
@@ -383,50 +301,12 @@ export class UsersService {
     }
   }
 
-  async updateSellerLogo(userId: string, filePath: string, fileBuffer: Buffer) {
+  async uploadImage(filePath: string, fileBuffer: Buffer): Promise<string> {
     try {
-      const user = await this.userModel.findById(userId);
-
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-
-      if (user.role !== Role.Seller) {
-        throw new BadRequestException('Only sellers can update store logos');
-      }
-
-      // Delete old logo if it exists
-      if (user.storeLogoPath) {
-        try {
-          await this.awsS3Service.deleteImageByFileId(
-            user.storeLogoPath as string,
-          );
-        } catch (error) {
-          console.error('Failed to delete old store logo', error);
-          // Continue even if deletion fails
-        }
-      }
-
-      // Upload new logo
-      const storeLogoPath = await this.awsS3Service.uploadImage(
-        filePath,
-        fileBuffer,
-      );
-
-      // Update user record
-      await this.userModel.findByIdAndUpdate(userId, { storeLogoPath });
-
-      // Get logo URL
-      const logoUrl = await this.awsS3Service.getImageByFileId(storeLogoPath);
-
-      return {
-        message: 'Store logo updated successfully',
-        logoUrl: logoUrl,
-      };
+      return await this.awsS3Service.uploadImage(filePath, fileBuffer);
     } catch (error) {
-      throw new BadRequestException(
-        'Failed to update store logo: ' + error.message,
-      );
+      this.logger.error(`Failed to upload image: ${error.message}`);
+      throw new BadRequestException('Failed to upload image: ' + error.message);
     }
   }
 
@@ -445,18 +325,9 @@ export class UsersService {
       );
     }
 
-    // If user is a seller, get store logo URL
-    let storeLogo = null;
-    if (user.role === Role.Seller && user.storeLogoPath) {
-      storeLogo = await this.awsS3Service.getImageByFileId(
-        user.storeLogoPath as string,
-      );
-    }
-
     return {
       ...user.toObject(),
       profileImage,
-      storeLogo,
     };
   }
 

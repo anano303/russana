@@ -34,31 +34,6 @@ export class User {
   @Prop({ type: String, default: null })
   refreshToken?: string | null;
 
-  // 👇 **ეს ველები მხოლოდ Seller-ს დასჭირდება, ამიტომ `required: false` ვუტოვებთ**
-  @Prop({ type: String, default: null })
-  storeName?: string;
-
-  @Prop({ type: String, default: null })
-  storeLogo?: string;
-
-  @Prop({ type: String, default: null })
-  storeLogoPath?: string;
-
-  @Prop({ type: String, default: null })
-  ownerFirstName?: string;
-
-  @Prop({ type: String, default: null })
-  ownerLastName?: string;
-
-  @Prop({ type: String, default: null })
-  phoneNumber?: string;
-
-  @Prop({ type: String, default: null })
-  identificationNumber?: string;
-
-  @Prop({ type: String, default: null })
-  accountNumber?: string;
-
   @Prop()
   passwordResetToken?: string;
 

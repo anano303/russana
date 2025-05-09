@@ -29,7 +29,7 @@ import {
   FilesInterceptor,
 } from '@nestjs/platform-express';
 import { AppService } from '@/app/services/app.service';
-import { ProductExpertAgent } from '@/ai/agents/product-expert.agent';
+
 import { Response } from 'express';
 import { ChatRequest } from '@/types/agents';
 import { Roles } from '@/decorators/roles.decorator';
@@ -42,7 +42,7 @@ export class ProductsController {
   constructor(
     private productsService: ProductsService,
     private appService: AppService,
-    private productExpertAgent: ProductExpertAgent,
+   
   ) {}
 
   @Get()
@@ -73,7 +73,7 @@ export class ProductsController {
 
   @Get('user')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Seller)
+  @Roles(Role.Admin)
   getUserProducts(
     @CurrentUser() user: UserDocument,
     @Query('keyword') keyword: string,
@@ -113,7 +113,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Seller)
+  @Roles(Role.Admin)
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -207,7 +207,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Seller)
+  @Roles(Role.Admin)
   @Put(':id')
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -270,12 +270,17 @@ export class ProductsController {
         }
       }
 
+      // Remove user property if it exists in productData to avoid schema conflicts
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { user: userFromData, ...productDataWithoutUser } =
+        productData as any;
+
+      // Create update data object - fix the duplicate spread operator
       const updateData = {
-        ...productData,
+        ...productDataWithoutUser,
         ...(imageUrls && { images: imageUrls }),
         ...(brandLogoUrl && { brandLogo: brandLogoUrl }),
         ...(categoryStructure && { categoryStructure }),
-        ...(user.role === Role.Seller && { status: ProductStatus.PENDING }),
       };
 
       console.log('Updating product with data:', updateData);
@@ -302,14 +307,6 @@ export class ProductsController {
     return this.productsService.createReview(id, user, rating, comment);
   }
 
-  @Post('agent/chat')
-  async chat(@Body() body: ChatRequest, @Res() res: Response) {
-    const { messages } = body;
-
-    const result = await this.productExpertAgent.chat(messages);
-
-    return result.pipeDataStreamToResponse(res);
-  }
 
   @Put(':id/status')
   @UseGuards(JwtAuthGuard, RolesGuard)

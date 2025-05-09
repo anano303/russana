@@ -13,18 +13,22 @@ interface ProductsActionsProps {
   onDelete?: () => void;
 }
 
-export function ProductsActions({ product, onStatusChange, onDelete }: ProductsActionsProps) {
+export function ProductsActions({
+  product,
+  onStatusChange,
+  onDelete,
+}: ProductsActionsProps) {
   const router = useRouter();
   const { user } = useUser();
-  
+
   console.log("Current user from useUser:", user);
-  
-  // შევცვალოთ შემოწმების ლოგიკა lowercase-ზე
+
+  // Just check for admin role
   const isAdmin = user?.role === Role.Admin;
   console.log("Role check:", {
     userRole: user?.role,
     adminRole: Role.Admin,
-    isAdmin
+    isAdmin,
   });
 
   const handleDelete = async () => {
@@ -67,29 +71,30 @@ export function ProductsActions({ product, onStatusChange, onDelete }: ProductsA
   const handleStatusChange = async (newStatus: ProductStatus) => {
     try {
       const response = await fetchWithAuth(`/products/${product._id}/status`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ status: newStatus }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update status');
+        throw new Error("Failed to update status");
       }
 
       onStatusChange?.(product._id, newStatus);
-      
+
       toast({
         title: "Status Updated",
-        description: newStatus === ProductStatus.APPROVED 
-          ? "Product has been approved"
-          : "Product has been rejected",
+        description:
+          newStatus === ProductStatus.APPROVED
+            ? "Product has been approved"
+            : "Product has been rejected",
       });
 
       router.refresh();
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -97,7 +102,6 @@ export function ProductsActions({ product, onStatusChange, onDelete }: ProductsA
       });
     }
   };
-
 
   return (
     <div className="space-x-2">
@@ -108,8 +112,7 @@ export function ProductsActions({ product, onStatusChange, onDelete }: ProductsA
       >
         <Pencil className="actions edit" />
       </button>
-      
-   
+
       {/* Showing status buttons? {isAdmin && product.status === ProductStatus.PENDING} */}
       {isAdmin && product.status === ProductStatus.PENDING && (
         <>
@@ -129,7 +132,7 @@ export function ProductsActions({ product, onStatusChange, onDelete }: ProductsA
           </button>
         </>
       )}
-      
+
       <button
         className="text-red-500 hover:text-red-600"
         onClick={handleDelete}

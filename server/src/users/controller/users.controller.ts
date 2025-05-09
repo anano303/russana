@@ -113,7 +113,7 @@ export class UsersController {
       'image/gif',
       'image/webp',
       'image/heic',
-      'image/heif', // Fixed 'image.heif' to 'image/heif'
+      'image/heif',
     ];
 
     if (
@@ -142,15 +142,16 @@ export class UsersController {
   }
 
   @Post('seller-logo')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @UseInterceptors(FileInterceptor('file'))
-  async uploadSellerLogo(
+  async uploadLogo(
     @CurrentUser() user: User,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    // Check if user is a seller
-    if (user.role !== Role.Seller) {
-      throw new BadRequestException('Only sellers can upload store logos');
+    // Only admin can upload logos now
+    if (user.role !== Role.Admin) {
+      throw new BadRequestException('Only admins can upload logos');
     }
 
     if (!file) {
@@ -178,17 +179,20 @@ export class UsersController {
     }
 
     const timestamp = Date.now();
-    const filePath = `seller-logos/${timestamp}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+    const filePath = `logos/${timestamp}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     const filesSizeInMb = Number((file.size / (1024 * 1024)).toFixed(1));
 
     if (filesSizeInMb > 5) {
       throw new BadRequestException('The file must be less than 5 MB.');
     }
 
-    return this.usersService.updateSellerLogo(
-      user['_id'] as string,
-      filePath,
-      file.buffer,
-    );
+    // Upload image and return the URL
+    const logoPath = await this.usersService.uploadImage(filePath, file.buffer);
+    const logoUrl = await this.usersService.getProfileImageUrl(logoPath);
+
+    return {
+      message: 'Logo uploaded successfully',
+      logoUrl: logoUrl,
+    };
   }
 }

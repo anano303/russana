@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product, User } from "@/types";
 import { ProductsActions } from "./products-actions";
-import { Sparkles, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import "./productList.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
@@ -68,9 +68,7 @@ export function ProductsList() {
   }
 
   function getDisplayName(product: Product): string {
-    return language === "en" && product.nameEn
-      ? product.nameEn
-      : product.name;
+    return language === "en" && product.nameEn ? product.nameEn : product.name;
   }
 
   return (
@@ -123,12 +121,6 @@ export function ProductsList() {
             <button className="prd-btn-outline">
               <Plus className="prd-icon" />
               Add Product
-            </button>
-          </Link>
-          <Link href="/admin/products/ai">
-            <button className="prd-btn">
-              <Sparkles className="prd-icon" />
-              Create Products with AI
             </button>
           </Link>
         </div>

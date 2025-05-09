@@ -32,7 +32,6 @@ export enum ProductStatus {
 }
 
 export enum DeliveryType {
-  SELLER = 'SELLER',
   SoulArt = 'SoulArt',
 }
 

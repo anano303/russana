@@ -45,19 +45,7 @@ export default function Header() {
       </div>
       <nav className="main-nav">
         <ul>
-          <li>
-            <Link
-              href={
-                user?.role === "seller"
-                  ? "/admin/products"
-                  : "/sellers-register"
-              }
-            >
-              {user?.role === "seller"
-                ? t("navigation.myArtworks")
-                : t("navigation.sellArtwork")}
-            </Link>
-          </li>
+          {/* Removed seller-specific navigation */}
           <li className="shop-dropdown">
             <Link href="/shop?page=1&mainCategory=paintings">
               {t("navigation.shop")}

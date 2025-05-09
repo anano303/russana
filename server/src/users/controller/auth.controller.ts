@@ -8,7 +8,6 @@ import {
   Res,
   Req,
   UnauthorizedException,
-  ConflictException,
   BadRequestException,
   UseInterceptors,
   UploadedFile,
@@ -36,13 +35,12 @@ import { AuthResponseDto, LoginDto } from '../dtos/auth.dto';
 import { NotAuthenticatedGuard } from '@/guards/not-authenticated.guard';
 import { Response, Request } from 'express';
 import { cookieConfig } from '@/cookie-config';
-import { SellerRegisterDto } from '../dtos/seller-register.dto';
-import { GoogleAuthGuard } from '@/guards/google-oauth.guard';
 import { ForgotPasswordDto } from '../dtos/forgot-password.dto';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { GoogleAuthGuard } from '@/guards/google-oauth.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -153,7 +151,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.User, Role.Seller)
+  @Roles(Role.Admin, Role.User)
   @Put('profile')
   async updateProfile(
     @CurrentUser() user: UserDocument,
@@ -167,62 +165,7 @@ export class AuthController {
         return obj;
       }, {});
 
-    // Check if the update contains seller-specific fields
-    const hasSellerFields = [
-      'storeName',
-      'phoneNumber',
-      'identificationNumber',
-      'accountNumber',
-    ].some((field) => field in filteredDto);
-
-    // Only allow updating seller fields if the user is actually a seller
-    if (hasSellerFields && user.role !== Role.Seller) {
-      const sellerFields = [
-        'storeName',
-        'phoneNumber',
-        'identificationNumber',
-        'accountNumber',
-      ].filter((field) => field in filteredDto);
-
-      throw new BadRequestException(
-        `Only sellers can update the following fields: ${sellerFields.join(', ')}`,
-      );
-    }
-
     return this.usersService.update(user._id.toString(), filteredDto);
-  }
-
-  @ApiOperation({ summary: 'Register a new seller' })
-  @ApiResponse({
-    status: 201,
-    description: 'Seller successfully registered',
-    type: AuthResponseDto,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request - validation error',
-  })
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('logoFile'))
-  @Post('sellers-register')
-  async registerSeller(
-    @Body() sellerRegisterDto: SellerRegisterDto,
-    @UploadedFile() logoFile: Express.Multer.File,
-  ) {
-    try {
-      const seller = await this.usersService.createSellerWithLogo(
-        sellerRegisterDto,
-        logoFile,
-      );
-      const { tokens, user } = await this.authService.login(seller);
-
-      return { tokens, user };
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        throw new ConflictException(error.message);
-      }
-      throw new BadRequestException('Registration failed: ' + error.message);
-    }
   }
 
   @Post('forgot-password')

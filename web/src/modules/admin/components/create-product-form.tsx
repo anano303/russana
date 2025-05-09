@@ -312,16 +312,6 @@ export function CreateProductForm({
     }));
   };
 
-  const handleBrandLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    if (files && files[0]) {
-      setFormData((prev) => ({
-        ...prev,
-        brandLogo: files[0],
-      }));
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form data on submit", formData);
@@ -694,7 +684,7 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label>მიუთითეთ ნახატის ზომები (არასავალდებულოა)</label>
+          <label>მიუთითეთ ზომები (არასავალდებულოა)</label>
           <div className="dimensions-inputs">
             <div className="dimension-input">
               <label htmlFor="width">სიგანე (სმ)</label>
@@ -732,67 +722,6 @@ export function CreateProductForm({
                 className="create-product-input"
               />
             </div>
-          </div>
-        </div>
-
-        <div>
-          <label>მიტანის ტიპი</label>
-          <div className="delivery-options">
-            <div className="delivery-type-selector">
-              <div className="delivery-type-option">
-                <input
-                  type="radio"
-                  id="soulart-delivery"
-                  name="deliveryType"
-                  checked={deliveryType === "SoulArt"}
-                  onChange={() => setDeliveryType("SoulArt")}
-                />
-                <label htmlFor="soulart-delivery">SoulArt-ის კურიერი</label>
-              </div>
-              <div className="delivery-type-option">
-                <input
-                  type="radio"
-                  id="seller-delivery"
-                  name="deliveryType"
-                  checked={deliveryType === "SELLER"}
-                  onChange={() => setDeliveryType("SELLER")}
-                />
-                <label htmlFor="seller-delivery">გამყიდველი</label>
-              </div>
-            </div>
-
-            {deliveryType === "SELLER" && (
-              <div className="delivery-days">
-                <div>
-                  <label htmlFor="minDeliveryDays">
-                    მინიმალური ვადა (დღეები)
-                  </label>
-                  <input
-                    id="minDeliveryDays"
-                    type="number"
-                    min="1"
-                    value={minDeliveryDays}
-                    onChange={(e) => setMinDeliveryDays(e.target.value)}
-                    className="create-product-input"
-                    required={deliveryType === "SELLER"}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="maxDeliveryDays">
-                    მაქსიმალური ვადა (დღეები)
-                  </label>
-                  <input
-                    id="maxDeliveryDays"
-                    type="number"
-                    min="1"
-                    value={maxDeliveryDays}
-                    onChange={(e) => setMaxDeliveryDays(e.target.value)}
-                    className="create-product-input"
-                    required={deliveryType === "SELLER"}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -843,36 +772,22 @@ export function CreateProductForm({
           )}
         </div>
         <div>
-          <label htmlFor="brand">მხატვრის/კომპანიის სახელი</label>
+          <label htmlFor="brand">ბრენდი</label>
           <input
             id="brand"
             name="brand"
-            value={
-              isSeller
-                ? user?.name || user?.storeName || formData.brand
-                : formData.brand
-            }
-            onChange={isSeller ? undefined : handleChange}
+            value={formData.brand}
+            onChange={handleChange}
             placeholder="Enter brand name"
-            disabled={isSeller}
-            className={
-              isSeller
-                ? "create-product-input disabled"
-                : "create-product-input"
-            }
+            className={"create-product-input"}
             required
           />
           {errors.brand && (
             <p className="create-product-error">{errors.brand}</p>
           )}
-          {isSeller && (
-            <p className="brand-notice">
-              მხატვრის/კომპანიის სახელი ავტომატურად ივსება თქვენი პროფილიდან
-            </p>
-          )}
         </div>
         <div>
-          <label htmlFor="countInStock">Stock Count</label>
+          <label htmlFor="countInStock">რაოდენობა მარაგში</label>
           <input
             id="countInStock"
             name="countInStock"
@@ -891,67 +806,26 @@ export function CreateProductForm({
           <label htmlFor="brandLogo">
             მხატვრის/კომპანიის ლოგო (არასავალდებულო)
           </label>
-          {/* For seller accounts, show their existing logo */}
-          {isSeller &&
-          (user?.storeLogo ||
-            (typeof formData.brandLogo === "string" && formData.brandLogo)) ? (
-            <div className="brand-logo-container">
-              <div className="image-preview">
-                <Image
-                  loader={({ src }) => src}
-                  src={
-                    user?.storeLogo ||
-                    (typeof formData.brandLogo === "string"
-                      ? formData.brandLogo
-                      : "")
-                  }
-                  alt="Brand logo preview"
-                  width={100}
-                  height={100}
-                  unoptimized
-                  className="preview-image"
-                />
-              </div>
-              <p className="brand-notice">
-                ლოგო ავტომატურად მოიტანება თქვენი პროფილიდან
-              </p>
-            </div>
-          ) : !isSeller ? (
-            <>
-              <input
-                id="brandLogo"
-                name="brandLogo"
-                type="file"
-                accept="image/*"
-                onChange={handleBrandLogoChange}
-                className="create-product-file"
+
+          <div className="brand-logo-container">
+            <div className="image-preview">
+              <Image
+                loader={({ src }) => src}
+                src={
+                  user?.storeLogo ||
+                  (typeof formData.brandLogo === "string"
+                    ? formData.brandLogo
+                    : "")
+                }
+                alt="Brand logo preview"
+                width={100}
+                height={100}
+                unoptimized
+                className="preview-image"
               />
-              {formData.brandLogo && typeof formData.brandLogo === "string" && (
-                <div className="image-preview">
-                  <Image
-                    loader={({ src }) => src}
-                    src={formData.brandLogo}
-                    alt="Brand logo preview"
-                    width={100}
-                    height={100}
-                    unoptimized
-                    className="preview-image"
-                  />
-                </div>
-              )}
-              <p className="logo-optional-note">
-                ლოგოს დამატება არასავალდებულოა
-              </p>
-            </>
-          ) : (
-            <div className="no-logo-message">
-              <p>
-                ლოგო არ არის მითითებული თქვენს პროფილში. პროდუქტი შეიქმნება
-                ლოგოს გარეშე, ან შეგიძლიათ{" "}
-                <a href="/profile">პროფილის გვერდზე</a> დაამატოთ ლოგო.
-              </p>
             </div>
-          )}
+          </div>
+
           {errors.brandLogo && (
             <p className="create-product-error">{errors.brandLogo}</p>
           )}
@@ -963,7 +837,7 @@ export function CreateProductForm({
           disabled={pending || !formData.name}
         >
           {pending && <Loader2 className="loader" />}
-          {isEdit ? "ნამუშევარის განახლება" : "ნამუშევარის დამატება"}
+          {isEdit ? "პროდუქტის განახლება" : "პროდუქტის დამატება"}
         </button>
       </form>
     </div>
