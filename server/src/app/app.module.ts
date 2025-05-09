@@ -10,7 +10,7 @@ import { AppController } from './controllers/app.controller';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { AppService } from './services/app.service';
 import { AwsS3Module } from '@/aws-s3/aws-s3.module';
-import { ForumsModule } from '@/forums/forums.module';
+
 import { GoogleStrategy } from '@/strategies/google.strategy';
 import { connectDB } from '@/utils/config';
 import { ProductsModule } from '@/products/products.module';
@@ -34,7 +34,7 @@ import { ProductsModule } from '@/products/products.module';
     
     // SeedsModule,
     AwsS3Module,
-    ForumsModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],
