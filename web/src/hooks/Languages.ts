@@ -13,7 +13,7 @@ export const TRANSLATIONS: Translations = {
     // Navigation
     navigation: {
       home: "მთავარი",
-      shop: "შეიძინე პროდუქტები",
+      shop: "პროდუქტები",
       auction: "აუქციონი",
       myOrders: "ჩემი შეკვეთები",
       forum: "ფორუმი",
