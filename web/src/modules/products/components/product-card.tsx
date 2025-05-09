@@ -6,8 +6,8 @@ import "./ProductCard.css";
 import { Product } from "@/types";
 import { AddToCartButton } from "./AddToCartButton";
 import noPhoto from "../../../assets/nophoto.webp";
-import Star from "../../../assets/Images/star.png";
-import Star2 from "../../../assets/Images/startHandMade.png";
+// import Star from "../../../assets/Images/star.png";
+// import Star2 from "../../../assets/Images/startHandMade.png";
 import { useLanguage } from "@/hooks/LanguageContext";
 
 interface ProductCardProps {
@@ -45,7 +45,7 @@ export function ProductCard({
         <div className="product-info">
           <div className="product-name-rating">
             <h3 className="product-name">{displayName}</h3>
-            <div className="product-rating">
+            {/* <div className="product-rating">
               <span style={{ marginRight: "5px" }}>
                 <Image
                   src={theme === "handmade-theme" ? Star2 : Star}
@@ -57,9 +57,9 @@ export function ProductCard({
               <span className="rating-text" style={{ whiteSpace: "nowrap" }}>
                 {product.rating.toFixed(1)} ({product.numReviews})
               </span>
-            </div>
+            </div> */}
           </div>
-          <p
+          {/* <p
             style={{
               margin: "5px 15px 0px 15px",
               color: theme === "handmade-theme" ? "#7d5a35" : "#153754",
@@ -67,11 +67,11 @@ export function ProductCard({
           >
             <span className="author">{language === "en" ? "Author: " : "ავტორი: "}</span>
             {product.brand}
-          </p>
+          </p> */}
 
           <div className="product-details">
             <div className="priceAndRaiting">
-              <h3 className="product-price">{product.price} ₾ </h3>
+              <h3 className="product-price">{product.price} ლარი </h3>
             </div>
           </div>
         </div>
