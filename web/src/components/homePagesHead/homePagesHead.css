@@ -1,0 +1,85 @@
+.home-pages-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+  background-color: #fff;
+  position: relative;
+}
+.home-pages-head h1 {
+  text-align: center;
+}
+
+.logo-container {
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 2%;
+}
+
+.logo-container p {
+  white-space: nowrap;
+}
+.large-logo {
+  max-width: 100%;
+  height: auto;
+}
+
+.slogan-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.main-slogan {
+  font-size: 36px;
+  font-weight: bold;
+  color: #e50000;
+  margin-bottom: 20px;
+}
+
+.sub-slogan-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.sub-slogan {
+  font-size: 24px;
+  font-weight: 500;
+  color: #e50000;
+  margin: 0 20px;
+}
+
+/* For smaller screens */
+@media (max-width: 900px) {
+  .main-slogan {
+    font-size: 28px;
+  }
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .logo-container p {
+    margin-top: 40px;
+  }
+  .sub-slogan {
+    font-size: 18px;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .main-slogan {
+    font-size: 24px;
+  }
+
+  .sub-slogan-container {
+    flex-direction: column;
+  }
+
+  .sub-slogan {
+    margin: 5px 0;
+  }
+}

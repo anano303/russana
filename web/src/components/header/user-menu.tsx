@@ -7,6 +7,7 @@ import "./user-menu.css";
 import { Role } from "@/types/role";
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage } from "@/hooks/LanguageContext";
+import iconAuth from "../../assets/Images/Vector.png";
 
 export default function UserMenu() {
   const { user, isLoading, logout } = useAuth();
@@ -49,7 +50,8 @@ export default function UserMenu() {
   if (!user) {
     return (
       <Link href="/login" className="button">
-        <span className="icon">🎭 {t("navigation.login")}</span>
+        <Image src={iconAuth} width={20} height={20} alt={t("navigation.login")} />
+        <span className="icon"> {t("navigation.login")}</span>
       </Link>
     );
   }

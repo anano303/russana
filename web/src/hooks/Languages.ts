@@ -124,6 +124,7 @@ export const TRANSLATIONS: Translations = {
       addToCart: "კალათაში დამატება",
       adding: "ემატება...",
       outOfStock: "არ არის მარაგში",
+      title: "კალათა",
     },
 
     // About page
@@ -522,6 +523,7 @@ export const TRANSLATIONS: Translations = {
       addToCart: "Add to Cart",
       adding: "Adding...",
       outOfStock: "Out of Stock",
+      title: "Shopping Cart",
     },
 
     // About page

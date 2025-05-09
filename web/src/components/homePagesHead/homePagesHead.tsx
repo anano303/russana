@@ -1,30 +1,25 @@
-// import Navbar from "@/components/navbar/navbar";
-import MainPhoto from "../mainPhoto/mainPhoto";
+// import { useLanguage } from "@/hooks/LanguageContext";
+import Image from "next/image";
+import russanaLogo from "../../assets/Images/Layer_1.png";
 import "./homePagesHead.css";
-// import DiscountCard from "../discountCard/discountCard";
-// import campImage from '../../assets/camp.webp'
-// import rifleImage from '../../assets/rifle.jpg'
 
 const HomePagesHead = () => {
+  // const { t } = useLanguage();
+
   return (
-    <div className="HomePageshead">
-      <div>
-        <MainPhoto />
-      </div>
-     
-      <div>
-        {/* <DiscountCard
-        title="Special Offer"
-        description="Get 50% Off on Camping Gear"
-        imageSrc={campImage} 
-        altText="Camping Tent"
-      /> */}
-        {/* <DiscountCard
-        title="Special Offer"
-        description="Get 50% Off on Camping Gear"
-        imageSrc={rifleImage} 
-        altText="Camping Tent"
-      /> */}
+    <div className="home-pages-head">
+      <h1 className="main-slogan">მოგესალმებით საპიპინეთშიიიიიიიიიი !!! </h1>
+      <div className="logo-container">
+        <p className="sub-slogan">პიიიპ პიიიიპ!</p>
+        <Image
+          src={russanaLogo}
+          alt="Russana Logo"
+          width={400}
+          height={400}
+          className="large-logo"
+          priority
+        />
+        <p className="sub-slogan">პიიიპ პიიიიპ!</p>
       </div>
     </div>
   );

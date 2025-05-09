@@ -12,7 +12,7 @@ import gear3 from "../../assets/gear 3.png";
 
 // 📅 დროის გამოთვლა
 const startDate = new Date("2025-04-01T00:00:00"); //დაწყების თარიღი
-const durationInDays = 60; //დასრულების დრო
+const durationInDays = 100; //დასრულების დრო
 const endDate = new Date(startDate);
 endDate.setDate(startDate.getDate() + durationInDays);
 
