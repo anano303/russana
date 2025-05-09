@@ -18,6 +18,7 @@ import {
   CakeSlice,
   Hammer,
   Gem,
+  Heart,
 } from "lucide-react";
 
 const ShopContent = () => {
@@ -244,26 +245,34 @@ const ShopContent = () => {
     <div className={`shop-container ${getTheme()}`}>
       {renderAnimatedIcons()}
 
-      <h1 className="text-2xl font-bold mb-4 relative z-10">
-        {brand ? `${brand}${t("shop.artistWorks")}` : t("shop.allArtworks")}
-      </h1>
-      <ProductFilters
-        products={products}
-        onCategoryChange={handleCategoryChange}
-        onArtistChange={handleArtistChange}
-        onSortChange={handleSortChange}
-        selectedCategory={selectedCategory}
-        selectedMainCategory={selectedMainCategory}
-        onMainCategoryChange={handleMainCategoryChange}
-      />
-      <ProductGrid
-        products={products}
-        theme={getTheme()}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        isShopPage={true}
-      />
+      <div className="content">
+        <Heart className="title-heart-icon" fill="#e91e63" color="#e91e63" />
+        <h1
+          className="title"
+          style={{ marginBottom: 40, marginTop: 70, zIndex: 9 }}
+        >
+          <Heart className="shop-title-heart" fill="#e91e63" color="#e91e63" />
+          {brand ? `${brand}${t("shop.artistWorks")}` : t("shop.allArtworks")}
+        </h1>
+        <Heart className="title-heart-icon" fill="#e91e63" color="#e91e63" />
+        <ProductFilters
+          products={products}
+          onCategoryChange={handleCategoryChange}
+          onArtistChange={handleArtistChange}
+          onSortChange={handleSortChange}
+          selectedCategory={selectedCategory}
+          selectedMainCategory={selectedMainCategory}
+          onMainCategoryChange={handleMainCategoryChange}
+        />
+        <ProductGrid
+          products={products}
+          theme={getTheme()}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          isShopPage={true}
+        />
+      </div>
     </div>
   );
 };

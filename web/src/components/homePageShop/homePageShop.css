@@ -25,14 +25,14 @@
 .see-more-btn {
   border: none;
   background: transparent;
-  color: #012645;
+  color: #e91e63;
   font-weight: bold;
   float: right;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
 }
 .see-more-btn:hover {
-  color: #2a5530;
+  color: #ef598b;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
 }
@@ -180,6 +180,34 @@
   text-align: left;
   border-bottom: 2px solid #e5e5e5;
   padding-bottom: 0.5rem;
+  color: #e91e63;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 70%;
+  height: 2px;
+  background: linear-gradient(to right, #e91e63, transparent);
+}
+
+.title-heart-icon {
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.2);
+  }
 }
 
 .site-timer-container {

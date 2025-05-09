@@ -18,6 +18,7 @@ import {
   CakeSlice,
   Hammer,
   Gem,
+  Heart,
 } from "lucide-react";
 
 export default function HomePageShop() {
@@ -130,13 +131,31 @@ export default function HomePageShop() {
       {renderAnimatedIcons()}
 
       <div className="content">
-        <h1
-          className="title"
-          style={{ marginBottom: 40, marginTop: 70, zIndex: 9 }}
-        >
-          {t("shop.allArtworks")}
-        </h1>
-
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <Heart
+            className="title-heart-icon"
+            fill="#e91e63"
+            color="#e91e63"
+            display="inline"
+          />
+          <h1
+            className="title"
+            style={{
+              marginBottom: 40,
+              marginTop: 70,
+              zIndex: 9,
+              textAlign: "left",
+            }}
+          >
+            {t("shop.allArtworks")}
+          </h1>
+          <Heart
+            className="title-heart-icon"
+            fill="#e91e63"
+            color="#e91e63"
+            display="inline"
+          />
+        </div>
         {isLoading ? (
           <div className="loading-container">
             <p>{t("shop.loading")}</p>
@@ -145,7 +164,14 @@ export default function HomePageShop() {
           <div className="product-sections">
             {/* Paintings Section */}
             <div className="product-section">
-              <h2 className="section-title">{t("categories.paintings")}</h2>
+              <h2 className="section-title">
+                <Heart
+                  className="title-heart-icon"
+                  fill="#e91e63"
+                  color="#e91e63"
+                />
+                ყველაზე ახალი {t("categories.paintings")}
+              </h2>
               <ProductGrid
                 products={paintingsProducts}
                 theme="default"
@@ -160,7 +186,14 @@ export default function HomePageShop() {
 
             {/* Handmade Section */}
             <div className="product-section">
-              <h2 className="section-title">{t("categories.handmade")}</h2>
+              <h2 className="section-title">
+                <Heart
+                  className="title-heart-icon"
+                  fill="#e91e63"
+                  color="#e91e63"
+                />
+                ყველაზე ახალი {t("categories.handmade")}
+              </h2>
               <ProductGrid
                 products={handmadeProducts}
                 theme="handmade-theme"

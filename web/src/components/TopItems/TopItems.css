@@ -1,0 +1,110 @@
+.top-items-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+  overflow: visible;
+  position: relative;
+}
+
+.top-items-title-container {
+  position: relative;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.top-items-title {
+  font-family: "ALK Katerina", "firaGo", sans-serif;
+  color: #e91e63;
+  font-size: 2.2rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.top-items-title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 70%;
+  height: 3px;
+  background: linear-gradient(to right, #e91e63, transparent);
+}
+
+.title-heart-icon {
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+.top-items-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.view-all-products {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.view-all-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #e91e63, #ad1457);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
+  transition: all 0.3s ease;
+}
+
+.view-all-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.4);
+}
+
+/* Loading state */
+.top-items-container.loading {
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .top-items-title {
+    font-size: 1.8rem;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-items-container {
+    margin: 30px auto;
+  }
+
+  .top-items-title {
+    font-size: 1.5rem;
+    gap: 8px;
+  }
+
+  .view-all-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
