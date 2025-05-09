@@ -194,7 +194,7 @@ export const TRANSLATIONS: Translations = {
     footer: {
       copyright: "© 2025 BestSoft. ყველა უფლება დაცულია.",
       description:
-        "აღმოაჩინე და შეიძინე უნიკალური ხელოვნების ნიმუშები ნიჭიერი ხელოვანებისგან მსოფლიოს სხვადასხვა კუთხიდან. შექმენი შენი პირადი გალერეა და გახდი კოლექციონერი ან ხელოვანი.",
+        "აღმოაჩინეთ ჩვენი სახალისო კოლექცია მაისურების, ჩანთების და აქსესუარების გულის დიზაინით, რომლებიც დაჭერისას სასაცილო 'პიპ' ხმას გამოსცემენ. შეიტანეთ მხიარულება და სიურპრიზი თქვენს ყოველდღიურ სტილში!",
       quickLinks: "სწრაფი ბმულები",
       termsOfService: "მომსახურების პირობები",
       privacyPolicy: "კონფიდენციალურობის პოლიტიკა",
@@ -559,7 +559,7 @@ export const TRANSLATIONS: Translations = {
     footer: {
       copyright: "© 2025 BestSoft. All rights reserved.",
       description:
-        "Discover and purchase unique art pieces from talented artists around the world. Create your personal gallery and become a collector or artist.",
+        "Explore our playful collection of t-shirts, bags, and accessories with squeaky heart designs that make a fun 'pip' sound when pressed. Add some joy and surprise to your everyday outfits!",
       quickLinks: "Quick Links",
       termsOfService: "Terms of Service",
       privacyPolicy: "Privacy Policy",
