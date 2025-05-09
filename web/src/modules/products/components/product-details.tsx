@@ -185,7 +185,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
           )}
 
-          {/* Delivery Information */}
+          {/* Delivery Information
           <div className="delivery-info">
             <h3 className="info-title">{t("product.deliveryInfo")}</h3>
             <div className="delivery-details">
@@ -203,7 +203,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <p>{t("product.courierDelivery")}</p>
               )}
             </div>
-          </div>
+          </div> */}
 
           <div className="separator"></div>
 
