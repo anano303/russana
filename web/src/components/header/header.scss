@@ -15,10 +15,10 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  // padding: 10px 20px;
   background-color: rgba(249, 249, 249, 1);
   color: rgba(30, 30, 30, 1);
-  font-family: "ALK Katerina", -sans-serif;
+  font-family: ALK Katerina;
   box-shadow: 0px 4px 25px 0px rgba(207, 10, 10, 0.25);
 
   .logo {
@@ -217,10 +217,10 @@ header {
 }
 
 .wireframe-style {
-  background-color: white;
-  box-shadow: none;
-  border-bottom: 1px solid #eaeaea;
-  padding: 10px 0;
+  // background-color: white;
+  // box-shadow: none;
+  // border-bottom: 1px solid #eaeaea;
+  // padding: 10px 0;
 
   .header-container {
     width: 100%;

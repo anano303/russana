@@ -41,8 +41,18 @@
   text-decoration: none;
   transition: transform 0.3s ease;
   background: none;
+  font-family: ALK Katerina;
+
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
 }
 
+.product-card:hover {
+  transform: scale(1.05);
+}
 /* Create heart shape with ::before pseudo-element */
 .product-card::before {
   content: "";
@@ -124,13 +134,13 @@
 
 .product-name {
   font-size: 18px;
-  font-weight: bold;
-  color: #000000;
+  /* font-weight: bold; */
+  /* color: #000000; */
   margin-bottom: 0px;
   margin-top: 0px;
   height: auto;
   max-height: 20px;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
   display: -webkit-box;
   /* -webkit-line-clamp: 2; */
@@ -147,7 +157,7 @@
 .product-price {
   font-weight: bold;
   font-size: 18px;
-  color: #CF0A0A;
+  color: #cf0a0a;
   margin-bottom: 2px;
   text-align: center;
 }
@@ -169,7 +179,7 @@
 /* Add to cart button */
 .addButtonCart {
   /* background: linear-gradient(135deg, #e91e63, #ad1457); */
-  background-color: #CF0A0A;
+  background-color: #cf0a0a;
   color: white;
   border: none;
   border-radius: 4px;
@@ -233,6 +243,23 @@
   padding: 15px;
 }
 
+.buyBtn {
+  background-color: rgba(207, 10, 10, 1);
+  color: rgba(255, 255, 255, 1);
+  border: none;
+  padding: 5px 15px;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 10%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.buyBtn:hover {
+  background-color: rgba(207, 10, 10, 0.8);
+  transform: scale(1.05);
+}
 
 /* Responsive styles */
 @media (max-width: 768px) {
@@ -264,6 +291,12 @@
     font-size: 11px;
     padding: 5px 8px;
   }
+  .product-info {
+    margin-left: 30%;
+  }
+  .buyBtn {
+    margin-left: 30%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -275,6 +308,12 @@
   .product-image {
     width: 90px;
     height: 90px;
+  }
+  .product-info {
+    margin-left: 40%;
+  }
+  .buyBtn {
+    margin-left: 40%;
   }
 
   .addButtonCart {

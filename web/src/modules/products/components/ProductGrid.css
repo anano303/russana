@@ -10,7 +10,7 @@
   flex-wrap: wrap;
   justify-content: space-around;
   row-gap: 30px;
-  column-gap: min(15px);
+  column-gap: 180px;
 }
 
 .no-products {

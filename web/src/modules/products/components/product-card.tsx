@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import "./ProductCard.css";
 import { Product } from "@/types";
-import { AddToCartButton } from "./AddToCartButton";
+// import { AddToCartButton } from "./AddToCartButton";
 import noPhoto from "../../../assets/nophoto.webp";
 // import Star from "../../../assets/Images/star.png";
 // import Star2 from "../../../assets/Images/startHandMade.png";
@@ -77,11 +77,14 @@ export function ProductCard({
           </div>
         </div>
       </Link>
-      <AddToCartButton
+      {/* <AddToCartButton
         productId={product._id}
         countInStock={product.countInStock}
         className="addButtonCart"
-      />
+      /> */}
+       <Link href={`/products/${product._id}`}>
+      <button className="buyBtn"> იყიდე </button>
+      </Link>
     </div>
   );
 }
