@@ -24,6 +24,7 @@ import {
   ACCESSORIES_CATEGORIES,
   FOOTWEAR_CATEGORIES,
   SWIMWEAR_CATEGORIES,
+  CATEGORY_MAPPING,
 } from '@/utils/subcategories';
 import { ProductDto, FindAllProductsDto } from '../dtos/product.dto';
 
@@ -182,6 +183,21 @@ export class ProductsService {
           mainCat = MainCategory.FOOTWEAR;
         } else if (SWIMWEAR_CATEGORIES.includes(doc.category)) {
           mainCat = MainCategory.SWIMWEAR;
+        } else {
+          // Handle legacy categories
+          const mappedCategory = CATEGORY_MAPPING[doc.category];
+          if (mappedCategory) {
+            if (CLOTHING_CATEGORIES.includes(mappedCategory)) {
+              mainCat = MainCategory.CLOTHING;
+            } else if (ACCESSORIES_CATEGORIES.includes(mappedCategory)) {
+              mainCat = MainCategory.ACCESSORIES;
+            } else if (FOOTWEAR_CATEGORIES.includes(mappedCategory)) {
+              mainCat = MainCategory.FOOTWEAR;
+            } else if (SWIMWEAR_CATEGORIES.includes(mappedCategory)) {
+              mainCat = MainCategory.SWIMWEAR;
+            }
+            doc.category = mappedCategory;
+          }
         }
 
         doc.categoryStructure = {
@@ -223,6 +239,21 @@ export class ProductsService {
         mainCat = MainCategory.FOOTWEAR;
       } else if (SWIMWEAR_CATEGORIES.includes(product.category)) {
         mainCat = MainCategory.SWIMWEAR;
+      } else {
+        // Handle legacy categories
+        const mappedCategory = CATEGORY_MAPPING[product.category];
+        if (mappedCategory) {
+          if (CLOTHING_CATEGORIES.includes(mappedCategory)) {
+            mainCat = MainCategory.CLOTHING;
+          } else if (ACCESSORIES_CATEGORIES.includes(mappedCategory)) {
+            mainCat = MainCategory.ACCESSORIES;
+          } else if (FOOTWEAR_CATEGORIES.includes(mappedCategory)) {
+            mainCat = MainCategory.FOOTWEAR;
+          } else if (SWIMWEAR_CATEGORIES.includes(mappedCategory)) {
+            mainCat = MainCategory.SWIMWEAR;
+          }
+          product.category = mappedCategory;
+        }
       }
 
       product.categoryStructure = {
