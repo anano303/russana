@@ -3,7 +3,7 @@
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import type { PaginatedResponse, Product } from "@/types";
 
-export async function getProducts(
+export const getProducts = async (
   page: number = 1,
   limit: number = 10,
   keyword?: string,
@@ -13,7 +13,7 @@ export async function getProducts(
   sortBy?: string,
   sortDirection?: "asc" | "desc",
   ageGroup?: string
-): Promise<PaginatedResponse<Product>> {
+): Promise<PaginatedResponse<Product>> => {
   try {
     const searchParams = new URLSearchParams({
       page: page.toString(),
@@ -48,19 +48,23 @@ export async function getProducts(
     const response = await fetchWithAuth(
       `/products?${searchParams.toString()}`
     );
+    const data = await response.json();
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Failed to fetch products");
-    }
-    return response.json();
+    // Return empty results instead of throwing error
+    return {
+      items: data.items || [],
+      total: data.total || 0,
+      page: data.page || page,
+      pages: data.pages || 1,
+    };
   } catch (error) {
     console.error("Error fetching products:", error);
+    // Return empty results on error
     return {
       items: [],
       total: 0,
-      page: 1,
+      page: Number(page),
       pages: 1,
     };
   }
-}
+};

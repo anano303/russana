@@ -98,10 +98,14 @@ const ShopContent = () => {
         `Got ${response.items.length} products for page ${currentPage}`
       );
 
-      setProducts(response.items);
-      setTotalPages(response.pages);
+      // Ensure we always set products (even empty array)
+      setProducts(response.items || []);
+      setTotalPages(response.pages || 1);
     } catch (error) {
       console.error(`Failed to fetch products:`, error);
+      // Set empty products array on error
+      setProducts([]);
+      setTotalPages(1);
     } finally {
       setIsLoading(false);
     }
@@ -258,8 +262,6 @@ const ShopContent = () => {
     }
   };
 
-  if (isLoading) return <div>{t("shop.loading")}</div>;
-
   return (
     <div className={`shop-container ${getTheme()}`}>
       {renderAnimatedIcons()}
@@ -285,15 +287,23 @@ const ShopContent = () => {
           selectedAgeGroup={selectedAgeGroup}
           onAgeGroupChange={handleAgeGroupChange}
         />
-        <ProductGrid
-          products={products}
-          theme={getTheme()}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          isShopPage={true}
-          selectedAgeGroup={selectedAgeGroup}
-        />
+        {isLoading ? (
+          <div className="loading-state">{t("shop.loading")}</div>
+        ) : products.length > 0 ? (
+          <ProductGrid
+            products={products}
+            theme={getTheme()}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            isShopPage={true}
+            selectedAgeGroup={selectedAgeGroup}
+          />
+        ) : (
+          <div className="empty-state">
+            <p>{t("shop.emptyDescription")}</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -41,8 +41,6 @@ export class ProductsService {
       .sort({ rating: -1 })
       .limit(3);
 
-    if (!products.length) throw new NotFoundException('No products found.');
-
     return products;
   }
 
@@ -209,11 +207,8 @@ export class ProductsService {
       return doc;
     });
 
-    if (!processedProducts.length)
-      throw new NotFoundException('No products found.');
-
     return {
-      items: processedProducts,
+      items: processedProducts || [], // Ensure we always return an array
       total: count,
       page: currentPage,
       pages: Math.ceil(count / pageSize),

@@ -145,48 +145,60 @@ export default function HomePageShop() {
         ) : (
           <div className="product-sections">
             {/* Clothing Section */}
-            <div className="product-section">
-              <h2 className="section-title">
-                <Heart
-                  className="title-heart-icon"
-                  fill="#e91e63"
-                  color="#e91e63"
+            {clothingProducts && clothingProducts.length > 0 && (
+              <div className="product-section">
+                <h2 className="section-title">
+                  <Heart
+                    className="title-heart-icon"
+                    fill="#e91e63"
+                    color="#e91e63"
+                  />
+                  ყველაზე ახალი {t("categories.clothing")}
+                </h2>
+                <ProductGrid
+                  products={clothingProducts}
+                  theme="default"
+                  isShopPage={false}
                 />
-                ყველაზე ახალი {t("categories.clothing")}
-              </h2>
-              <ProductGrid
-                products={clothingProducts}
-                theme="default"
-                isShopPage={false}
-              />
-              <div className="see-more">
-                <Link href={`/shop?page=1&mainCategory=CLOTHING`}>
-                  <button className="see-more-btn">{t("shop.seeAll")}</button>
-                </Link>
+                <div className="see-more">
+                  <Link href={`/shop?page=1&mainCategory=CLOTHING`}>
+                    <button className="see-more-btn">{t("shop.seeAll")}</button>
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Accessories Section */}
-            <div className="product-section">
-              <h2 className="section-title">
-                <Heart
-                  className="title-heart-icon"
-                  fill="#e91e63"
-                  color="#e91e63"
+            {accessoriesProducts && accessoriesProducts.length > 0 && (
+              <div className="product-section">
+                <h2 className="section-title">
+                  <Heart
+                    className="title-heart-icon"
+                    fill="#e91e63"
+                    color="#e91e63"
+                  />
+                  ყველაზე ახალი {t("categories.accessories")}
+                </h2>
+                <ProductGrid
+                  products={accessoriesProducts}
+                  theme="handmade-theme"
+                  isShopPage={false}
                 />
-                ყველაზე ახალი {t("categories.accessories")}
-              </h2>
-              <ProductGrid
-                products={accessoriesProducts}
-                theme="handmade-theme"
-                isShopPage={false}
-              />
-              <div className="see-more">
-                <Link href={`/shop?page=1&mainCategory=ACCESSORIES`}>
-                  <button className="see-more-btn">{t("shop.seeAll")}</button>
-                </Link>
+                <div className="see-more">
+                  <Link href={`/shop?page=1&mainCategory=ACCESSORIES`}>
+                    <button className="see-more-btn">{t("shop.seeAll")}</button>
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Show empty state if no products in any category */}
+            {(!clothingProducts || clothingProducts.length === 0) &&
+              (!accessoriesProducts || accessoriesProducts.length === 0) && (
+                <div className="empty-state">
+                  <p>{t("shop.emptyDescription")}</p>
+                </div>
+              )}
           </div>
         )}
       </div>
