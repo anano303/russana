@@ -32,6 +32,7 @@ export function ProductCard({
   return (
     <div className={`product-card ${theme} ${className}`}>
       <Link href={`/products/${product._id}`}>
+       <div className="heart-shape"></div>
         <div className="product-image">
           <Image
             src={productImage}

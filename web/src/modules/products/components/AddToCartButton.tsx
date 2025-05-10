@@ -56,7 +56,7 @@ export function AddToCartButton({
 
   return (
     <div className="cart-actions">
-      <div className="quantity-container">
+      {/* <div className="quantity-container">
         <button
           className="quantity-button"
           onClick={decreaseQuantity}
@@ -72,14 +72,14 @@ export function AddToCartButton({
         >
           +
         </button>
-      </div>
+      </div> */}
 
       <button
         className={`addButtonCart ${className}`}
         disabled={isOutOfStock || loading}
         onClick={handleAddToCart}
       >
-        <span>🛒</span>
+        {/* <span>🛒</span> */}
         {isOutOfStock
           ? t("cart.outOfStock")
           : loading
