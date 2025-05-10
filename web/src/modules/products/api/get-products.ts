@@ -11,7 +11,8 @@ export async function getProducts(
   mainCategory?: string,
   subCategory?: string,
   sortBy?: string,
-  sortDirection?: "asc" | "desc"
+  sortDirection?: "asc" | "desc",
+  ageGroup?: string
 ): Promise<PaginatedResponse<Product>> {
   try {
     const searchParams = new URLSearchParams({
@@ -38,6 +39,10 @@ export async function getProducts(
     if (sortBy && sortDirection) {
       searchParams.append("sortBy", sortBy);
       searchParams.append("sortDirection", sortDirection);
+    }
+
+    if (ageGroup) {
+      searchParams.append("ageGroup", ageGroup);
     }
 
     const response = await fetchWithAuth(

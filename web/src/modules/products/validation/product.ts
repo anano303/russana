@@ -19,6 +19,7 @@ export const productSchema = z.object({
         message: "გთხოვთ აირჩიოთ ქვეკატეგორია",
       }
     ),
+  ageGroup: z.enum(["ADULTS", "KIDS"]).optional(),
   price: z.coerce.number().positive("ფასი უნდა იყოს დადებითი რიცხვი"),
   countInStock: z.coerce
     .number()

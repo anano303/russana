@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Search } from "lucide-react";
 import "./product-filters.css";
-import { Product, MainCategory } from "@/types";
+import { Product, MainCategory, AgeGroup } from "@/types";
 import Link from "next/link";
 import { useLanguage } from "@/hooks/LanguageContext";
 
@@ -15,6 +15,8 @@ interface FilterProps {
   selectedCategory?: string;
   selectedMainCategory?: MainCategory;
   onMainCategoryChange?: (mainCategory: MainCategory) => void;
+  onAgeGroupChange?: (ageGroup: AgeGroup | undefined) => void;
+  selectedAgeGroup?: AgeGroup;
 }
 
 export function ProductFilters({
@@ -23,8 +25,10 @@ export function ProductFilters({
   onArtistChange,
   onSortChange,
   selectedCategory: initialCategory = "all",
-  selectedMainCategory: initialMainCategory = MainCategory.PAINTINGS,
+  selectedMainCategory: initialMainCategory = MainCategory.CLOTHING,
   onMainCategoryChange,
+  onAgeGroupChange,
+  selectedAgeGroup,
 }: FilterProps) {
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -37,9 +41,11 @@ export function ProductFilters({
   const [selectedMainCategory, setSelectedMainCategory] =
     useState(initialMainCategory);
 
-  // These category arrays stay in Georgian for backend compatibility
-  // but will be displayed in the current language
   const categoriesByType = {
+    [MainCategory.CLOTHING]: ["მაისურები", "კაბები", "ჰუდები", "სხვა"],
+    [MainCategory.ACCESSORIES]: ["კეპები", "პანამები", "სხვა"],
+    [MainCategory.FOOTWEAR]: ["სპორტული", "ყოველდღიური", "სხვა"],
+    [MainCategory.SWIMWEAR]: ["საცურაო კოსტუმები", "სხვა"],
     [MainCategory.PAINTINGS]: [
       "პეიზაჟი",
       "პორტრეტი",
@@ -68,6 +74,10 @@ export function ProductFilters({
 
   // Main category translation mapping
   const mainCategoryLabels = {
+    [MainCategory.CLOTHING]: t("categories.clothing"),
+    [MainCategory.ACCESSORIES]: t("categories.accessories"),
+    [MainCategory.FOOTWEAR]: t("categories.footwear"),
+    [MainCategory.SWIMWEAR]: t("categories.swimwear"),
     [MainCategory.PAINTINGS]: t("categories.paintings"),
     [MainCategory.HANDMADE]: t("categories.handmade"),
   };
@@ -158,8 +168,7 @@ export function ProductFilters({
   }, [initialCategory, handleCategoryChange]);
 
   // Determine the theme class based on the selected main category
-  const themeClass =
-    selectedMainCategory === MainCategory.HANDMADE ? "handmade-theme" : "";
+  const themeClass = `${selectedMainCategory.toString().toLowerCase()}-theme`;
 
   // Get the appropriate search label based on the selected main category
   const getSearchLabel = () => {
@@ -179,7 +188,39 @@ export function ProductFilters({
     <div className={`filters-container ${themeClass}`}>
       <div className="filter-section">
         <h3 className="filter-title">{t("shop.mainCategory")}</h3>
-        <div className="main-category-buttons">
+        <div className="filter-options">
+          <div
+            className={`filter-option ${
+              selectedMainCategory === MainCategory.CLOTHING ? "active" : ""
+            }`}
+            onClick={() => handleMainCategoryChange(MainCategory.CLOTHING)}
+          >
+            {mainCategoryLabels[MainCategory.CLOTHING]}
+          </div>
+          <div
+            className={`filter-option ${
+              selectedMainCategory === MainCategory.ACCESSORIES ? "active" : ""
+            }`}
+            onClick={() => handleMainCategoryChange(MainCategory.ACCESSORIES)}
+          >
+            {mainCategoryLabels[MainCategory.ACCESSORIES]}
+          </div>
+          <div
+            className={`filter-option ${
+              selectedMainCategory === MainCategory.FOOTWEAR ? "active" : ""
+            }`}
+            onClick={() => handleMainCategoryChange(MainCategory.FOOTWEAR)}
+          >
+            {mainCategoryLabels[MainCategory.FOOTWEAR]}
+          </div>
+          <div
+            className={`filter-option ${
+              selectedMainCategory === MainCategory.SWIMWEAR ? "active" : ""
+            }`}
+            onClick={() => handleMainCategoryChange(MainCategory.SWIMWEAR)}
+          >
+            {mainCategoryLabels[MainCategory.SWIMWEAR]}
+          </div>
           <button
             className={`main-category-btn paintings ${
               selectedMainCategory === MainCategory.PAINTINGS ? "active" : ""
@@ -277,6 +318,37 @@ export function ProductFilters({
             </button>
           </div>
         )}
+      </div>
+
+      {/* Age Group Filter */}
+      <div className="filter-section">
+        <h3 className="filter-title">{t("shop.ageGroup")}</h3>
+        <div className="filter-options">
+          <div
+            className={`filter-option ${!selectedAgeGroup ? "active" : ""}`}
+            onClick={() => onAgeGroupChange && onAgeGroupChange(undefined)}
+          >
+            {t("shop.allAges")}
+          </div>
+          <div
+            className={`filter-option ${
+              selectedAgeGroup === AgeGroup.ADULTS ? "active" : ""
+            }`}
+            onClick={() =>
+              onAgeGroupChange && onAgeGroupChange(AgeGroup.ADULTS)
+            }
+          >
+            {t("shop.adults")}
+          </div>
+          <div
+            className={`filter-option ${
+              selectedAgeGroup === AgeGroup.KIDS ? "active" : ""
+            }`}
+            onClick={() => onAgeGroupChange && onAgeGroupChange(AgeGroup.KIDS)}
+          >
+            {t("shop.kids")}
+          </div>
+        </div>
       </div>
 
       {/* Sort dropdown as normal flow element with inline layout */}

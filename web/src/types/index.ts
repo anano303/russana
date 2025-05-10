@@ -4,11 +4,21 @@ import { Role } from "./role";
 export enum MainCategory {
   PAINTINGS = "PAINTINGS",
   HANDMADE = "HANDMADE",
+  CLOTHING = "CLOTHING",
+  ACCESSORIES = "ACCESSORIES",
+  FOOTWEAR = "FOOTWEAR",
+  SWIMWEAR = "SWIMWEAR",
+}
+
+export enum AgeGroup {
+  ADULTS = "ADULTS",
+  KIDS = "KIDS",
 }
 
 export interface CategoryStructure {
   main: MainCategory;
   sub: string;
+  ageGroup?: AgeGroup;
 }
 
 export interface Product {

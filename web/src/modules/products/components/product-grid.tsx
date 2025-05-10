@@ -52,6 +52,7 @@ interface ProductGridProps {
   totalPages?: number;
   onPageChange?: (page: number) => void;
   isShopPage?: boolean; // New prop to distinguish between homepage and shop page
+  selectedAgeGroup?: string; // New prop for age group filter
 }
 
 export function ProductGrid({
@@ -62,6 +63,7 @@ export function ProductGrid({
   totalPages = 1,
   onPageChange,
   isShopPage = false, // Default is false (homepage)
+  selectedAgeGroup,
 }: ProductGridProps) {
   const [products, setProducts] = useState(initialProducts);
   const [pages, setPages] = useState(totalPages);
@@ -81,20 +83,15 @@ export function ProductGrid({
           // Convert old products to use the new category structure
           const processedItems = items.map((item) => {
             if (!item.categoryStructure) {
-              // Assign a default category structure based on the item's category
               const mainCategory =
                 item.category &&
-                [
-                  "კერამიკა",
-                  "ხის ნაკეთობები",
-                  "სამკაულები",
-                  "ტექსტილი",
-                  "მინანქარი",
-                  "სკულპტურები",
-                  "სხვა",
-                ].includes(item.category)
-                  ? MainCategory.HANDMADE
-                  : MainCategory.PAINTINGS;
+                ["მაისურები", "კაბები", "ჰუდები"].includes(item.category)
+                  ? MainCategory.CLOTHING
+                  : ["კეპები", "პანამები"].includes(item.category)
+                  ? MainCategory.ACCESSORIES
+                  : ["სპორტული", "ყოველდღიური"].includes(item.category)
+                  ? MainCategory.FOOTWEAR
+                  : MainCategory.SWIMWEAR;
 
               return {
                 ...item,
@@ -121,7 +118,6 @@ export function ProductGrid({
       // Also process initial products if they don't have category structure
       const processedProducts = initialProducts?.map((item) => {
         if (!item.categoryStructure) {
-          // Assign a default category structure based on the item's category
           const handmadeCategories = [
             "კერამიკა",
             "ხის ნაკეთობები",
@@ -151,7 +147,13 @@ export function ProductGrid({
         setPages(totalPages);
       }
     }
-  }, [searchKeyword, currentPage, initialProducts, totalPages]);
+  }, [
+    searchKeyword,
+    currentPage,
+    initialProducts,
+    totalPages,
+    selectedAgeGroup,
+  ]);
 
   const renderPagination = () => {
     // Only show pagination if we have more than 1 page and we're on the shop page

@@ -49,6 +49,10 @@ export const TRANSLATIONS: Translations = {
       emptyDescription:
         "დაათვალიერეთ ჩვენი პლატფორმა და იპოვეთ უნიკალური პროდუქტები",
       seeAll: "ნახეთ ყველა...",
+      allAges: "ყველა ასაკი",
+      adults: "მოზრდილები",
+      kids: "ბავშვები",
+      ageGroup: "ასაკობრივი ჯგუფი",
     },
 
     // Product Details
@@ -321,6 +325,10 @@ export const TRANSLATIONS: Translations = {
       // Main categories
       paintings: "ნახატები",
       handmade: "ხელნაკეთი ნივთები",
+      clothing: "ტანსაცმელი",
+      accessories: "აქსესუარები",
+      footwear: "ფეხსაცმელი",
+      swimwear: "საცურაო კოსტუმები",
 
       // Painting subcategories
       oil: "ზეთი",
@@ -355,6 +363,22 @@ export const TRANSLATIONS: Translations = {
       enamel: "მინანქარი",
       sculptures: "სკულპტურები",
       otherHandmade: "სხვა",
+
+      // Clothing subcategories
+      tshirts: "მაისურები",
+      dresses: "კაბები",
+      hoodies: "ჰუდები",
+
+      // Accessories subcategories
+      caps: "კეპები",
+      hats: "პანამები",
+
+      // Footwear subcategories
+      sporty: "სპორტული",
+      casual: "ყოველდღიური",
+
+      // Swimwear subcategories
+      swimsuits: "საცურაო კოსტუმები",
     },
 
     // Forum
@@ -404,6 +428,22 @@ export const TRANSLATIONS: Translations = {
       ტექსტილი: "ტექსტილი",
       მინანქარი: "მინანქარი",
       სკულპტურები: "სკულპტურები",
+
+      // Clothing subcategories
+      მაისურები: "მაისურები",
+      კაბები: "კაბები",
+      ჰუდები: "ჰუდები",
+
+      // Accessories subcategories
+      კეპები: "კეპები",
+      პანამები: "პანამები",
+
+      // Footwear subcategories
+      სპორტული: "სპორტული",
+      ყოველდღიური: "ყოველდღიური",
+
+      // Swimwear subcategories
+      "საცურაო კოსტუმები": "საცურაო კოსტუმები",
     },
   },
 
@@ -446,6 +486,10 @@ export const TRANSLATIONS: Translations = {
       priceHighToLow: "Price: High to Low",
       emptyDescription: "Browse our platform to find unique artworks",
       seeAll: "See All...",
+      allAges: "All Ages",
+      adults: "Adults",
+      kids: "Kids",
+      ageGroup: "Age Group",
     },
 
     // Product Details
@@ -685,6 +729,10 @@ export const TRANSLATIONS: Translations = {
       // Main categories
       paintings: "Paintings",
       handmade: "Handmade",
+      clothing: "Clothing",
+      accessories: "Accessories",
+      footwear: "Footwear",
+      swimwear: "Swimwear",
 
       // Painting subcategories
       oil: "Oil",
@@ -719,6 +767,22 @@ export const TRANSLATIONS: Translations = {
       enamel: "Enamel",
       sculptures: "Sculptures",
       otherHandmade: "Other",
+
+      // Clothing subcategories
+      tshirts: "T-shirts",
+      dresses: "Dresses",
+      hoodies: "Hoodies",
+
+      // Accessories subcategories
+      caps: "Caps",
+      hats: "Hats",
+
+      // Footwear subcategories
+      sporty: "Sporty",
+      casual: "Casual",
+
+      // Swimwear subcategories
+      swimsuits: "Swimsuits",
     },
 
     // Forum
@@ -768,6 +832,22 @@ export const TRANSLATIONS: Translations = {
       ტექსტილი: "Textile",
       მინანქარი: "Enamel",
       სკულპტურები: "Sculptures",
+
+      // Clothing subcategories
+      მაისურები: "T-shirts",
+      კაბები: "Dresses",
+      ჰუდები: "Hoodies",
+
+      // Accessories subcategories
+      კეპები: "Caps",
+      პანამები: "Hats",
+
+      // Footwear subcategories
+      სპორტული: "Sporty",
+      ყოველდღიური: "Casual",
+
+      // Swimwear subcategories
+      "საცურაო კოსტუმები": "Swimsuits",
     },
   },
 };

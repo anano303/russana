@@ -5,7 +5,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { ProductGrid } from "@/modules/products/components/product-grid";
 import { ProductFilters } from "@/modules/products/components/product-filters";
 import { getProducts } from "@/modules/products/api/get-products";
-import { Product, MainCategory } from "@/types";
+import { Product, MainCategory, AgeGroup } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ShopPage.css";
 import "./ShopAnimatedIcons.css";
@@ -47,6 +47,10 @@ const ShopContent = () => {
         : MainCategory.PAINTINGS
     );
 
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<
+    AgeGroup | undefined
+  >();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -86,7 +90,8 @@ const ShopContent = () => {
         selectedMainCategory.toString(),
         selectedCategory !== "all" ? selectedCategory : undefined,
         sortOption !== "" ? "price" : "createdAt",
-        sortOption !== "" ? sortOption : undefined
+        sortOption !== "" ? sortOption : undefined,
+        selectedAgeGroup
       );
 
       console.log(
@@ -100,7 +105,14 @@ const ShopContent = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, brand, selectedMainCategory, selectedCategory, sortOption]);
+  }, [
+    currentPage,
+    brand,
+    selectedMainCategory,
+    selectedCategory,
+    sortOption,
+    selectedAgeGroup,
+  ]);
 
   useEffect(() => {
     let mounted = true;
@@ -195,6 +207,13 @@ const ShopContent = () => {
     router.push(`/shop?${params.toString()}`);
   };
 
+  const handleAgeGroupChange = (ageGroup: AgeGroup | undefined) => {
+    setSelectedAgeGroup(ageGroup);
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  };
+
   const getTheme = () => {
     return selectedMainCategory === MainCategory.HANDMADE
       ? "handmade-theme"
@@ -263,6 +282,8 @@ const ShopContent = () => {
           selectedCategory={selectedCategory}
           selectedMainCategory={selectedMainCategory}
           onMainCategoryChange={handleMainCategoryChange}
+          selectedAgeGroup={selectedAgeGroup}
+          onAgeGroupChange={handleAgeGroupChange}
         />
         <ProductGrid
           products={products}
@@ -271,6 +292,7 @@ const ShopContent = () => {
           totalPages={totalPages}
           onPageChange={handlePageChange}
           isShopPage={true}
+          selectedAgeGroup={selectedAgeGroup}
         />
       </div>
     </div>

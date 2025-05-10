@@ -23,8 +23,8 @@ import {
 
 export default function HomePageShop() {
   const { t } = useLanguage();
-  const [paintingsProducts, setPaintingsProducts] = useState<Product[]>([]);
-  const [handmadeProducts, setHandmadeProducts] = useState<Product[]>([]);
+  const [clothingProducts, setClothingProducts] = useState<Product[]>([]);
+  const [accessoriesProducts, setAccessoriesProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -36,23 +36,29 @@ export default function HomePageShop() {
 
         const processedItems = items.map((item) => {
           if (!item.categoryStructure) {
-            const handmadeCategories = [
-              "კერამიკა",
-              "ხის ნაკეთობები",
-              "სამკაულები",
-              "ტექსტილი",
-              "მინანქარი",
-              "სკულპტურები",
+            const clothingCategories = [
+              "მაისურები",
+              "კაბები",
+              "ჰუდები",
               "სხვა",
             ];
-            const isHandmade = handmadeCategories.includes(item.category);
+            const accessoriesCategories = ["კეპები", "პანამები", "სხვა"];
+            const footwearCategories = ["სპორტული", "ყოველდღიური", "სხვა"];
+
+            let mainCategory = MainCategory.SWIMWEAR; // Default
+
+            if (clothingCategories.includes(item.category)) {
+              mainCategory = MainCategory.CLOTHING;
+            } else if (accessoriesCategories.includes(item.category)) {
+              mainCategory = MainCategory.ACCESSORIES;
+            } else if (footwearCategories.includes(item.category)) {
+              mainCategory = MainCategory.FOOTWEAR;
+            }
 
             return {
               ...item,
               categoryStructure: {
-                main: isHandmade
-                  ? MainCategory.HANDMADE
-                  : MainCategory.PAINTINGS,
+                main: mainCategory,
                 sub: item.category,
               },
             };
@@ -60,27 +66,28 @@ export default function HomePageShop() {
           return item;
         });
 
-        // Split products into two categories
-        const paintings = processedItems
+        // Split products by main category
+        const clothing = processedItems
           .filter((product) => {
             const productMain = product.categoryStructure?.main
               ?.toString()
               ?.toLowerCase();
-            return productMain === MainCategory.PAINTINGS.toLowerCase();
+            return productMain === MainCategory.CLOTHING.toLowerCase();
           })
           .slice(0, 6);
 
-        const handmade = processedItems
+        const accessories = processedItems
           .filter((product) => {
             const productMain = product.categoryStructure?.main
               ?.toString()
               ?.toLowerCase();
-            return productMain === MainCategory.HANDMADE.toLowerCase();
+            return productMain === MainCategory.ACCESSORIES.toLowerCase();
           })
           .slice(0, 6);
 
-        setPaintingsProducts(paintings);
-        setHandmadeProducts(handmade);
+        // Update state with the filtered products
+        setClothingProducts(clothing);
+        setAccessoriesProducts(accessories);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -162,7 +169,7 @@ export default function HomePageShop() {
           </div>
         ) : (
           <div className="product-sections">
-            {/* Paintings Section */}
+            {/* Clothing Section */}
             <div className="product-section">
               <h2 className="section-title">
                 <Heart
@@ -170,21 +177,21 @@ export default function HomePageShop() {
                   fill="#e91e63"
                   color="#e91e63"
                 />
-                ყველაზე ახალი {t("categories.paintings")}
+                ყველაზე ახალი {t("categories.clothing")}
               </h2>
               <ProductGrid
-                products={paintingsProducts}
+                products={clothingProducts}
                 theme="default"
                 isShopPage={false}
               />
               <div className="see-more">
-                <Link href={`/shop?page=1&mainCategory=PAINTINGS`}>
+                <Link href={`/shop?page=1&mainCategory=CLOTHING`}>
                   <button className="see-more-btn">{t("shop.seeAll")}</button>
                 </Link>
               </div>
             </div>
 
-            {/* Handmade Section */}
+            {/* Accessories Section */}
             <div className="product-section">
               <h2 className="section-title">
                 <Heart
@@ -192,15 +199,15 @@ export default function HomePageShop() {
                   fill="#e91e63"
                   color="#e91e63"
                 />
-                ყველაზე ახალი {t("categories.handmade")}
+                ყველაზე ახალი {t("categories.accessories")}
               </h2>
               <ProductGrid
-                products={handmadeProducts}
+                products={accessoriesProducts}
                 theme="handmade-theme"
                 isShopPage={false}
               />
               <div className="see-more">
-                <Link href={`/shop?page=1&mainCategory=HANDMADE`}>
+                <Link href={`/shop?page=1&mainCategory=ACCESSORIES`}>
                   <button className="see-more-btn">{t("shop.seeAll")}</button>
                 </Link>
               </div>

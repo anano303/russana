@@ -1,6 +1,6 @@
 // import { useLanguage } from "@/hooks/LanguageContext";
-import Image from "next/image";
-import russanaLogo from "../../assets/Images/Layer_1.png";
+// import Image from "next/image";
+// import russanaLogo from "../../assets/Images/Layer_1.png";
 import "./homePagesHead.css";
 import FlyingHeartWithWings from "../flyingHeartWithWings/FlyingHeartWithWings";
 
@@ -21,13 +21,11 @@ const HomePagesHead = () => {
           priority
         /> */}
         {/* <FlyingHeartWithWings size={200}/>    */}
-    <div className="FlyingHeartWithWings-container">
-      <FlyingHeartWithWings size={200} />
-    </div>
+        <div className="FlyingHeartWithWings-container">
+          <FlyingHeartWithWings size={200} />
+        </div>
 
-
-
-             <p className="sub-slogan">პიიიპ პიიიიპ!</p>
+        <p className="sub-slogan">პიიიპ პიიიიპ!</p>
       </div>
     </div>
   );

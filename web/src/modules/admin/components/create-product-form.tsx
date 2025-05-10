@@ -14,6 +14,7 @@ interface ProductFormData extends BaseProductFormData {
   categoryStructure?: {
     main: MainCategory;
     sub: string;
+    ageGroup?: AgeGroup;
   };
   nameEn?: string;
   descriptionEn?: string;
@@ -27,6 +28,15 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 enum MainCategory {
   PAINTINGS = "PAINTINGS",
   HANDMADE = "HANDMADE",
+  CLOTHING = "CLOTHING",
+  ACCESSORIES = "ACCESSORIES",
+  FOOTWEAR = "FOOTWEAR",
+  SWIMWEAR = "SWIMWEAR",
+}
+
+enum AgeGroup {
+  ADULTS = "ADULTS",
+  KIDS = "KIDS",
 }
 
 // Make sure this object uses the same keys as in the MainCategory enum
@@ -49,6 +59,10 @@ const categoryStructure = {
     "სკულპტურები",
     "სხვა",
   ],
+  [MainCategory.CLOTHING]: ["მაისურები", "კაბები", "ჰუდები", "სხვა"],
+  [MainCategory.ACCESSORIES]: ["კეპები", "პანამები", "სხვა"],
+  [MainCategory.FOOTWEAR]: ["სპორტული", "ყოველდღიური", "სხვა"],
+  [MainCategory.SWIMWEAR]: ["საცურაო კოსტუმები", "სხვა"],
 };
 
 interface CreateProductFormProps {
@@ -93,6 +107,9 @@ export function CreateProductForm({
     useState<MainCategory>(
       initialData?.categoryStructure?.main || MainCategory.PAINTINGS
     );
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<
+    AgeGroup | undefined
+  >(initialData?.categoryStructure?.ageGroup || undefined);
   const [deliveryType, setDeliveryType] = useState<"SELLER" | "SoulArt">(
     "SoulArt"
   );
@@ -196,6 +213,15 @@ export function CreateProductForm({
           // Default to PAINTINGS if the value doesn't match
           setSelectedMainCategory(MainCategory.PAINTINGS);
         }
+
+        // Handle age group
+        const ageGroup = initialData.categoryStructure.ageGroup;
+        if (
+          ageGroup &&
+          Object.values(AgeGroup).includes(ageGroup as AgeGroup)
+        ) {
+          setSelectedAgeGroup(ageGroup as AgeGroup);
+        }
       } else {
         // Default for legacy products without category structure
         setSelectedMainCategory(MainCategory.PAINTINGS);
@@ -239,6 +265,7 @@ export function CreateProductForm({
     setWidth("");
     setHeight("");
     setDepth("");
+    setSelectedAgeGroup(undefined);
   };
 
   const validateField = (field: keyof ProductFormData, value: unknown) => {
@@ -425,6 +452,7 @@ export function CreateProductForm({
         JSON.stringify({
           main: selectedMainCategory,
           sub: formData.category,
+          ageGroup: selectedAgeGroup,
         })
       );
 
@@ -558,6 +586,10 @@ export function CreateProductForm({
   const mainCategoryLabels = {
     [MainCategory.PAINTINGS]: t("categories.paintings"),
     [MainCategory.HANDMADE]: t("categories.handmade"),
+    [MainCategory.CLOTHING]: t("categories.clothing"),
+    [MainCategory.ACCESSORIES]: t("categories.accessories"),
+    [MainCategory.FOOTWEAR]: t("categories.footwear"),
+    [MainCategory.SWIMWEAR]: t("categories.swimwear"),
   };
 
   return (
@@ -681,6 +713,20 @@ export function CreateProductForm({
           {errors.category && (
             <p className="create-product-error">{errors.category}</p>
           )}
+        </div>
+
+        <div>
+          <label htmlFor="ageGroup">ასაკობრივი ჯგუფი</label>
+          <select
+            name="ageGroup"
+            value={selectedAgeGroup}
+            onChange={(e) => setSelectedAgeGroup(e.target.value as AgeGroup)}
+            className="create-product-select"
+          >
+            <option value="">აირჩიეთ ასაკობრივი ჯგუფი</option>
+            <option value={AgeGroup.ADULTS}>{t("shop.adults")}</option>
+            <option value={AgeGroup.KIDS}>{t("shop.kids")}</option>
+          </select>
         </div>
 
         <div>
