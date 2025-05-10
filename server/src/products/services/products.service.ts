@@ -10,16 +10,22 @@ import {
   Product,
   ProductDocument,
   ProductStatus,
+  MainCategory,
+  AgeGroup,
 } from '../schemas/product.schema';
-import { MainCategory, PaginatedResponse } from '@/types';
+import { PaginatedResponse } from '@/types';
 import { Order } from '../../orders/schemas/order.schema';
 import { sampleProduct } from '@/utils/data/product';
 import { Role } from '@/types/role.enum';
 import {
   HANDMADE_CATEGORIES,
   PAINTING_CATEGORIES,
+  CLOTHING_CATEGORIES,
+  ACCESSORIES_CATEGORIES,
+  FOOTWEAR_CATEGORIES,
+  SWIMWEAR_CATEGORIES,
 } from '@/utils/subcategories';
-// import { MainCategory } from '@/types/main-category.enum';
+import { ProductDto, FindAllProductsDto } from '../dtos/product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -50,6 +56,7 @@ export class ProductsService {
     subCategory?: string,
     sortBy: string = 'createdAt',
     sortDirection: 'asc' | 'desc' = 'desc',
+    ageGroup?: AgeGroup,
   ): Promise<PaginatedResponse<Product>> {
     const pageSize = parseInt(limit ?? '10');
     const currentPage = parseInt(page ?? '1');
@@ -63,35 +70,58 @@ export class ProductsService {
           .join('')
       : '';
 
-    // Create a more flexible query for mainCategory
     let mainCategoryQuery = {};
     if (mainCategory) {
       mainCategoryQuery = {
         $or: [
           { 'categoryStructure.main': mainCategory },
-          // For legacy products without categoryStructure but with category field
-          ...(mainCategory === MainCategory.HANDMADE
+          ...(mainCategory === 'CLOTHING'
             ? [
                 {
                   categoryStructure: { $exists: false },
                   category: {
-                    $in: HANDMADE_CATEGORIES,
+                    $in: CLOTHING_CATEGORIES,
                   },
                 },
               ]
             : []),
-          ...(mainCategory === MainCategory.PAINTINGS
+          ...(mainCategory === 'ACCESSORIES'
             ? [
                 {
                   categoryStructure: { $exists: false },
                   category: {
-                    $in: PAINTING_CATEGORIES,
+                    $in: ACCESSORIES_CATEGORIES,
+                  },
+                },
+              ]
+            : []),
+          ...(mainCategory === 'FOOTWEAR'
+            ? [
+                {
+                  categoryStructure: { $exists: false },
+                  category: {
+                    $in: FOOTWEAR_CATEGORIES,
+                  },
+                },
+              ]
+            : []),
+          ...(mainCategory === 'SWIMWEAR'
+            ? [
+                {
+                  categoryStructure: { $exists: false },
+                  category: {
+                    $in: SWIMWEAR_CATEGORIES,
                   },
                 },
               ]
             : []),
         ],
       };
+    }
+
+    let ageGroupQuery = {};
+    if (ageGroup) {
+      ageGroupQuery = { 'categoryStructure.ageGroup': ageGroup };
     }
 
     const searchQuery = decodedKeyword
@@ -109,6 +139,7 @@ export class ProductsService {
             brand ? { brand: brand } : {},
             mainCategory ? mainCategoryQuery : {},
             subCategory ? { category: subCategory } : {},
+            ageGroup ? ageGroupQuery : {},
           ],
         }
       : {
@@ -116,6 +147,7 @@ export class ProductsService {
           ...(brand ? { brand: brand } : {}),
           ...(mainCategory ? mainCategoryQuery : {}),
           ...(subCategory ? { category: subCategory } : {}),
+          ...(ageGroup ? ageGroupQuery : {}),
         };
 
     console.log('Search query:', JSON.stringify(searchQuery, null, 2));
@@ -136,18 +168,24 @@ export class ProductsService {
       .limit(pageSize)
       .skip(pageSize * (currentPage - 1));
 
-    // Process products to ensure they all have categoryStructure
     const processedProducts = products.map((product) => {
       const doc = product.toObject();
 
       if (!doc.categoryStructure) {
-        // Check if category is a handmade category
-        const isHandmadeCategory = HANDMADE_CATEGORIES.includes(doc.category);
+        let mainCat = MainCategory.CLOTHING; // Default to CLOTHING
+
+        if (CLOTHING_CATEGORIES.includes(doc.category)) {
+          mainCat = MainCategory.CLOTHING;
+        } else if (ACCESSORIES_CATEGORIES.includes(doc.category)) {
+          mainCat = MainCategory.ACCESSORIES;
+        } else if (FOOTWEAR_CATEGORIES.includes(doc.category)) {
+          mainCat = MainCategory.FOOTWEAR;
+        } else if (SWIMWEAR_CATEGORIES.includes(doc.category)) {
+          mainCat = MainCategory.SWIMWEAR;
+        }
 
         doc.categoryStructure = {
-          main: isHandmadeCategory
-            ? MainCategory.HANDMADE
-            : MainCategory.PAINTINGS,
+          main: mainCat,
           sub: doc.category,
         };
       }
@@ -174,23 +212,21 @@ export class ProductsService {
 
     if (!product) throw new NotFoundException('No product with given ID.');
 
-    // Make sure the product has a category structure even if it's a legacy product
     if (!product.categoryStructure) {
-      // Check if category is a handmade category
-      const isHandmadeCategory = [
-        'კერამიკა',
-        'ხის ნაკეთობები',
-        'სამკაულები',
-        'ტექსტილი',
-        'მინანქარი',
-        'სკულპტურები',
-        'სხვა',
-      ].includes(product.category);
+      let mainCat = MainCategory.CLOTHING; // Default to CLOTHING
+
+      if (CLOTHING_CATEGORIES.includes(product.category)) {
+        mainCat = MainCategory.CLOTHING;
+      } else if (ACCESSORIES_CATEGORIES.includes(product.category)) {
+        mainCat = MainCategory.ACCESSORIES;
+      } else if (FOOTWEAR_CATEGORIES.includes(product.category)) {
+        mainCat = MainCategory.FOOTWEAR;
+      } else if (SWIMWEAR_CATEGORIES.includes(product.category)) {
+        mainCat = MainCategory.SWIMWEAR;
+      }
 
       product.categoryStructure = {
-        main: isHandmadeCategory
-          ? MainCategory.HANDMADE
-          : MainCategory.PAINTINGS,
+        main: mainCat,
         sub: product.category,
       };
     }
@@ -351,23 +387,27 @@ export class ProductsService {
         ? ProductStatus.APPROVED
         : ProductStatus.PENDING;
 
-    if (!productData.categoryStructure) {
-      // Check if category is a handmade category
-      const isHandmadeCategory = [
-        'კერამიკა',
-        'ხის ნაკეთობები',
-        'სამკაულები',
-        'ტექსტილი',
-        'მინანქარი',
-        'სკულპტურები',
-        'სხვა',
-      ].includes(productData.category);
+    const category = productData.category;
+    const isClothingCategory = CLOTHING_CATEGORIES.includes(category);
+    const isAccessoriesCategory = ACCESSORIES_CATEGORIES.includes(category);
+    const isFootwearCategory = FOOTWEAR_CATEGORIES.includes(category);
+    const isSwimwearCategory = SWIMWEAR_CATEGORIES.includes(category);
 
+    let mainCat = MainCategory.CLOTHING; // Default to CLOTHING
+    if (isClothingCategory) {
+      mainCat = MainCategory.CLOTHING;
+    } else if (isAccessoriesCategory) {
+      mainCat = MainCategory.ACCESSORIES;
+    } else if (isFootwearCategory) {
+      mainCat = MainCategory.FOOTWEAR;
+    } else if (isSwimwearCategory) {
+      mainCat = MainCategory.SWIMWEAR;
+    }
+
+    if (!productData.categoryStructure) {
       productData.categoryStructure = {
-        main: isHandmadeCategory
-          ? MainCategory.HANDMADE
-          : MainCategory.PAINTINGS,
-        sub: productData.category,
+        main: mainCat,
+        sub: category,
       };
     }
 
@@ -380,5 +420,18 @@ export class ProductsService {
     });
 
     return product;
+  }
+
+  async findAll(options: FindAllProductsDto): Promise<any> {
+    let query = {};
+    if (options.mainCategory) {
+      query = { ...query, 'categoryStructure.main': options.mainCategory };
+    }
+    if (options.ageGroup) {
+      query = { ...query, 'categoryStructure.ageGroup': options.ageGroup };
+    }
+
+    // Additional logic for fetching products based on the query
+    return this.productModel.find(query).exec();
   }
 }
