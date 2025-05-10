@@ -26,8 +26,6 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 
 // Ensure enum values are the same as what we expect from the database
 enum MainCategory {
-  PAINTINGS = "PAINTINGS",
-  HANDMADE = "HANDMADE",
   CLOTHING = "CLOTHING",
   ACCESSORIES = "ACCESSORIES",
   FOOTWEAR = "FOOTWEAR",
@@ -41,24 +39,6 @@ enum AgeGroup {
 
 // Make sure this object uses the same keys as in the MainCategory enum
 const categoryStructure = {
-  [MainCategory.PAINTINGS]: [
-    "პეიზაჟი",
-    "პორტრეტი",
-    "აბსტრაქცია",
-    "შავ-თეთრი",
-    "ანიმაციური",
-    "ციფრული ილუსტრაციები",
-    "სხვა",
-  ],
-  [MainCategory.HANDMADE]: [
-    "კერამიკა",
-    "ხის ნაკეთობები",
-    "სამკაულები",
-    "ტექსტილი",
-    "მინანქარი",
-    "სკულპტურები",
-    "სხვა",
-  ],
   [MainCategory.CLOTHING]: ["მაისურები", "კაბები", "ჰუდები", "სხვა"],
   [MainCategory.ACCESSORIES]: ["კეპები", "პანამები", "სხვა"],
   [MainCategory.FOOTWEAR]: ["სპორტული", "ყოველდღიური", "სხვა"],
@@ -105,7 +85,7 @@ export function CreateProductForm({
 
   const [selectedMainCategory, setSelectedMainCategory] =
     useState<MainCategory>(
-      initialData?.categoryStructure?.main || MainCategory.PAINTINGS
+      initialData?.categoryStructure?.main || MainCategory.CLOTHING
     );
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<
     AgeGroup | undefined
@@ -210,8 +190,8 @@ export function CreateProductForm({
         ) {
           setSelectedMainCategory(mainCat as MainCategory);
         } else {
-          // Default to PAINTINGS if the value doesn't match
-          setSelectedMainCategory(MainCategory.PAINTINGS);
+          // Default to CLOTHING if the value doesn't match
+          setSelectedMainCategory(MainCategory.CLOTHING);
         }
 
         // Handle age group
@@ -224,7 +204,7 @@ export function CreateProductForm({
         }
       } else {
         // Default for legacy products without category structure
-        setSelectedMainCategory(MainCategory.PAINTINGS);
+        setSelectedMainCategory(MainCategory.CLOTHING);
       }
     }
   }, [initialData]);
@@ -584,8 +564,6 @@ export function CreateProductForm({
 
   // Add main category translations
   const mainCategoryLabels = {
-    [MainCategory.PAINTINGS]: t("categories.paintings"),
-    [MainCategory.HANDMADE]: t("categories.handmade"),
     [MainCategory.CLOTHING]: t("categories.clothing"),
     [MainCategory.ACCESSORIES]: t("categories.accessories"),
     [MainCategory.FOOTWEAR]: t("categories.footwear"),

@@ -42,9 +42,9 @@ const ShopContent = () => {
   const [sortOption, setSortOption] = useState<"asc" | "desc" | "">("");
   const [selectedMainCategory, setSelectedMainCategory] =
     useState<MainCategory>(
-      mainCategoryParam === MainCategory.HANDMADE.toString()
-        ? MainCategory.HANDMADE
-        : MainCategory.PAINTINGS
+      mainCategoryParam === MainCategory.CLOTHING.toString()
+        ? MainCategory.CLOTHING
+        : MainCategory.ACCESSORIES
     );
 
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<
@@ -69,9 +69,9 @@ const ShopContent = () => {
     setCurrentPage(pageParam);
 
     const mainCat =
-      mainCategoryParam === MainCategory.HANDMADE.toString()
-        ? MainCategory.HANDMADE
-        : MainCategory.PAINTINGS;
+      mainCategoryParam === MainCategory.CLOTHING.toString()
+        ? MainCategory.CLOTHING
+        : MainCategory.ACCESSORIES;
     setSelectedMainCategory(mainCat);
   }, [pageParam, mainCategoryParam]);
 

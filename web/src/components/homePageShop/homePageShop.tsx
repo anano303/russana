@@ -9,17 +9,7 @@ import { ProductGrid } from "@/modules/products/components/product-grid";
 import { getProducts } from "@/modules/products/api/get-products";
 import { Product, MainCategory } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
-import {
-  Paintbrush,
-  Palette,
-  Printer,
-  Square,
-  Scissors,
-  CakeSlice,
-  Hammer,
-  Gem,
-  Heart,
-} from "lucide-react";
+import { Paintbrush, Palette, Printer, Square, Heart } from "lucide-react";
 
 export default function HomePageShop() {
   const { t } = useLanguage();
@@ -112,21 +102,6 @@ export default function HomePageShop() {
           </div>
           <div className="icon frame-icon">
             <Printer />
-          </div>
-        </div>
-
-        <div className="shop-animated-icons handmade-theme">
-          <div className="icon pottery-icon">
-            <CakeSlice />
-          </div>
-          <div className="icon wood-icon">
-            <Hammer />
-          </div>
-          <div className="icon jewelry-icon">
-            <Gem />
-          </div>
-          <div className="icon textile-icon">
-            <Scissors />
           </div>
         </div>
       </div>

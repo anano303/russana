@@ -59,6 +59,9 @@ export function LoginForm() {
       },
     });
   };
+  const handleGoogleAuth = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+  };
 
   return (
     <div className="login-container">
@@ -124,7 +127,10 @@ export function LoginForm() {
         </div>
 
         <div className="social-login">
-          <button className="social-button google-button">
+          <button
+            className="social-button google-button"
+            onClick={handleGoogleAuth}
+          >
             <FaGoogle />
             <span>Google</span>
           </button>

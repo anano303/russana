@@ -41,29 +41,13 @@ export function ProductFilters({
   const [selectedMainCategory, setSelectedMainCategory] =
     useState(initialMainCategory);
 
-  const categoriesByType = {
+  const categoriesByType: Record<MainCategory, string[]> = {
     [MainCategory.CLOTHING]: ["მაისურები", "კაბები", "ჰუდები", "სხვა"],
     [MainCategory.ACCESSORIES]: ["კეპები", "პანამები", "სხვა"],
     [MainCategory.FOOTWEAR]: ["სპორტული", "ყოველდღიური", "სხვა"],
     [MainCategory.SWIMWEAR]: ["საცურაო კოსტუმები", "სხვა"],
-    [MainCategory.PAINTINGS]: [
-      "პეიზაჟი",
-      "პორტრეტი",
-      "აბსტრაქცია",
-      "შავ-თეთრი",
-      "ანიმაციური",
-      "ციფრული ილუსტრაციები",
-      "სხვა",
-    ],
-    [MainCategory.HANDMADE]: [
-      "კერამიკა",
-      "ხის ნაკეთობები",
-      "სამკაულები",
-      "ტექსტილი",
-      "მინანქარი",
-      "სკულპტურები",
-      "სხვა",
-    ],
+    [MainCategory.PAINTINGS]: ["ნახატები", "სხვა"],
+    [MainCategory.HANDMADE]: ["ხელნაკეთი", "სხვა"],
   };
 
   // Helper function to translate category names
@@ -73,7 +57,7 @@ export function ProductFilters({
   };
 
   // Main category translation mapping
-  const mainCategoryLabels = {
+  const mainCategoryLabels: Record<MainCategory, string> = {
     [MainCategory.CLOTHING]: t("categories.clothing"),
     [MainCategory.ACCESSORIES]: t("categories.accessories"),
     [MainCategory.FOOTWEAR]: t("categories.footwear"),
@@ -82,7 +66,7 @@ export function ProductFilters({
     [MainCategory.HANDMADE]: t("categories.handmade"),
   };
 
-  const categories = ["all", ...categoriesByType[selectedMainCategory]];
+  const categories = ["all", ...(categoriesByType[selectedMainCategory] || [])];
 
   useEffect(() => {
     const uniqueBrands = Array.from(
@@ -172,16 +156,12 @@ export function ProductFilters({
 
   // Get the appropriate search label based on the selected main category
   const getSearchLabel = () => {
-    return selectedMainCategory === MainCategory.PAINTINGS
-      ? t("shop.painters")
-      : t("shop.authorCompany");
+    return t("shop.authorCompany");
   };
 
   // Get placeholder text for search input
   const getSearchPlaceholder = () => {
-    return selectedMainCategory === MainCategory.PAINTINGS
-      ? t("shop.searchPainter")
-      : t("shop.searchAuthorCompany");
+    return t("shop.searchAuthorCompany");
   };
 
   return (
@@ -221,22 +201,6 @@ export function ProductFilters({
           >
             {mainCategoryLabels[MainCategory.SWIMWEAR]}
           </div>
-          <button
-            className={`main-category-btn paintings ${
-              selectedMainCategory === MainCategory.PAINTINGS ? "active" : ""
-            }`}
-            onClick={() => handleMainCategoryChange(MainCategory.PAINTINGS)}
-          >
-            {mainCategoryLabels[MainCategory.PAINTINGS]}
-          </button>
-          <button
-            className={`main-category-btn handmade ${
-              selectedMainCategory === MainCategory.HANDMADE ? "active" : ""
-            }`}
-            onClick={() => handleMainCategoryChange(MainCategory.HANDMADE)}
-          >
-            {mainCategoryLabels[MainCategory.HANDMADE]}
-          </button>
         </div>
       </div>
 

@@ -43,29 +43,32 @@ export function RegisterForm() {
 
     registerUser(data, {
       onSuccess: () => {
-      setIsSuccess(true);
-      toast({
-        title: t("auth.registrationSuccessful"),
-        description: t("auth.accountCreatedSuccessfully"),
-        variant: "default",
-      });
+        setIsSuccess(true);
+        toast({
+          title: t("auth.registrationSuccessful"),
+          description: t("auth.accountCreatedSuccessfully"),
+          variant: "default",
+        });
 
-      // Redirect to login page after 2 seconds
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
       },
       onError: (error: { message?: string }) => {
-      setRegistrationError(
-        error.message || "Registration failed. Please try again."
-      );
-      toast({
-        title: t("auth.registrationFailed"),
-        description: error.message,
-        variant: "destructive",
-      });
+        setRegistrationError(
+          error.message || "Registration failed. Please try again."
+        );
+        toast({
+          title: t("auth.registrationFailed"),
+          description: error.message,
+          variant: "destructive",
+        });
       },
     } as RegisterUserOptions);
+  };
+  const handleGoogleAuth = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   if (isSuccess) {
@@ -175,7 +178,11 @@ export function RegisterForm() {
         </div>
 
         <div className="social-buttons">
-          <button className="social-button">
+          <button
+            className="social-button"
+            onClick={handleGoogleAuth}
+            disabled={isPending}
+          >
             <span className="google-icon">
               <FaGoogle />
             </span>

@@ -18,7 +18,7 @@ import {
 } from '@nestjs/common';
 import { RolesGuard } from '@/guards/roles.guard';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
-import { ProductDto } from '../dtos/product.dto';
+import { ProductDto, FindAllProductsDto } from '../dtos/product.dto';
 import { ReviewDto } from '../dtos/review.dto';
 import { ProductsService } from '../services/products.service';
 import { UserDocument } from '@/users/schemas/user.schema';
@@ -31,18 +31,16 @@ import {
 import { AppService } from '@/app/services/app.service';
 
 import { Response } from 'express';
-import { ChatRequest } from '@/types/agents';
 import { Roles } from '@/decorators/roles.decorator';
 import { Role } from '@/types/role.enum';
 import { ProductStatus } from '../schemas/product.schema';
-import { MainCategory } from '@/types';
+import { MainCategory, AgeGroup } from '@/types';
 
 @Controller('products')
 export class ProductsController {
   constructor(
     private productsService: ProductsService,
     private appService: AppService,
-   
   ) {}
 
   @Get()
@@ -55,8 +53,14 @@ export class ProductsController {
     @Query('subCategory') subCategory: string,
     @Query('sortBy') sortBy: string,
     @Query('sortDirection') sortDirection: 'asc' | 'desc',
+    @Query('ageGroup') ageGroup: AgeGroup,
   ) {
-    console.log('Getting products with mainCategory:', mainCategory);
+    console.log(
+      'Getting products with mainCategory:',
+      mainCategory,
+      'ageGroup:',
+      ageGroup,
+    );
     return this.productsService.findMany(
       keyword,
       page,
@@ -68,6 +72,7 @@ export class ProductsController {
       subCategory,
       sortBy,
       sortDirection,
+      ageGroup,
     );
   }
 
@@ -104,6 +109,11 @@ export class ProductsController {
   @Get(':id')
   getProduct(@Param('id') id: string) {
     return this.productsService.findById(id);
+  }
+
+  @Get('find-all')
+  async findAll(@Query() query: FindAllProductsDto) {
+    return this.productsService.findAll(query);
   }
 
   @UseGuards(RolesGuard)
@@ -306,7 +316,6 @@ export class ProductsController {
   ) {
     return this.productsService.createReview(id, user, rating, comment);
   }
-
 
   @Put(':id/status')
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -27,3 +27,23 @@ export const PAINTING_CATEGORIES = [
   'მინიატურა',
   'სხვა',
 ];
+
+// Legacy categories mapping to new categories (for data migration)
+export const CATEGORY_MAPPING = {
+  // Map HANDMADE categories to ACCESSORIES
+  კერამიკა: 'კეპები',
+  'ხის ნაკეთობები': 'პანამები',
+  სამკაულები: 'სხვა',
+  ტექსტილი: 'სხვა',
+  მინანქარი: 'სხვა',
+  სკულპტურები: 'სხვა',
+
+  // Map PAINTINGS categories to CLOTHING
+  აბსტრაქცია: 'მაისურები',
+  პეიზაჟი: 'მაისურები',
+  პორტრეტი: 'მაისურები',
+  'შავ-თეთრი': 'მაისურები',
+  ანიმაციური: 'მაისურები',
+  'ციფრული ილუსტრაციები': 'მაისურები',
+  მინიატურა: 'მაისურები',
+};
