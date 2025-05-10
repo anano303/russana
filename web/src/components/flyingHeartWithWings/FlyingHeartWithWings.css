@@ -1,0 +1,112 @@
+.heart-container {
+  position: relative;
+  display: inline-block;
+    --flap-speed: 4s; /* საწყისი სიჩქარე ნელია */
+    --heart-beat-speed: 4s;     /* გულზე ნელი ბაბუნი */
+}
+
+/* ჰოვერზე ფრთები აჩქარდეს */
+.heart-container:hover {
+  --flap-speed: 0.8s; /* აჩქარება */
+   --heart-beat-speed: 0.8s;   /* გულზე აჩქარებული ბაბუნი */
+}
+
+/* გული — ლამაზი, simmetric, clip-path */
+.heart2 {
+  width: 200px;
+  height: 200px;
+  background-color: #CF0A0A;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  transform: rotate(-45deg);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: box-shadow 0.1s, transform 0.1s;
+  z-index: 1;
+
+  animation: heartbeat var(--heart-beat-speed) ease-in-out infinite;
+  transform-origin: center;
+}
+.heart2::before,
+  .heart2::after {
+    content: "";
+    width: 200px;
+    height: 200px;
+    background-color: #CF0A0A;
+    border-radius: 50%;
+    position: absolute;
+  }
+  
+  .heart2::before {
+    top: -100px;
+    left: 0;
+  }
+  
+  .heart2::after {
+    top: 0;
+    left: 100px;
+  }
+
+  /* გული "სუნთქავს" */
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1) rotate(-45deg);
+  }
+  50% {
+    transform: scale(0.9) rotate(-45deg);
+  }
+}
+
+
+/* ფრთების wrapper */
+.wing {
+  position: absolute;
+  top: -80%;
+  aspect-ratio: 1/1;
+}
+
+/* მარცხენა ფრთა */
+.left-wing {
+  left: -92%;
+}
+
+/* მარჯვენა ფრთა */
+.right-wing {
+  right: -102%;
+  
+}
+
+/* ანიმაცია ფრთების – ფაფახუნი */
+.flapping {
+ animation: flap var(--flap-speed) ease-in-out infinite;
+}
+
+.left-wing.flapping {
+animation-name: flap2;
+  transform-origin: bottom center;
+}
+.left-wing.flapping {
+  transform-origin: bottom center;
+}
+
+.right-wing.flapping {
+ transform-origin: bottom center;
+}
+
+@keyframes flap {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-20deg); /* თუ გინდა მარჯვნივ იხრებოდეს, გამოიყენე +10deg */
+  }
+}
+@keyframes flap2 {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(20deg); /* თუ გინდა მარჯვნივ იხრებოდეს, გამოიყენე +10deg */
+  }
+}
