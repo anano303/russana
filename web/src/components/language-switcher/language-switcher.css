@@ -15,6 +15,11 @@
   text-transform: uppercase;
   align-items: center;
   display: flex;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 
 .language-button:hover {
