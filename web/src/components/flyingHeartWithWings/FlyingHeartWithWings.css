@@ -1,7 +1,7 @@
 .heart-container {
   position: relative;
   display: inline-block;
-  right: 15vh;
+  right: 11vw;
     --flap-speed: 4s; /* საწყისი სიჩქარე ნელია */
     --heart-beat-speed: 4s;     /* გულზე ნელი ბაბუნი */
 }
