@@ -106,7 +106,7 @@ const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
 
   return (
     <div className="beep-container">
-      <div className="best-score">🏆 საუკეთესო შედეგი: {bestScore}</div>
+      <div className="best-score">🏆 {bestScore}</div>
 
       {shape === 'heart' && (
         <div className={`heart ${pressed ? 'pressed' : ''}`} onClick={handleClick}></div>
@@ -136,13 +136,13 @@ const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
       })}
 
       <div className="scoreboard">
-        <div>⏰ {timeLeft} წამი</div>
-        <div>🔥 {score} დაჭერა</div>
+        <div>⏰ {timeLeft}</div>
+        <div>🔥 {score}</div>
       </div>
 
       {showResult && (
         <div className="result">
-          <p>🎉 შენი შედეგია: {score}</p>
+          <p>🎉 {score}</p>
           <button onClick={resetGame}>სცადე კიდევ</button>
         </div>
       )}

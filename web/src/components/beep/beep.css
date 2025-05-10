@@ -1,13 +1,13 @@
 .beep-container {
-    margin: 300px;
+    margin: 100px;
     position: relative;
     width: 120px;
     height: 120px;
   }
   
   .heart {
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
     background-color: red;
     position: absolute;
     top: 10px;
@@ -21,21 +21,21 @@
   .heart::before,
   .heart::after {
     content: "";
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
     background-color: red;
     border-radius: 50%;
     position: absolute;
   }
   
   .heart::before {
-    top: -50px;
+    top: -33px;
     left: 0;
   }
   
   .heart::after {
     top: 0;
-    left: 50px;
+    left: 33px;
   }
   
   .heart.pressed {
@@ -62,11 +62,11 @@
   .best-score {
     position: absolute;
     width: 250px;
-    top: -100px;
+    top: -50px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 18px;
-    background: rgba(255,255,255,0.9);
+    /* background: rgba(255,255,255,0.9); */
     padding: 4px 10px;
     border-radius: 8px;
     color: #333;
@@ -76,9 +76,9 @@
   .scoreboard {
     position: absolute;
     top: 50%;
-    right: -170px;
+    right: -80px;
     transform: translateY(-50%);
-    background: rgba(255,255,255,0.9);
+    /* background: rgba(255,255,255,0.9); */
     padding: 6px 12px;
     border-radius: 8px;
     color: #333;
@@ -91,11 +91,11 @@
     position: absolute;
     display: flex;
     top: 100%;
-    left: 50%;
+    left: 90%;
     width: 280px;
     gap: 10px;
     transform: translate(-50%, 20px);
-    background: rgba(255,255,255,0.95);
+    /* background: rgba(255,255,255,0.95); */
     padding: 10px 20px;
     border-radius: 10px;
     text-align: center;
@@ -104,14 +104,14 @@
   }
   
   .result button {
-    margin-top: 8px;
-    padding: 6px 14px;
+    margin-top: 20px;
+    padding: -8px 4px;
     background: green;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .result button:hover {
@@ -137,7 +137,7 @@
     );
     cursor: pointer;
     transition: transform 0.1s ease;
-    margin: 20px auto;
+    /* margin: 20px auto; */
   }
   
   .star.pressed {

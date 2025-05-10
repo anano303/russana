@@ -1,0 +1,43 @@
+.landing-container {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  background: linear-gradient(135deg, #FFE5E8 0%, #FFF5F6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.landing-content {
+  text-align: center;
+  z-index: 2;
+}
+.landing-contents{
+    display: flex;
+    gap: 500px;
+
+}
+.landing-contents-logo{
+    margin: -340px;
+    margin-top: -500px;
+}
+
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: black;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.scroll-indicator p {
+  font-size: 1rem;
+  margin: 0;
+}
