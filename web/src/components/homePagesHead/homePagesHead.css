@@ -3,11 +3,16 @@
   flex-direction: column;
   align-items: center;
   padding: 40px 0;
-  background-color: #fff;
+
   position: relative;
 }
 .home-pages-head h1 {
   text-align: center;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 10%;
 }
 
 .FlyingHeartWithWings-container {
@@ -23,6 +28,11 @@
 
 .logo-container p {
   white-space: nowrap;
+  font-family: ALK Life;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 10%;
 }
 .large-logo {
   max-width: 100%;

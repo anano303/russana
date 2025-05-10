@@ -1,4 +1,14 @@
 @import "@fontsource/firago";
+
+@font-face {
+  font-family: ALK Life;
+  src: url("../app/fonts/alk_life.otf") format("truetype");
+
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 10%;
+}
 body {
   margin: 0;
   padding: 0;
@@ -11,6 +21,7 @@ body {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  background-color: rgba(255, 245, 246, 1);
 }
 main {
   min-height: 100vh;
