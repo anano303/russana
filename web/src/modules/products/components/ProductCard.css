@@ -125,7 +125,7 @@
 .product-name {
   font-size: 18px;
   font-weight: bold;
-  color: #d81b60;
+  color: #000000;
   margin-bottom: 0px;
   margin-top: 0px;
   height: auto;
@@ -147,7 +147,7 @@
 .product-price {
   font-weight: bold;
   font-size: 18px;
-  color: #c2185b;
+  color: #CF0A0A;
   margin-bottom: 2px;
   text-align: center;
 }
@@ -168,10 +168,11 @@
 
 /* Add to cart button */
 .addButtonCart {
-  background: linear-gradient(135deg, #e91e63, #ad1457);
+  /* background: linear-gradient(135deg, #e91e63, #ad1457); */
+  background-color: #CF0A0A;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 6px 2px;
   font-size: 12px;
   font-weight: 600;
@@ -187,8 +188,8 @@
 }
 
 .addButtonCart:hover:not(:disabled) {
-  background: linear-gradient(135deg, #d81b60, #880e4f);
-  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.4);
+  /* background: linear-gradient(135deg, #d81b60, #880e4f); */
+  /* box-shadow: 0 4px 8px rgba(233, 30, 99, 0.4); */
   transform: translateY(-2px);
 }
 
