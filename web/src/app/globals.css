@@ -17,7 +17,7 @@ body {
   color: #333; */
   font-family: "firaGo", sans-serif;
   font-style: normal;
-  cursor: url("/brush.png"), auto;
+  /* cursor: url("/brush.png"), auto; */
   overflow-x: hidden;
   display: flex;
   flex-direction: column;

@@ -1,6 +1,7 @@
 .heart-container {
   position: relative;
   display: inline-block;
+  right: 15vh;
     --flap-speed: 4s; /* საწყისი სიჩქარე ნელია */
     --heart-beat-speed: 4s;     /* გულზე ნელი ბაბუნი */
 }
@@ -13,22 +14,23 @@
 
 /* გული — ლამაზი, simmetric, clip-path */
 .heart2 {
-  width: 200px;
-  height: 200px;
-  background-color: #CF0A0A;
+  width: 280%;
+  height: 200%;
+  /* background-color: #CF0A0A; */
   position: absolute;
+  background-image: url(./half\ logo.png);
   top: 10px;
   left: 10px;
-  transform: rotate(-45deg);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  /* transform: rotate(-45deg);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); */
   cursor: pointer;
-  transition: box-shadow 0.1s, transform 0.1s;
+  /* transition: box-shadow 0.1s, transform 0.1s; */
   z-index: 1;
 
   animation: heartbeat var(--heart-beat-speed) ease-in-out infinite;
-  transform-origin: center;
+  /* transform-origin: center; */
 }
-.heart2::before,
+/* .heart2::before,
   .heart2::after {
     content: "";
     width: 200px;
@@ -46,15 +48,15 @@
   .heart2::after {
     top: 0;
     left: 100px;
-  }
+  } */
 
   /* გული "სუნთქავს" */
 @keyframes heartbeat {
   0%, 100% {
-    transform: scale(1) rotate(-45deg);
+    transform: scale(1);
   }
   50% {
-    transform: scale(0.9) rotate(-45deg);
+    transform: scale(0.9);
   }
 }
 
@@ -62,18 +64,18 @@
 /* ფრთების wrapper */
 .wing {
   position: absolute;
-  top: -80%;
+  top: -20%;
   aspect-ratio: 1/1;
 }
 
 /* მარცხენა ფრთა */
 .left-wing {
-  left: -92%;
+  left: -2%;
 }
 
 /* მარჯვენა ფრთა */
 .right-wing {
-  right: -102%;
+  right: -190%;
   
 }
 
