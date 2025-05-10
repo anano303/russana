@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Search } from "lucide-react";
+
 import "./product-filters.css";
 import { Product, MainCategory, AgeGroup } from "@/types";
-import Link from "next/link";
+
 import { useLanguage } from "@/hooks/LanguageContext";
 
 interface FilterProps {
@@ -20,7 +20,6 @@ interface FilterProps {
 }
 
 export function ProductFilters({
-  products,
   onCategoryChange,
   onArtistChange,
   onSortChange,
@@ -33,10 +32,7 @@ export function ProductFilters({
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedArtist, setSelectedArtist] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [artists, setArtists] = useState<string[]>(["all"]);
-  const [filteredArtists, setFilteredArtists] = useState<string[]>(["all"]);
+
   const [sortOption, setSortOption] = useState<"asc" | "desc" | "">("");
   const [selectedMainCategory, setSelectedMainCategory] =
     useState(initialMainCategory);
@@ -67,32 +63,6 @@ export function ProductFilters({
   };
 
   const categories = ["all", ...(categoriesByType[selectedMainCategory] || [])];
-
-  useEffect(() => {
-    const uniqueBrands = Array.from(
-      new Set(products.map((product) => product.brand))
-    )
-      .filter(Boolean)
-      .sort();
-
-    setArtists(["all", ...uniqueBrands]);
-  }, [products]);
-
-  const filterArtists = (search: string) => {
-    setSearchTerm(search);
-    setIsSearching(search.length > 0);
-
-    if (search) {
-      const filtered = artists.filter(
-        (artist) =>
-          artist !== "all" &&
-          artist.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredArtists(filtered);
-    } else {
-      setFilteredArtists(["all"]);
-    }
-  };
 
   const handleArtistChange = useCallback(
     (artist: string) => {
@@ -131,12 +101,6 @@ export function ProductFilters({
     }
   };
 
-  const handleArtistClick = (brand: string) => {
-    setSelectedArtist(brand);
-    setSearchTerm("");
-    setIsSearching(false);
-  };
-
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const option = event.target.value as "asc" | "desc" | "";
     setSortOption(option);
@@ -153,16 +117,6 @@ export function ProductFilters({
 
   // Determine the theme class based on the selected main category
   const themeClass = `${selectedMainCategory.toString().toLowerCase()}-theme`;
-
-  // Get the appropriate search label based on the selected main category
-  const getSearchLabel = () => {
-    return t("shop.authorCompany");
-  };
-
-  // Get placeholder text for search input
-  const getSearchPlaceholder = () => {
-    return t("shop.searchAuthorCompany");
-  };
 
   return (
     <div className={`filters-container ${themeClass}`}>
@@ -226,59 +180,6 @@ export function ProductFilters({
               onClick={() => handleCategoryChange("all")}
             >
               × {translateCategory(selectedCategory)}
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className="filter-section">
-        {/* Dynamic title based on selected main category */}
-        <h3 className="filter-title">{getSearchLabel()}</h3>
-        <div className="search-container">
-          <Search className="search-icon" />
-          <input
-            type="text"
-            placeholder={getSearchPlaceholder()}
-            value={searchTerm}
-            onChange={(e) => filterArtists(e.target.value)}
-            onFocus={() => setIsSearching(true)}
-            className="search-input"
-          />
-        </div>
-        {(isSearching || selectedArtist !== "all") && (
-          <div className="filter-options scrollable">
-            {(searchTerm ? filteredArtists : artists).map(
-              (brand) =>
-                brand !== "all" && (
-                  <Link
-                    key={brand}
-                    href={`/shop?brand=${encodeURIComponent(brand)}`}
-                    className={`filter-btn ${
-                      selectedArtist === brand ? "active" : ""
-                    }`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      handleArtistClick(brand);
-                    }}
-                  >
-                    {brand}
-                  </Link>
-                )
-            )}
-          </div>
-        )}
-        {selectedArtist !== "all" && (
-          <div className="selected-filter">
-            <button
-              className="clear-filter"
-              onClick={() => {
-                handleArtistChange("all");
-                setSearchTerm("");
-                setIsSearching(false);
-              }}
-            >
-              × {selectedArtist}
             </button>
           </div>
         )}

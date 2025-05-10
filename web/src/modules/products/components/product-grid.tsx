@@ -45,14 +45,14 @@ const paginationStyles = `
 `;
 
 interface ProductGridProps {
-  products?: Product[];
+  products: Product[];
   searchKeyword?: string;
   currentPage?: number;
-  theme?: "default" | "handmade-theme";
   totalPages?: number;
   onPageChange?: (page: number) => void;
-  isShopPage?: boolean; // New prop to distinguish between homepage and shop page
-  selectedAgeGroup?: string; // New prop for age group filter
+  theme?: "default";
+  isShopPage?: boolean;
+  selectedAgeGroup?: string;
 }
 
 export function ProductGrid({
@@ -62,7 +62,7 @@ export function ProductGrid({
   theme = "default",
   totalPages = 1,
   onPageChange,
-  isShopPage = false, // Default is false (homepage)
+  isShopPage = false,
   selectedAgeGroup,
 }: ProductGridProps) {
   const [products, setProducts] = useState(initialProducts);
@@ -80,7 +80,6 @@ export function ProductGrid({
             searchKeyword
           );
 
-          // Convert old products to use the new category structure
           const processedItems = items.map((item) => {
             if (!item.categoryStructure) {
               const mainCategory =
@@ -115,7 +114,6 @@ export function ProductGrid({
 
       fetchSearchResults();
     } else {
-      // Also process initial products if they don't have category structure
       const processedProducts = initialProducts?.map((item) => {
         if (!item.categoryStructure) {
           const handmadeCategories = [
@@ -142,7 +140,6 @@ export function ProductGrid({
 
       setProducts(processedProducts);
 
-      // Update pages state if totalPages is provided from props
       if (totalPages > 1) {
         setPages(totalPages);
       }
@@ -156,7 +153,6 @@ export function ProductGrid({
   ]);
 
   const renderPagination = () => {
-    // Only show pagination if we have more than 1 page and we're on the shop page
     if (totalPages <= 1 || !isShopPage || !onPageChange) return null;
 
     return (

@@ -9,17 +9,7 @@ import { Product, MainCategory, AgeGroup } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ShopPage.css";
 import "./ShopAnimatedIcons.css";
-import {
-  Paintbrush,
-  Palette,
-  Printer,
-  Square,
-  Scissors,
-  CakeSlice,
-  Hammer,
-  Gem,
-  Heart,
-} from "lucide-react";
+import { Heart, Shirt, ShoppingBag, Footprints } from "lucide-react";
 
 const ShopContent = () => {
   const router = useRouter();
@@ -219,52 +209,43 @@ const ShopContent = () => {
   };
 
   const getTheme = () => {
-    return selectedMainCategory === MainCategory.HANDMADE
-      ? "handmade-theme"
-      : "default";
+    // Always return "default" since we've removed the other theme option
+    return "default";
   };
 
   const renderAnimatedIcons = () => {
-    if (selectedMainCategory === MainCategory.HANDMADE) {
-      return (
-        <div className="shop-animated-icons handmade-theme">
-          <div className="icon pottery-icon">
-            <CakeSlice />
-          </div>
-          <div className="icon wood-icon">
-            <Hammer />
-          </div>
-          <div className="icon jewelry-icon">
-            <Gem />
-          </div>
-          <div className="icon textile-icon">
-            <Scissors />
-          </div>
+    // Updated with clothing-focused icons
+    return (
+      <div className="shop-animated-icons modern">
+        <div className="icon clothing-icon">
+          <Shirt />
         </div>
-      );
-    } else {
-      return (
-        <div className="shop-animated-icons default">
-          <div className="icon brush-icon">
-            <Paintbrush />
-          </div>
-          <div className="icon palette-icon">
-            <Palette />
-          </div>
-          <div className="icon canvas-icon">
-            <Square />
-          </div>
-          <div className="icon frame-icon">
-            <Printer />
-          </div>
+        <div className="icon accessories-icon">
+          <ShoppingBag />
         </div>
-      );
-    }
+        <div className="icon footwear-icon">
+          <Footprints />
+        </div>
+      </div>
+    );
   };
 
   return (
     <div className={`shop-container ${getTheme()}`}>
       {renderAnimatedIcons()}
+
+      {/* Add 3D decorative elements */}
+      <div className="shop-3d-cube">
+        <div className="face front"></div>
+        <div className="face back"></div>
+        <div className="face right"></div>
+        <div className="face left"></div>
+        <div className="face top"></div>
+        <div className="face bottom"></div>
+      </div>
+
+      <div className="shop-3d-sphere"></div>
+      <div className="shop-3d-pyramid"></div>
 
       <div className="content">
         <Heart className="title-heart-icon" fill="#e91e63" color="#e91e63" />
@@ -292,7 +273,7 @@ const ShopContent = () => {
         ) : products.length > 0 ? (
           <ProductGrid
             products={products}
-            theme={getTheme()}
+            theme="default" // Always use default theme
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}

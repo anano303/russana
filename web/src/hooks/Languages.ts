@@ -467,8 +467,8 @@ export const TRANSLATIONS: Translations = {
 
     // Shop
     shop: {
-      allArtworks: "All Artworks",
-      artistWorks: "'s Artworks",
+      allArtworks: "All Products",
+      allCategories: "All Categories",
       loading: "Loading...",
       filters: "Filters",
       sort: "Sort",

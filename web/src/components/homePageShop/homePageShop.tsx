@@ -9,7 +9,13 @@ import { ProductGrid } from "@/modules/products/components/product-grid";
 import { getProducts } from "@/modules/products/api/get-products";
 import { Product, MainCategory } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { Paintbrush, Palette, Printer, Square, Heart } from "lucide-react";
+import {
+  Shirt,
+  ShoppingBag,
+  Footprints,
+
+  Heart,
+} from "lucide-react";
 
 export default function HomePageShop() {
   const { t } = useLanguage();
@@ -90,19 +96,17 @@ export default function HomePageShop() {
   const renderAnimatedIcons = () => {
     return (
       <div className="shop-animated-icons-container">
-        <div className="shop-animated-icons default">
-          <div className="icon brush-icon">
-            <Paintbrush />
+        <div className="shop-animated-icons modern">
+          <div className="icon clothing-icon">
+            <Shirt />
           </div>
-          <div className="icon palette-icon">
-            <Palette />
+          <div className="icon accessories-icon">
+            <ShoppingBag />
           </div>
-          <div className="icon canvas-icon">
-            <Square />
+          <div className="icon footwear-icon">
+            <Footprints />
           </div>
-          <div className="icon frame-icon">
-            <Printer />
-          </div>
+          
         </div>
       </div>
     );
@@ -181,7 +185,7 @@ export default function HomePageShop() {
                 </h2>
                 <ProductGrid
                   products={accessoriesProducts}
-                  theme="handmade-theme"
+                  theme="default"
                   isShopPage={false}
                 />
                 <div className="see-more">
