@@ -60,7 +60,7 @@
 }
 
 .footer-heading {
-  color: #CF0A0A;
+  color: #cf0a0a;
   font-size: 1.2rem;
   margin-bottom: 15px;
   font-weight: 600;
@@ -75,7 +75,7 @@
   left: 0;
   width: 40px;
   height: 2px;
-  background-color: #CF0A0A;
+  background-color: #cf0a0a;
 }
 
 .footer-link-list {
@@ -98,7 +98,7 @@
 }
 
 .footer-link:hover {
-  color: #CF0A0A;
+  color: #cf0a0a;
 }
 
 .mini-heart {
@@ -129,7 +129,7 @@
 }
 
 .footer-subscribe-btn {
-  background-color: #CF0A0A;
+  background-color: #cf0a0a;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -140,7 +140,7 @@
 }
 
 .footer-subscribe-btn:hover {
-  background-color: #CF0A0A;
+  background-color: #cf0a0a;
 }
 
 .footer-social {
@@ -151,7 +151,7 @@
 }
 
 .social-title {
-  color: #CF0A0A;
+  color: #cf0a0a;
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
@@ -171,7 +171,7 @@
 }
 
 .social-icon {
-  color: #CF0A0A;
+  color: #cf0a0a;
   transition: all 0.3s ease;
   fill: currentColor; /* აიქონების შევსება */
   width: 28px; /* ზომის დაზუსტება */
@@ -187,18 +187,18 @@
 
 .social-icon-wrapper:hover .social-icon,
 .social-icon-wrapper:active .social-icon {
-  color: #CF0A0A;
+  color: #cf0a0a;
   transform: scale(1.1);
 }
 
 .social-icon-wrapper:hover .social-name,
 .social-icon-wrapper:active .social-name {
-  color: #CF0A0A;
+  color: #cf0a0a;
 }
 
 .facebook-icon {
   color: white !important;
-  background-color: #CF0A0A;
+  background-color: #cf0a0a;
   border-radius: 50% !important;
   padding: 0.01rem !important;
 }
@@ -217,8 +217,8 @@
   display: flex;
   gap: 5px;
 }
-.bestsoft{
-  color: #CF0A0A;
+.bestsoft {
+  color: #cf0a0a;
 }
 
 .copyright-heart {
@@ -239,7 +239,7 @@
 }
 
 .footer-message {
-  color: #CF0A0A;
+  color: #cf0a0a;
   font-family: "ALK LIFE", sans-serif;
   text-align: center;
   font-size: 2.2rem;
@@ -253,7 +253,7 @@
   }
 
   .footer-logo {
-    max-width: none;
+    max-width: 100%;
     margin-right: 0;
     text-align: center;
     margin-bottom: 30px;
