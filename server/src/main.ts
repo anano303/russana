@@ -18,8 +18,8 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: [
-      'https://soulart.ge',
-      'https://www.soulart.ge',
+      'https://www.russana.vercel.app',
+      'https://russana.vercel.app',
       'http://localhost:3000',
       'https://localhost:3000', // Added HTTPS local frontend
       'http://localhost:4000', // Added HTTP local backend
