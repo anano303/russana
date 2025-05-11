@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import "./productDetails.css";
 import { Product } from "@/types";
 import { AddToCartButton } from "./AddToCartButton";
-import Link from "next/link";
+
 import { ShareButtons } from "@/components/share-buttons/share-buttons";
 import { RoomViewer } from "@/components/room-viewer/room-viewer";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -68,79 +68,57 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   return (
     <div className="container">
       <div className="grid">
-        {/* Left Column - Images */}
+        {/* Left Column - Thumbnails */}
+        <div className="thumbnail-container">
+          {product.images.map((image, index) => (
+            <motion.button
+              key={image}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`thumbnail ${
+                index === currentImageIndex ? "active" : ""
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Image
+                src={image}
+                alt={`${displayName} view ${index + 1}`}
+                fill
+                className="object-cover"
+              />
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Center Column - Main Image */}
         <div className="image-section">
           <div className="image-container">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentImageIndex}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
                 className="image-wrapper"
               >
                 <Image
                   src={product.images[currentImageIndex]}
                   alt={displayName}
                   fill
-                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={90}
                   priority
+                  className="object-contain"
                 />
               </motion.div>
             </AnimatePresence>
-          </div>
-
-          <div className="thumbnail-container">
-            {product.images.map((image, index) => (
-              <motion.button
-                key={image}
-                onClick={() => setCurrentImageIndex(index)}
-                className={`thumbnail ${
-                  index === currentImageIndex ? "active" : ""
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Image
-                  src={image}
-                  alt={`${displayName} view ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </motion.button>
-            ))}
-          </div>
-
-          <div className="try-on-wall-container">
-            <motion.button
-              className="try-on-wall-btn"
-              onClick={() => setIsRoomViewerOpen(true)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {t("product.tryInRoom")}
-            </motion.button>
           </div>
         </div>
 
         {/* Right Column - Product Info */}
         <div className="product-info">
           <div className="brand-container">
-            <Link
-              href={`/shop?brand=${encodeURIComponent(product.brand)}`}
-              className="brand-details hover:opacity-75 transition-opacity"
-            >
-              <div className="brand-logo">
-                <Image
-                  src={product.brandLogo}
-                  alt={product.brand}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <span className="font-bold">{product.brand}</span>
-            </Link>
             <span className="text-muted">
               {t("product.ref")} {product._id}
             </span>
@@ -148,35 +126,62 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           <h1 className="product-title">{displayName}</h1>
 
-          <ShareButtons
-            url={typeof window !== "undefined" ? window.location.href : ""}
-            title={`Check out ${displayName} by ${product.brand} on SoulArt`}
-          />
-
           <div className="rating-container">
             <div className="rating-stars">
               {Array.from({ length: 5 }).map((_, i) => (
                 <StarIcon
                   key={i}
-                  className={`h-4 w-4 ${
+                  className={`h-5 w-5 ${
                     i < Math.floor(product.rating)
-                      ? "text-yellow-400 fill-yellow-400"
+                      ? "text-rose-500 fill-rose-500"
                       : "text-gray-300"
                   }`}
                 />
               ))}
             </div>
-            <span className="text-gray-400">
+            <span className="review-count">
               {product.numReviews} {t("product.reviews")}
             </span>
           </div>
 
-          <div className="price">₾{product.price}</div>
+          <div className="price-section">
+            <span className="price">₾{product.price}</span>
+            {/* {product.discount > 0 && (
+              <>
+                <span className="original-price">
+                  ₾{(product.price / (1 - product.discount / 100)).toFixed(2)}
+                </span>
+                <span className="discount-badge">-{product.discount}%</span>
+              </>
+            )} */}
+          </div>
 
-          {/* Product Dimensions - Fixed to handle string dimensions */}
+          <ShareButtons
+            url={typeof window !== "undefined" ? window.location.href : ""}
+            title={`Check out ${displayName} by ${product.brand} on SoulArt`}
+          />
+
+          {/* Product Dimensions */}
           {dimensions && (
-            <div className="dimensions-info">
-              <h3 className="info-title">{t("product.dimensions")}</h3>
+            <div className="product-card dimensions-info">
+              <h3 className="info-title">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 3v18h18"></path>
+                  <path d="M3 9h18"></path>
+                  <path d="M15 3v18"></path>
+                </svg>
+                {t("product.dimensions")}
+              </h3>
               <div className="dimensions-details">
                 {dimensions.width && <span>{dimensions.width} სმ *</span>}
                 {dimensions.height && <span> {dimensions.height} სმ *</span>}
@@ -185,101 +190,79 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
           )}
 
-          {/* Delivery Information
-          <div className="delivery-info">
-            <h3 className="info-title">{t("product.deliveryInfo")}</h3>
-            <div className="delivery-details">
-              {product.deliveryType === "SELLER" ? (
-                <div>
-                  <p>{t("product.sellerDelivery")}</p>
-                  {product.minDeliveryDays && product.maxDeliveryDays && (
-                    <p className="delivery-time">
-                      {t("product.deliveryTime")}: {product.minDeliveryDays}-
-                      {product.maxDeliveryDays} {t("product.days")}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <p>{t("product.courierDelivery")}</p>
-              )}
-            </div>
-          </div> */}
-
-          <div className="separator"></div>
-
           <div className="stock-info">
             {isOutOfStock ? (
-              <div className="text-red-500">{t("shop.outOfStock")}</div>
+              <span className="stock-badge out-of-stock">
+                {t("shop.outOfStock")}
+              </span>
             ) : (
-              <div>
-                <div className="text-green-600">{t("shop.inStock")}</div>
-                <label className="select-container">
-                  {t("product.quantity")}:
-                  <select
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                  >
-                    {Array.from(
-                      { length: product.countInStock },
-                      (_, i) => i + 1
-                    ).map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
+              <span className="stock-badge in-stock">{t("shop.inStock")}</span>
             )}
           </div>
+
+          {!isOutOfStock && (
+            <div className="select-container">
+              <label>{t("product.quantity")}:</label>
+              <select
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+              >
+                {Array.from(
+                  { length: product.countInStock },
+                  (_, i) => i + 1
+                ).map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <AddToCartButton
             productId={product._id}
             countInStock={product.countInStock}
             className="custom-style-2"
           />
+        </div>
 
-          <div className="tabs">
-            <div className="tabs-list">
-              <button
-                className={`tabs-trigger ${
-                  activeTab === "details" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("details")}
-              >
-                {t("product.details")}
-              </button>
-              <button
-                className={`tabs-trigger ${
-                  activeTab === "reviews" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("reviews")}
-              >
-                {t("product.reviews")} ({product.numReviews})
-              </button>
-            </div>
-
-            <div
-              className={`tab-content ${
+        {/* Tabs - Full Width */}
+        <div className="tabs">
+          <div className="tabs-list">
+            <button
+              className={`tabs-trigger ${
                 activeTab === "details" ? "active" : ""
               }`}
+              onClick={() => setActiveTab("details")}
             >
-              <div className="prose">
-                <p>{displayDescription}</p>
-              </div>
-            </div>
-
-            <div
-              className={`tab-content ${
+              {t("product.details")}
+            </button>
+            <button
+              className={`tabs-trigger ${
                 activeTab === "reviews" ? "active" : ""
               }`}
+              onClick={() => setActiveTab("reviews")}
             >
-              <ReviewForm
-                productId={product._id}
-                onSuccess={() => router.refresh()}
-              />
-              <ProductReviews product={product} />
+              {t("product.reviews")} ({product.numReviews})
+            </button>
+          </div>
+
+          <div
+            className={`tab-content ${activeTab === "details" ? "active" : ""}`}
+          >
+            <div className="prose">
+              <p>{displayDescription}</p>
             </div>
+          </div>
+
+          <div
+            className={`tab-content ${activeTab === "reviews" ? "active" : ""}`}
+          >
+            <ReviewForm
+              productId={product._id}
+              onSuccess={() => router.refresh()}
+            />
+            <ProductReviews product={product} />
           </div>
         </div>
       </div>

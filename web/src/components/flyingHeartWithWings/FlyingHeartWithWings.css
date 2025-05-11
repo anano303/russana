@@ -132,9 +132,9 @@
 }
 
 @media (max-width: 768px) {
-  .heart-container {
+  /* .heart-container {
     right: 8vw;
-  }
+  } */
 
   .heart2 {
     width: 180%;
@@ -142,20 +142,20 @@
   }
 
   .left-wing {
-    left: -30%;
-    top: -25%; /* Position above the heart */
+    left: -36%;
+    top: -35%;
   }
 
   .right-wing {
-    right: -120%;
-    top: -28%;
+    right: -108%;
+    top: -37%;
   }
 }
 
 @media (max-width: 480px) {
-  .heart-container {
+  /* .heart-container {
     right: 5vw;
-  }
+  } */
 
   .heart2 {
     width: 160%;

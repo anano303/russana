@@ -17,8 +17,8 @@ a {
 
 .cartIconsSpan {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: 16%;
+
   background-color: #e50000;
   color: white;
   border-radius: 50%;
