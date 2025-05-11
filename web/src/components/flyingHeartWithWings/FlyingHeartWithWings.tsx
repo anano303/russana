@@ -64,7 +64,7 @@ const FlyingHeartWithWings: React.FC<FlyingHeartWithWingsProps> = ({
           width: wingSize,
           height: wingSize,
           position: "absolute",
-          zIndex: 1,
+          zIndex: -81,
         }}
       >
         <Image
@@ -81,7 +81,7 @@ const FlyingHeartWithWings: React.FC<FlyingHeartWithWingsProps> = ({
           width: wingSize,
           height: wingSize,
           position: "absolute",
-          zIndex: 1,
+          zIndex: -81,
         }}
       >
         <Image
