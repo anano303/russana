@@ -1,11 +1,18 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import './beep.css';
+import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import { Trophy, Clock, Flame } from "lucide-react";
+import "./beep.css";
+// Import all heart and star images
+import heart from "../../assets/animations/ai-generated-pink-heart-3d-clip-art-free-png.webp";
+import heart2 from "../../assets/animations/heart2.png";
+import star from "../../assets/animations/star.webp";
+import star2 from "../../assets/animations/star3.png";
 
 interface BeepProps {
   soundSrc: string;
-  shape?: 'heart' | 'star'; // არჩევითია, default არის 'heart'
+  shape?: "heart" | "star" | "heart2" | "star2"; // Updated options
 }
 
 interface Particle {
@@ -15,7 +22,7 @@ interface Particle {
   emoji: string;
 }
 
-const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
+const Beep: React.FC<BeepProps> = ({ soundSrc, shape = "heart" }) => {
   const [pressed, setPressed] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [score, setScore] = useState(0);
@@ -28,11 +35,11 @@ const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const emojis = ['🎵', '🎶', '💖', '✨', '🎧'];
+  const emojis = ["🎵", "🎶", "💖", "✨", "🎧"];
 
   useEffect(() => {
     setIsClient(true);
-    const storedBest = localStorage.getItem('bestScore');
+    const storedBest = localStorage.getItem("bestScore");
     if (storedBest) {
       setBestScore(parseInt(storedBest, 10));
     }
@@ -80,7 +87,7 @@ const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
           setShowResult(true);
           if (score > bestScore) {
             setBestScore(score);
-            localStorage.setItem('bestScore', score.toString());
+            localStorage.setItem("bestScore", score.toString());
           }
           return 0;
         }
@@ -102,18 +109,63 @@ const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
     };
   }, []);
 
+  // Function to get the correct image source based on shape
+  const getImageSource = () => {
+    switch (shape) {
+      case "heart":
+        return heart;
+      case "heart2":
+        return heart2;
+      case "star":
+        return star;
+      case "star2":
+        return star2;
+      default:
+        return heart;
+    }
+  };
+
+  const renderScoreIcons = () => {
+    return (
+      <div className="scoreboard">
+        <div>
+          <Clock size={12} style={{ color: "#e91e63" }} /> {timeLeft}
+        </div>
+        <div>
+          <Flame size={12} style={{ color: "#e91e63" }} /> {score}
+        </div>
+      </div>
+    );
+  };
+
   if (!isClient) return null;
 
   return (
-    <div className="beep-container">
-      <div className="best-score">🏆 {bestScore}</div>
+    <div
+      className="beep-container"
+      style={{
+        transform: `perspective(800px) rotateX(${
+          Math.sin(Date.now() / 2000) * 5
+        }deg) rotateY(${Math.cos(Date.now() / 2000) * 5}deg)`,
+      }}
+    >
+      <div className="best-score">
+        <Trophy size={12} style={{ color: "#e91e63" }} />
+        {bestScore}
+      </div>
 
-      {shape === 'heart' && (
-        <div className={`heart ${pressed ? 'pressed' : ''}`} onClick={handleClick}></div>
-      )}
-      {shape === 'star' && (
-        <div className={`star ${pressed ? 'pressed' : ''}`} onClick={handleClick}></div>
-      )}
+      <div
+        className={`shape-container ${pressed ? "pressed" : ""}`}
+        onClick={handleClick}
+      >
+        <Image
+          src={getImageSource()}
+          alt={`Shape ${shape}`}
+          width={120}
+          height={120}
+          className={`shape-image ${shape}-image`}
+        />
+      </div>
 
       {particles.map((p) => {
         const rad = (p.angle * Math.PI) / 180;
@@ -123,22 +175,22 @@ const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
           <span
             key={p.id}
             className="particle"
-            style={{
-              transform: `translate(0,0)`,
-              animation: `flyOut 1.8s forwards`,
-              '--translateX': `${translateX}px`,
-              '--translateY': `${translateY}px`,
-            } as React.CSSProperties}
+            style={
+              {
+                transform: `translate(0,0)`,
+                animation: `flyOut 1.8s forwards`,
+                "--translateX": `${translateX}px`,
+                "--translateY": `${translateY}px`,
+              } as React.CSSProperties
+            }
           >
             {p.emoji}
           </span>
         );
       })}
 
-      <div className="scoreboard">
-        <div>⏰ {timeLeft}</div>
-        <div>🔥 {score}</div>
-      </div>
+      {/* Updated scoreboard with icons */}
+      {renderScoreIcons()}
 
       {showResult && (
         <div className="result">

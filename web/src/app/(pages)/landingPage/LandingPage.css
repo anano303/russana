@@ -2,42 +2,224 @@
   height: 100vh;
   width: 100%;
   position: relative;
-  background: linear-gradient(135deg, #FFE5E8 0%, #FFF5F6 100%);
+  background: linear-gradient(135deg, #ffe5e8 0%, #fff5f6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+}
+
+/* Deep 3D background effect */
+.landing-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 229, 232, 0.8) 0%,
+      rgba(255, 245, 246, 0) 70%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(233, 30, 99, 0.05) 0%,
+      rgba(255, 245, 246, 0.05) 100%
+    );
+  transform-style: preserve-3d;
+  animation: depth-pulse 15s infinite alternate ease-in-out;
+  z-index: -2;
+}
+
+/* Distant 3D tunnel effect */
+.landing-container::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 245, 246, 0),
+    rgba(255, 245, 246, 0) 10px,
+    rgba(233, 30, 99, 0.03) 10px,
+    rgba(233, 30, 99, 0.03) 20px
+  );
+  transform: translate(-50%, -50%) perspective(1000px) translateZ(-900px)
+    rotateX(75deg);
+  opacity: 0.4;
+  animation: tunnel-zoom 30s infinite linear;
+  z-index: -3;
+}
+
+/* Add 3D particles to enhance depth */
+.landing-particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.landing-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: rgba(233, 30, 99, 0.3);
+  border-radius: 50%;
+  transform-style: preserve-3d;
+}
+
+@keyframes depth-pulse {
+  0% {
+    transform: translateZ(-300px) scale(1.3);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateZ(-100px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes tunnel-zoom {
+  0% {
+    transform: translate(-50%, -50%) perspective(1000px) translateZ(-900px)
+      rotateX(75deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) perspective(1000px) translateZ(100px)
+      rotateX(75deg);
+  }
 }
 
 .landing-content {
   text-align: center;
   z-index: 2;
-}
-.landing-contents{
-    display: flex;
-    gap: 500px;
-
-}
-.landing-contents-logo{
-    margin: -340px;
-    margin-top: -500px;
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 1200px;
 }
 
+.landing-contents {
+  display: flex;
+  gap: 500px;
+  transform-style: preserve-3d;
+  transform: translateZ(20px);
+}
+
+.landing-contents-logo {
+  margin: -390px;
+  margin-top: -500px;
+  transform-style: preserve-3d;
+  animation: float-logo 8s infinite alternate ease-in-out;
+  position: relative;
+  z-index: 5;
+  filter: drop-shadow(0 10px 30px rgba(233, 30, 99, 0.5));
+}
+
+@keyframes float-logo {
+  0% {
+    transform: translateZ(80px) rotateY(-5deg);
+  }
+  100% {
+    transform: translateZ(150px) rotateY(5deg);
+  }
+}
 
 .scroll-indicator {
   position: absolute;
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  color: black;
+  color: #e91e63;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  z-index: 10;
+  background-color: rgba(255, 245, 246, 0.3);
+  backdrop-filter: blur(3px);
+  padding: 8px 15px;
+  border-radius: 30px;
+  box-shadow: 0 5px 15px rgba(233, 30, 99, 0.15);
+  border: 1px solid rgba(233, 30, 99, 0.1);
+  transition: all 0.3s ease;
+  animation: pulse-highlight 2s infinite alternate;
+  transform-style: preserve-3d;
+}
+
+.scroll-indicator:hover {
+  background-color: rgba(255, 245, 246, 0.9);
+  box-shadow: 0 7px 20px rgba(233, 30, 99, 0.3);
+  transform: translateX(-50%) translateY(-5px);
+  animation: none;
 }
 
 .scroll-indicator p {
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin: 0;
+  font-weight: 500;
+  color: #e91e63;
+  letter-spacing: 0.5px;
+}
+
+.scroll-indicator .scroll-icon {
+  color: #e91e63;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse-highlight {
+  0% {
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.2);
+  }
+  100% {
+    box-shadow: 0 5px 25px rgba(233, 30, 99, 0.5);
+  }
+}
+
+/* Add responsive adjustments */
+@media (max-width: 768px) {
+  .landing-contents {
+    gap: 300px;
+  }
+
+  .landing-contents-logo {
+    margin: -200px;
+    margin-top: -300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-contents {
+    gap: 150px;
+  }
+
+  .landing-contents-logo {
+    margin: -150px;
+    margin-top: -250px;
+  }
 }
