@@ -1,6 +1,8 @@
 import { ProductGrid } from "@/modules/products/components/product-grid";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { getProducts } from "@/modules/products/api/get-products";
+
 
 interface SearchPageProps {
   params: Promise<{
@@ -17,6 +19,13 @@ export default async function SearchPage({
   const { page } = await searchParams;
   const currentPage = Number(page) || 1;
 
+  // Fetch products based on the search keyword
+  const { items: products, pages: totalPages } = await getProducts(
+    currentPage,
+    12,
+    keyword
+  );
+
   return (
     <div className="Container">
       <div className="py-10 space-y-8">
@@ -29,7 +38,12 @@ export default async function SearchPage({
           </button>
           <h1 className="text-2xl font-bold">Search Results: {keyword}</h1>
         </div>
-        <ProductGrid searchKeyword={keyword} currentPage={currentPage} />
+        <ProductGrid
+          products={products}
+          searchKeyword={keyword}
+          currentPage={currentPage}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import { LoginForm } from "@/modules/auth/components/login-form";
 import { AuthLayout } from "@/modules/auth/layouts/auth-layout";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   const { t } = useLanguage();
@@ -12,7 +13,9 @@ export default function LoginPage() {
       title={t("auth.loginWelcome")}
       subtitle={t("auth.loginSubtitle")}
     >
+         <Suspense fallback={<div>Loading...</div>}>
       <LoginForm />
+      </Suspense>
     </AuthLayout>
   );
 }
