@@ -42,7 +42,7 @@
 /* ფრთების wrapper */
 .wing {
   position: absolute;
-  top: -20%;
+  top: -10%;
   aspect-ratio: 1/1;
   z-index: -81; /* Ensure wings are above the heart */
 }
@@ -105,16 +105,18 @@
   }
 
   .left-wing {
-    left: -30%;
+    left: -15%;
   }
 
   .right-wing {
-    right: -142%;
+    right: -125%;
+  }
+  .wing {
+    top: -22%;
   }
 }
 
-/* New specific media query for tablets around 700px */
-@media (max-width: 800px) and (min-width: 600px) {
+/* @media (max-width: 800px) and (min-width: 600px) {
   .heart2 {
     width: 190%;
     height: 150%;
@@ -122,14 +124,14 @@
 
   .left-wing {
     left: -25%;
-    top: -30%; /* Move higher above the heart */
+    top: -30%; 
   }
 
   .right-wing {
     right: -125%;
-    top: -30%; /* Move higher above the heart */
+    top: -30%; 
   }
-}
+} */
 
 @media (max-width: 768px) {
   /* .heart-container {
@@ -142,27 +144,41 @@
   }
 
   .left-wing {
-    left: -36%;
-    top: -35%;
+    left: -13%;
   }
 
   .right-wing {
-    right: -108%;
-    top: -37%;
+    right: -105%;
+  }
+
+  .wing {
+    top: -31%;
   }
 }
 
 @media (max-width: 480px) {
-  /* .heart-container {
-    right: 5vw;
-  } */
-
   .heart2 {
     width: 160%;
     height: 120%;
   }
 
   .right-wing {
-    right: -104%;
+    right: -82%;
+  }
+  .left-wing {
+    left: -12%;
+  }
+  .wing {
+    top: -28% !important;
+    width: 116px !important;
+    height: 116px !important;
+  }
+}
+
+@media (max-width: 440px) {
+  .wing {
+    top: -25% !important;
+    width: 99px !important;
+    height: 99px !important;
   }
 }

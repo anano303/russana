@@ -193,14 +193,13 @@
 
 .landing-contents {
   display: flex;
-  gap: 500px;
   transform-style: preserve-3d;
   transform: translateZ(20px);
 }
 
 .landing-contents-logo {
-  margin: -390px;
-  margin-top: -500px;
+  /* margin: -390px;
+  margin-top: -500px; */
   transform-style: preserve-3d;
   animation: float-logo 8s infinite alternate ease-in-out;
   position: relative;
@@ -220,7 +219,7 @@
 .scroll-indicator {
   position: absolute;
   bottom: 2rem;
-  left: 50%;
+  /* left: 50%; */
   transform: translateX(-50%);
   color: #e91e63;
   cursor: pointer;
@@ -229,17 +228,12 @@
   align-items: center;
   gap: 0.5rem;
   z-index: 10;
-
-  backdrop-filter: blur(3px);
   padding: 8px 15px;
   transition: all 0.3s ease;
-  /* animation: pulse-highlight 2s infinite alternate; */
   transform-style: preserve-3d;
 }
 
 .scroll-indicator:hover {
-  background-color: rgba(255, 245, 246, 0.9);
-  box-shadow: 0 7px 20px rgba(233, 30, 99, 0.3);
   transform: translateX(-50%) translateY(-5px);
   animation: none;
 }
@@ -279,29 +273,6 @@
   }
   100% {
     box-shadow: 0 5px 25px rgba(233, 30, 99, 0.5);
-  }
-}
-
-/* Add responsive adjustments */
-@media (max-width: 768px) {
-  .landing-contents {
-    gap: 300px;
-  }
-
-  .landing-contents-logo {
-    margin: -200px;
-    margin-top: -300px;
-  }
-}
-
-@media (max-width: 480px) {
-  .landing-contents {
-    gap: 150px;
-  }
-
-  .landing-contents-logo {
-    margin: -150px;
-    margin-top: -250px;
   }
 }
 
@@ -392,14 +363,9 @@
 }
 
 /* Responsive adjustments for desktop */
-@media (min-width: 1200px) {
+@media (min-width: 800px) {
   .landing-contents {
-    gap: 700px; /* Wider gap for desktop */
-  }
-
-  .landing-contents-logo {
-    margin: -400px;
-    margin-top: -500px;
+    gap: 40vw;
   }
 
   /* Enhance 3D effect for desktop */
@@ -429,30 +395,8 @@
   }
 }
 
-/* Tablet-specific adjustments */
-@media (min-width: 768px) and (max-width: 1199px) {
-  .landing-contents {
-    gap: 400px;
-  }
-
-  .landing-contents-logo {
-    margin: -250px;
-    margin-top: -400px;
-  }
-}
-
 /* Mobile adjustments */
 @media (max-width: 767px) {
-  .landing-contents {
-    gap: 180px;
-  }
-
-  .landing-contents-logo {
-    margin: -150px;
-    margin-top: -250px;
-  }
-
-  /* Scale down floating objects on mobile */
   .floating-heart,
   .floating-ball {
     width: 20px;
