@@ -16,18 +16,17 @@
 }
 
 .FlyingHeartWithWings-container {
- /* margin-top: 80px;  */
-
+  /* margin-top: 80px;  */
 }
 
-.logo-container {
+.logo-containerHome {
   margin-bottom: 180px;
   display: flex;
   align-items: center;
   gap: 2%;
 }
 
-.logo-container p {
+.logo-containerHome p {
   white-space: nowrap;
   font-family: ALK Life;
   font-weight: 400;
@@ -73,11 +72,11 @@
   .main-slogan {
     font-size: 28px;
   }
-  .logo-container {
+  .logo-containerHome {
     display: flex;
     flex-direction: column;
   }
-  .logo-container p {
+  .logo-containerHome p {
     margin-top: 40px;
   }
   .sub-slogan {

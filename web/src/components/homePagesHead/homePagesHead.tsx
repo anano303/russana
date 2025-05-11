@@ -10,7 +10,7 @@ const HomePagesHead = () => {
   return (
     <div className="home-pages-head">
       <h1 className="main-slogan">მოგესალმებით საპიპინეთშიიიიიიიიიი !!! </h1>
-      <div className="logo-container">
+      <div className="logo-containerHome">
         <p className="sub-slogan">პიიიპ პიიიიპ!</p>
         {/* <Image
           src={russanaLogo}

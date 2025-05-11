@@ -26,11 +26,20 @@ interface Particle {
 export function LandingPage() {
   const [showScroll, setShowScroll] = useState(true);
   const [particles, setParticles] = useState<Particle[]>([]);
+  interface FloatingObject {
+    id: string;
+    x: number;
+    y: number;
+    z: number;
+    delay: number;
+    scale: number;
+  }
+  
   const [floatingObjects, setFloatingObjects] = useState<{
-    hearts: any[];
-    balls: any[];
-    tshirts: any[];
-    bags: any[];
+    hearts: FloatingObject[];
+    balls: FloatingObject[];
+    tshirts: FloatingObject[];
+    bags: FloatingObject[];
   }>({
     hearts: [],
     balls: [],
@@ -86,7 +95,12 @@ export function LandingPage() {
         bags: 6,
       };
 
-      const newObjects = {
+      const newObjects: {
+        hearts: FloatingObject[];
+        balls: FloatingObject[];
+        tshirts: FloatingObject[];
+        bags: FloatingObject[];
+      } = {
         hearts: [],
         balls: [],
         tshirts: [],

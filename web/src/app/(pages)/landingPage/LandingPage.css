@@ -229,14 +229,11 @@
   align-items: center;
   gap: 0.5rem;
   z-index: 10;
-  background-color: rgba(255, 245, 246, 0.3);
+
   backdrop-filter: blur(3px);
   padding: 8px 15px;
-  border-radius: 30px;
-  box-shadow: 0 5px 15px rgba(233, 30, 99, 0.15);
-  border: 1px solid rgba(233, 30, 99, 0.1);
   transition: all 0.3s ease;
-  animation: pulse-highlight 2s infinite alternate;
+  /* animation: pulse-highlight 2s infinite alternate; */
   transform-style: preserve-3d;
 }
 
@@ -308,7 +305,7 @@
   }
 }
 
-/* 3D Floating Objects */
+/* 3D Floating Objects - improved responsiveness */
 .floating-3d-objects {
   position: absolute;
   top: 0;
@@ -327,6 +324,30 @@
   will-change: transform;
 }
 
+/* Scale up objects on larger screens */
+@media (min-width: 1200px) {
+  .floating-heart {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .floating-ball {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .floating-tshirt {
+    width: 60px;
+    height: 55px;
+  }
+  
+  .floating-bag {
+    width: 50px;
+    height: 55px;
+  }
+}
+
+/* Normal sizes for medium screens */
 .floating-heart {
   width: 30px;
   height: 30px;
@@ -368,6 +389,84 @@
     "M5,10 L25,10 L25,5 L20,0 L10,0 L5,5 L5,10 L0,15 L0,35 L30,35 L30,15 L25,10"
   );
   animation: float-bag-3d 23s ease-in-out infinite alternate;
+}
+
+/* Responsive adjustments for desktop */
+@media (min-width: 1200px) {
+  .landing-contents {
+    gap: 700px;  /* Wider gap for desktop */
+  }
+  
+  .landing-contents-logo {
+    margin: -400px;
+    margin-top: -500px;
+  }
+  
+  /* Enhance 3D effect for desktop */
+  .landing-depth-layer-1,
+  .landing-depth-layer-2,
+  .landing-depth-layer-3 {
+    transform-origin: center;
+    transform-style: preserve-3d;
+  }
+  
+  .landing-depth-layer-1 {
+    transform: translateZ(-2000px) scale(2.5);
+  }
+  
+  .landing-depth-layer-2 {
+    transform: translateZ(-1300px) scale(1.8);
+  }
+  
+  .landing-depth-layer-3 {
+    transform: translateZ(-700px) scale(1.4);
+  }
+  
+  /* Enhance particle count for desktop */
+  .landing-particle {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .landing-contents {
+    gap: 400px;
+  }
+  
+  .landing-contents-logo {
+    margin: -250px;
+    margin-top: -400px;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .landing-contents {
+    gap: 180px;
+  }
+  
+  .landing-contents-logo {
+    margin: -150px;
+    margin-top: -250px;
+  }
+  
+  /* Scale down floating objects on mobile */
+  .floating-heart, .floating-ball {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .floating-tshirt {
+    width: 30px;
+    height: 25px;
+  }
+  
+  .floating-bag {
+    width: 25px;
+    height: 30px;
+  }
 }
 
 @keyframes float-heart-3d {
