@@ -1,7 +1,7 @@
 .site-footer {
   background-color: #ffffff;
   border-top: 1px solid #eaeaea;
-  padding: 40px 0 20px;
+  padding: 40px 0 20px 40px;
   color: #333;
   font-family: "ALK Katerina", "firaGo", sans-serif;
 }
@@ -27,7 +27,9 @@
 }
 
 .footer-logo-image {
-  margin-bottom: 15px;
+  margin: 15px;
+  transform: rotate(-30deg); /* მარცხნივ 45 გრადუსით გადახრა */
+  transition: transform 0.3s ease; /* მსუბუქი ანიმაცია */
 }
 
 .footer-tagline {
@@ -58,7 +60,7 @@
 }
 
 .footer-heading {
-  color: #e91e63;
+  color: #CF0A0A;
   font-size: 1.2rem;
   margin-bottom: 15px;
   font-weight: 600;
@@ -73,7 +75,7 @@
   left: 0;
   width: 40px;
   height: 2px;
-  background-color: #e91e63;
+  background-color: #CF0A0A;
 }
 
 .footer-link-list {
@@ -96,7 +98,7 @@
 }
 
 .footer-link:hover {
-  color: #e91e63;
+  color: #CF0A0A;
 }
 
 .mini-heart {
@@ -127,7 +129,7 @@
 }
 
 .footer-subscribe-btn {
-  background-color: #e91e63;
+  background-color: #CF0A0A;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -138,7 +140,7 @@
 }
 
 .footer-subscribe-btn:hover {
-  background-color: #c2185b;
+  background-color: #CF0A0A;
 }
 
 .footer-social {
@@ -149,32 +151,60 @@
 }
 
 .social-title {
-  color: #e91e63;
+  color: #CF0A0A;
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
 
 .social-icons {
   display: flex;
-  gap: 15px;
+  gap: 2rem;
+  align-items: center;
+}
+
+.social-icon-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .social-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background-color: #f8f8f8;
-  color: #e91e63;
-  border-radius: 50%;
-  transition: all 0.3s;
+  color: #CF0A0A;
+  transition: all 0.3s ease;
+  fill: currentColor; /* აიქონების შევსება */
+  width: 28px; /* ზომის დაზუსტება */
+  height: 28px; /* ზომის დაზუსტება */
 }
 
-.social-icon:hover {
-  background-color: #e91e63;
-  color: white;
-  transform: translateY(-3px);
+.social-name {
+  color: #000;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.social-icon-wrapper:hover .social-icon,
+.social-icon-wrapper:active .social-icon {
+  color: #CF0A0A;
+  transform: scale(1.1);
+}
+
+.social-icon-wrapper:hover .social-name,
+.social-icon-wrapper:active .social-name {
+  color: #CF0A0A;
+}
+
+.facebook-icon {
+  color: white !important;
+  background-color: #CF0A0A;
+  border-radius: 50% !important;
+  padding: 0.01rem !important;
+}
+
+.social-icon-wrapper:hover .facebook-icon {
+  background-color: #b30909;
 }
 
 .footer-bottom {
@@ -184,11 +214,11 @@
 }
 
 .copyright {
-  font-size: 0.9rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 5px;
+}
+.bestsoft{
+  color: #CF0A0A;
 }
 
 .copyright-heart {
@@ -206,6 +236,14 @@
   100% {
     transform: scale(1);
   }
+}
+
+.footer-message {
+  color: #CF0A0A;
+  font-family: "ALK LIFE", sans-serif;
+  text-align: center;
+  font-size: 2.2rem;
+  margin: 40px 0;
 }
 
 /* Responsive adjustments */
