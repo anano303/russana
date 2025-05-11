@@ -196,7 +196,7 @@ export const TRANSLATIONS: Translations = {
 
     // Footer
     footer: {
-      copyright: "© 2025 BestSoft. ყველა უფლება დაცულია.",
+      copyright: "CREATED BY",
       description:
         "აღმოაჩინეთ ჩვენი სახალისო კოლექცია მაისურების, ჩანთების და აქსესუარების გულის დიზაინით, რომლებიც დაჭერისას სასაცილო 'პიპ' ხმას გამოსცემენ. შეიტანეთ მხიარულება და სიურპრიზი თქვენს ყოველდღიურ სტილში!",
       quickLinks: "სწრაფი ბმულები",
@@ -601,7 +601,7 @@ export const TRANSLATIONS: Translations = {
 
     // Footer
     footer: {
-      copyright: "© 2025 BestSoft. All rights reserved.",
+      copyright: "CREATED BY",
       description:
         "Explore our playful collection of t-shirts, bags, and accessories with squeaky heart designs that make a fun 'pip' sound when pressed. Add some joy and surprise to your everyday outfits!",
       quickLinks: "Quick Links",
