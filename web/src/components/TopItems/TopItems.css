@@ -1,10 +1,11 @@
 .top-items-container {
   width: 100%;
-  max-width: 1200px;
+
   margin: 50px auto;
   padding: 0 20px;
   overflow: visible;
   position: relative;
+  overflow-x: hidden;
 }
 
 .top-items-title-container {

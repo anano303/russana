@@ -49,6 +49,17 @@ export default function Header() {
                 <span>{t("navigation.about")}</span>
               </Link>
             </li>
+
+            {/* Add user actions to mobile menu */}
+            <li className="mobile-menu-user-actions">
+              <div className="user-menu">
+                <UserMenu />
+              </div>
+              <CartIcon />
+              <div className="language-switcher-container">
+                <LanguageSwitcher />
+              </div>
+            </li>
           </ul>
         </nav>
 
