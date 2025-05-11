@@ -15,33 +15,132 @@ interface Particle {
   size: number;
   opacity: number;
   hue: number;
+  zStart: number;
+  zEnd: number;
+  xEnd: number;
+  yEnd: number;
+  animationDelay: number;
+  animationDuration: number;
 }
 
 export function LandingPage() {
   const [showScroll, setShowScroll] = useState(true);
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [floatingObjects, setFloatingObjects] = useState<{
+    hearts: any[];
+    balls: any[];
+    tshirts: any[];
+    bags: any[];
+  }>({
+    hearts: [],
+    balls: [],
+    tshirts: [],
+    bags: [],
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const soundPath = "_button-beep-2.wav";
   const soundPath2 = "beep.wav";
 
-  // Create 3D particles for depth effect
+  // Enhanced 3D particles for depth effect
   useEffect(() => {
-    const particleCount = 100;
+    const particleCount = 150;
     const newParticles = [];
 
     for (let i = 0; i < particleCount; i++) {
+      const zStart = -2500 - Math.random() * 1000;
+      const zEnd = 500 + Math.random() * 500;
+
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 300 + Math.random() * 500;
+
+      const xEnd = Math.cos(angle) * distance;
+      const yEnd = Math.sin(angle) * distance;
+
       newParticles.push({
         id: i,
-        x: Math.random() * 100, // % position
-        y: Math.random() * 100,
-        z: Math.random() * 1000 - 800, // Random depth between -800 and 200
-        size: Math.random() * 4 + 2,
-        opacity: Math.random() * 0.5 + 0.1,
-        hue: Math.random() * 20 + 340, // Pink hues
+        x: 50,
+        y: 50,
+        z: zStart,
+        size: Math.random() * 3 + 1,
+        opacity: Math.random() * 0.4 + 0.1,
+        hue: Math.random() * 20 + 340,
+        zStart: zStart,
+        zEnd: zEnd,
+        xEnd: xEnd,
+        yEnd: yEnd,
+        animationDelay: i * (60 / particleCount),
+        animationDuration: 30 + Math.random() * 20,
       });
     }
 
     setParticles(newParticles);
+  }, []);
+
+  // Generate floating 3D objects
+  useEffect(() => {
+    const createFloatingObjects = () => {
+      const objectCount = {
+        hearts: 8,
+        balls: 8,
+        tshirts: 6,
+        bags: 6,
+      };
+
+      const newObjects = {
+        hearts: [],
+        balls: [],
+        tshirts: [],
+        bags: [],
+      };
+
+      for (let i = 0; i < objectCount.hearts; i++) {
+        newObjects.hearts.push({
+          id: `heart-${i}`,
+          x: Math.random() * window.innerWidth - window.innerWidth / 2,
+          y: Math.random() * window.innerHeight - window.innerHeight / 2,
+          z: Math.random() * -1000 - 500,
+          delay: Math.random() * 5,
+          scale: Math.random() * 0.7 + 0.3,
+        });
+      }
+
+      for (let i = 0; i < objectCount.balls; i++) {
+        newObjects.balls.push({
+          id: `ball-${i}`,
+          x: Math.random() * window.innerWidth - window.innerWidth / 2,
+          y: Math.random() * window.innerHeight - window.innerHeight / 2,
+          z: Math.random() * -1000 - 500,
+          delay: Math.random() * 5,
+          scale: Math.random() * 0.7 + 0.3,
+        });
+      }
+
+      for (let i = 0; i < objectCount.tshirts; i++) {
+        newObjects.tshirts.push({
+          id: `tshirt-${i}`,
+          x: Math.random() * window.innerWidth - window.innerWidth / 2,
+          y: Math.random() * window.innerHeight - window.innerHeight / 2,
+          z: Math.random() * -1000 - 500,
+          delay: Math.random() * 5,
+          scale: Math.random() * 0.7 + 0.3,
+        });
+      }
+
+      for (let i = 0; i < objectCount.bags; i++) {
+        newObjects.bags.push({
+          id: `bag-${i}`,
+          x: Math.random() * window.innerWidth - window.innerWidth / 2,
+          y: Math.random() * window.innerHeight - window.innerHeight / 2,
+          z: Math.random() * -1000 - 500,
+          delay: Math.random() * 5,
+          scale: Math.random() * 0.7 + 0.3,
+        });
+      }
+
+      setFloatingObjects(newObjects);
+    };
+
+    createFloatingObjects();
   }, []);
 
   const scrollToContent = () => {
@@ -66,26 +165,115 @@ export function LandingPage() {
 
   return (
     <div className="landing-container" ref={containerRef}>
-      {/* 3D Particles */}
+      <div className="landing-depth-layer-1"></div>
+      <div className="landing-depth-layer-2"></div>
+      <div className="landing-depth-layer-3"></div>
+
+      {/* Floating 3D objects */}
+      <div className="floating-3d-objects">
+        {floatingObjects.hearts.map((obj) => (
+          <div
+            key={obj.id}
+            className="floating-object floating-heart"
+            style={
+              {
+                left: "50%",
+                top: "50%",
+                opacity: 0.2 * obj.scale,
+                transform: `translate(-50%, -50%) scale(${obj.scale})`,
+                animationDelay: `${obj.delay}s`,
+                "--x": obj.x,
+                "--y": obj.y,
+                "--z": obj.z,
+              } as React.CSSProperties
+            }
+          />
+        ))}
+
+        {floatingObjects.balls.map((obj) => (
+          <div
+            key={obj.id}
+            className="floating-object floating-ball"
+            style={
+              {
+                left: "50%",
+                top: "50%",
+                opacity: 0.15 * obj.scale,
+                transform: `translate(-50%, -50%) scale(${obj.scale})`,
+                animationDelay: `${obj.delay}s`,
+                "--x": obj.x,
+                "--y": obj.y,
+                "--z": obj.z,
+              } as React.CSSProperties
+            }
+          />
+        ))}
+
+        {floatingObjects.tshirts.map((obj) => (
+          <div
+            key={obj.id}
+            className="floating-object floating-tshirt"
+            style={
+              {
+                left: "50%",
+                top: "50%",
+                opacity: 0.15 * obj.scale,
+                transform: `translate(-50%, -50%) scale(${obj.scale})`,
+                animationDelay: `${obj.delay}s`,
+                "--x": obj.x,
+                "--y": obj.y,
+                "--z": obj.z,
+              } as React.CSSProperties
+            }
+          />
+        ))}
+
+        {floatingObjects.bags.map((obj) => (
+          <div
+            key={obj.id}
+            className="floating-object floating-bag"
+            style={
+              {
+                left: "50%",
+                top: "50%",
+                opacity: 0.15 * obj.scale,
+                transform: `translate(-50%, -50%) scale(${obj.scale})`,
+                animationDelay: `${obj.delay}s`,
+                "--x": obj.x,
+                "--y": obj.y,
+                "--z": obj.z,
+              } as React.CSSProperties
+            }
+          />
+        ))}
+      </div>
+
       <div className="landing-particle-container">
         {particles.map((particle) => (
           <div
             key={particle.id}
             className="landing-particle"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              opacity: particle.opacity,
-              backgroundColor: `hsla(${particle.hue}, 95%, 65%, ${
-                particle.opacity * 2
-              })`,
-              transform: `translateZ(${particle.z}px)`,
-              boxShadow: `0 0 ${particle.size * 2}px hsla(${
-                particle.hue
-              }, 95%, 75%, 0.8)`,
-            }}
+            style={
+              {
+                left: "50%",
+                top: "50%",
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                opacity: 0,
+                backgroundColor: `hsla(${particle.hue}, 95%, 65%, ${
+                  particle.opacity * 2
+                })`,
+                animation: `particle-depth ${particle.animationDuration}s infinite linear ${particle.animationDelay}s`,
+                "--z-start": `${particle.zStart}px`,
+                "--z-end": `${particle.zEnd}px`,
+                "--x-end": `${particle.xEnd}px`,
+                "--y-end": `${particle.yEnd}px`,
+                "--opacity": particle.opacity,
+                boxShadow: `0 0 ${particle.size * 2}px hsla(${
+                  particle.hue
+                }, 95%, 75%, 0.8)`,
+              } as React.CSSProperties
+            }
           />
         ))}
       </div>

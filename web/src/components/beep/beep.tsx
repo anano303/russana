@@ -7,7 +7,7 @@ import "./beep.css";
 // Import all heart and star images
 import heart from "../../assets/animations/ai-generated-pink-heart-3d-clip-art-free-png.webp";
 import heart2 from "../../assets/animations/heart2.png";
-import star from "../../assets/animations/star.webp";
+import star from "../../assets/animations/star2.webp";
 import star2 from "../../assets/animations/star3.png";
 
 interface BeepProps {
