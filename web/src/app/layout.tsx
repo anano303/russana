@@ -10,7 +10,7 @@ import Footer from "@/components/footer/footer";
 import { LanguageProvider } from "@/hooks/LanguageContext";
 import Header from "@/components/header/header";
 import SiteTimer from "@/components/SiteTimer/SiteTimer";
-import { LandingPage } from "./(pages)/landingPage/LandingPage";
+// import { LandingPage } from "./(pages)/landingPage/LandingPage";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -63,7 +63,7 @@ export default function RootLayout({
       <body
         className={`${satoshi.variable} antialiased min-h-screen flex flex-col`}
       >
-        <LandingPage />
+        {/* <LandingPage /> */}
         <Providers>
           <AuthProvider>
             <CartProvider>
