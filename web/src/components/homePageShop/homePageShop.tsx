@@ -9,13 +9,7 @@ import { ProductGrid } from "@/modules/products/components/product-grid";
 import { getProducts } from "@/modules/products/api/get-products";
 import { Product, MainCategory } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
-import {
-  Shirt,
-  ShoppingBag,
-  Footprints,
-
-  Heart,
-} from "lucide-react";
+import { Shirt, ShoppingBag, Footprints } from "lucide-react";
 
 export default function HomePageShop() {
   const { t } = useLanguage();
@@ -106,7 +100,6 @@ export default function HomePageShop() {
           <div className="icon footwear-icon">
             <Footprints />
           </div>
-          
         </div>
       </div>
     );
@@ -118,12 +111,12 @@ export default function HomePageShop() {
 
       <div className="content">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Heart
+          {/* <Heart
             className="title-heart-icon"
             fill="#e91e63"
             color="#e91e63"
             display="inline"
-          />
+          /> */}
           <h1
             className="title"
             style={{
@@ -135,12 +128,12 @@ export default function HomePageShop() {
           >
             {t("shop.allArtworks")}
           </h1>
-          <Heart
+          {/* <Heart
             className="title-heart-icon"
             fill="#e91e63"
             color="#e91e63"
             display="inline"
-          />
+          /> */}
         </div>
         {isLoading ? (
           <div className="loading-container">
@@ -152,11 +145,6 @@ export default function HomePageShop() {
             {clothingProducts && clothingProducts.length > 0 && (
               <div className="product-section">
                 <h2 className="section-title">
-                  <Heart
-                    className="title-heart-icon"
-                    fill="#e91e63"
-                    color="#e91e63"
-                  />
                   ყველაზე ახალი {t("categories.clothing")}
                 </h2>
                 <ProductGrid
@@ -176,11 +164,6 @@ export default function HomePageShop() {
             {accessoriesProducts && accessoriesProducts.length > 0 && (
               <div className="product-section">
                 <h2 className="section-title">
-                  <Heart
-                    className="title-heart-icon"
-                    fill="#e91e63"
-                    color="#e91e63"
-                  />
                   ყველაზე ახალი {t("categories.accessories")}
                 </h2>
                 <ProductGrid

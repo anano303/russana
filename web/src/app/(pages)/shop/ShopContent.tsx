@@ -9,7 +9,7 @@ import { Product, MainCategory, AgeGroup } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ShopPage.css";
 import "./ShopAnimatedIcons.css";
-import { Heart, Shirt, ShoppingBag, Footprints } from "lucide-react";
+import {  Shirt, ShoppingBag } from "lucide-react";
 
 const ShopContent = () => {
   const router = useRouter();
@@ -223,9 +223,6 @@ const ShopContent = () => {
         <div className="icon accessories-icon">
           <ShoppingBag />
         </div>
-        <div className="icon footwear-icon">
-          <Footprints />
-        </div>
       </div>
     );
   };
@@ -248,15 +245,14 @@ const ShopContent = () => {
       <div className="shop-3d-pyramid"></div>
 
       <div className="content">
-        <Heart className="title-heart-icon" fill="#e91e63" color="#e91e63" />
+       
         <h1
           className="title"
           style={{ marginBottom: 40, marginTop: 70, zIndex: 9 }}
         >
-          <Heart className="shop-title-heart" fill="#e91e63" color="#e91e63" />
           {brand ? `${brand}${t("shop.artistWorks")}` : t("shop.allArtworks")}
         </h1>
-        <Heart className="title-heart-icon" fill="#e91e63" color="#e91e63" />
+
         <ProductFilters
           products={products}
           onCategoryChange={handleCategoryChange}

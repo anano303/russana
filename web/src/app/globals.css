@@ -42,7 +42,9 @@ main {
 }
 
 .title {
-  color: #e91e63;
+  font-family: ALK Life;
+  margin-left: 2%;
+  color: #e50000;
   font-size: 24px;
   font-weight: bold;
   text-align: center;

@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { Heart } from "lucide-react";
+// import Link from "next/link";
 import "./TopItems.css";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
@@ -38,11 +37,7 @@ const TopItems: React.FC = () => {
   return (
     <div className="top-items-container">
       <div className="top-items-title-container">
-        <h2 className="top-items-title">
-          <Heart className="title-heart-icon" fill="#e91e63" color="#e91e63" />
-          ყველაზე პოპულარული
-          <Heart className="title-heart-icon" fill="#e91e63" color="#e91e63" />
-        </h2>
+        <h2 className="top-items-title">ყველაზე პოპულარული</h2>
       </div>
 
       <div className="top-items-grid">
@@ -51,11 +46,11 @@ const TopItems: React.FC = () => {
         ))}
       </div>
 
-      <div className="view-all-products">
+      {/* <div className="view-all-products">
         <Link href="/shop" className="view-all-button">
           იხილეთ ყველა პროდუქტი
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };

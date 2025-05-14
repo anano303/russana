@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+
 import "./about.css";
 import { useLanguage } from "@/hooks/LanguageContext";
 import Beep from "../../../components/beep/beep";
