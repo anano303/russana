@@ -7,155 +7,155 @@ import "./LandingPage.css";
 import Beep from "@/components/beep/beep";
 import FlyingHeartWithWings from "@/components/flyingHeartWithWings/FlyingHeartWithWings";
 
-interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  z: number;
-  size: number;
-  opacity: number;
-  hue: number;
-  zStart: number;
-  zEnd: number;
-  xEnd: number;
-  yEnd: number;
-  animationDelay: number;
-  animationDuration: number;
-}
+// interface Particle {
+//   id: number;
+//   x: number;
+//   y: number;
+//   z: number;
+//   size: number;
+//   opacity: number;
+//   hue: number;
+//   zStart: number;
+//   zEnd: number;
+//   xEnd: number;
+//   yEnd: number;
+//   animationDelay: number;
+//   animationDuration: number;
+// }
 
 export function LandingPage() {
   const [showScroll, setShowScroll] = useState(true);
-  const [particles, setParticles] = useState<Particle[]>([]);
-  interface FloatingObject {
-    id: string;
-    x: number;
-    y: number;
-    z: number;
-    delay: number;
-    scale: number;
-  }
-  
-  const [floatingObjects, setFloatingObjects] = useState<{
-    hearts: FloatingObject[];
-    balls: FloatingObject[];
-    tshirts: FloatingObject[];
-    bags: FloatingObject[];
-  }>({
-    hearts: [],
-    balls: [],
-    tshirts: [],
-    bags: [],
-  });
+  // const [particles, setParticles] = useState<Particle[]>([]);
+  // interface FloatingObject {
+  //   id: string;
+  //   x: number;
+  //   y: number;
+  //   z: number;
+  //   delay: number;
+  //   scale: number;
+  // }
+
+  // const [ setFloatingObjects] = useState<{
+  //   hearts: FloatingObject[];
+  //   balls: FloatingObject[];
+  //   tshirts: FloatingObject[];
+  //   bags: FloatingObject[];
+  // }>({
+  //   hearts: [],
+  //   balls: [],
+  //   tshirts: [],
+  //   bags: [],
+  // });
   const containerRef = useRef<HTMLDivElement>(null);
   const soundPath = "_button-beep-2.wav";
   const soundPath2 = "beep.wav";
 
   // Enhanced 3D particles for depth effect
-  useEffect(() => {
-    const particleCount = 150;
-    const newParticles = [];
+  // useEffect(() => {
+  //   const particleCount = 150;
+  //   const newParticles = [];
 
-    for (let i = 0; i < particleCount; i++) {
-      const zStart = -2500 - Math.random() * 1000;
-      const zEnd = 500 + Math.random() * 500;
+  //   for (let i = 0; i < particleCount; i++) {
+  //     const zStart = -2500 - Math.random() * 1000;
+  //     const zEnd = 500 + Math.random() * 500;
 
-      const angle = Math.random() * Math.PI * 2;
-      const distance = 300 + Math.random() * 500;
+  //     const angle = Math.random() * Math.PI * 2;
+  //     const distance = 300 + Math.random() * 500;
 
-      const xEnd = Math.cos(angle) * distance;
-      const yEnd = Math.sin(angle) * distance;
+  //     const xEnd = Math.cos(angle) * distance;
+  //     const yEnd = Math.sin(angle) * distance;
 
-      newParticles.push({
-        id: i,
-        x: 50,
-        y: 50,
-        z: zStart,
-        size: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.4 + 0.1,
-        hue: Math.random() * 20 + 340,
-        zStart: zStart,
-        zEnd: zEnd,
-        xEnd: xEnd,
-        yEnd: yEnd,
-        animationDelay: i * (60 / particleCount),
-        animationDuration: 30 + Math.random() * 20,
-      });
-    }
+  //     newParticles.push({
+  //       id: i,
+  //       x: 50,
+  //       y: 50,
+  //       z: zStart,
+  //       size: Math.random() * 3 + 1,
+  //       opacity: Math.random() * 0.4 + 0.1,
+  //       hue: Math.random() * 20 + 340,
+  //       zStart: zStart,
+  //       zEnd: zEnd,
+  //       xEnd: xEnd,
+  //       yEnd: yEnd,
+  //       animationDelay: i * (60 / particleCount),
+  //       animationDuration: 30 + Math.random() * 20,
+  //     });
+  //   }
 
-    setParticles(newParticles);
-  }, []);
+  //   setParticles(newParticles);
+  // }, []);
 
   // Generate floating 3D objects
-  useEffect(() => {
-    const createFloatingObjects = () => {
-      const objectCount = {
-        hearts: 8,
-        balls: 8,
-        tshirts: 6,
-        bags: 6,
-      };
+  // useEffect(() => {
+  //   const createFloatingObjects = () => {
+  //     const objectCount = {
+  //       hearts: 8,
+  //       balls: 8,
+  //       tshirts: 6,
+  //       bags: 6,
+  //     };
 
-      const newObjects: {
-        hearts: FloatingObject[];
-        balls: FloatingObject[];
-        tshirts: FloatingObject[];
-        bags: FloatingObject[];
-      } = {
-        hearts: [],
-        balls: [],
-        tshirts: [],
-        bags: [],
-      };
+  //     const newObjects: {
+  //       hearts: FloatingObject[];
+  //       balls: FloatingObject[];
+  //       tshirts: FloatingObject[];
+  //       bags: FloatingObject[];
+  //     } = {
+  //       hearts: [],
+  //       balls: [],
+  //       tshirts: [],
+  //       bags: [],
+  //     };
 
-      for (let i = 0; i < objectCount.hearts; i++) {
-        newObjects.hearts.push({
-          id: `heart-${i}`,
-          x: Math.random() * window.innerWidth - window.innerWidth / 2,
-          y: Math.random() * window.innerHeight - window.innerHeight / 2,
-          z: Math.random() * -1000 - 500,
-          delay: Math.random() * 5,
-          scale: Math.random() * 0.7 + 0.3,
-        });
-      }
+  //     for (let i = 0; i < objectCount.hearts; i++) {
+  //       newObjects.hearts.push({
+  //         id: `heart-${i}`,
+  //         x: Math.random() * window.innerWidth - window.innerWidth / 2,
+  //         y: Math.random() * window.innerHeight - window.innerHeight / 2,
+  //         z: Math.random() * -1000 - 500,
+  //         delay: Math.random() * 5,
+  //         scale: Math.random() * 0.7 + 0.3,
+  //       });
+  //     }
 
-      for (let i = 0; i < objectCount.balls; i++) {
-        newObjects.balls.push({
-          id: `ball-${i}`,
-          x: Math.random() * window.innerWidth - window.innerWidth / 2,
-          y: Math.random() * window.innerHeight - window.innerHeight / 2,
-          z: Math.random() * -1000 - 500,
-          delay: Math.random() * 5,
-          scale: Math.random() * 0.7 + 0.3,
-        });
-      }
+  //     for (let i = 0; i < objectCount.balls; i++) {
+  //       newObjects.balls.push({
+  //         id: `ball-${i}`,
+  //         x: Math.random() * window.innerWidth - window.innerWidth / 2,
+  //         y: Math.random() * window.innerHeight - window.innerHeight / 2,
+  //         z: Math.random() * -1000 - 500,
+  //         delay: Math.random() * 5,
+  //         scale: Math.random() * 0.7 + 0.3,
+  //       });
+  //     }
 
-      for (let i = 0; i < objectCount.tshirts; i++) {
-        newObjects.tshirts.push({
-          id: `tshirt-${i}`,
-          x: Math.random() * window.innerWidth - window.innerWidth / 2,
-          y: Math.random() * window.innerHeight - window.innerHeight / 2,
-          z: Math.random() * -1000 - 500,
-          delay: Math.random() * 5,
-          scale: Math.random() * 0.7 + 0.3,
-        });
-      }
+  //     for (let i = 0; i < objectCount.tshirts; i++) {
+  //       newObjects.tshirts.push({
+  //         id: `tshirt-${i}`,
+  //         x: Math.random() * window.innerWidth - window.innerWidth / 2,
+  //         y: Math.random() * window.innerHeight - window.innerHeight / 2,
+  //         z: Math.random() * -1000 - 500,
+  //         delay: Math.random() * 5,
+  //         scale: Math.random() * 0.7 + 0.3,
+  //       });
+  //     }
 
-      for (let i = 0; i < objectCount.bags; i++) {
-        newObjects.bags.push({
-          id: `bag-${i}`,
-          x: Math.random() * window.innerWidth - window.innerWidth / 2,
-          y: Math.random() * window.innerHeight - window.innerHeight / 2,
-          z: Math.random() * -1000 - 500,
-          delay: Math.random() * 5,
-          scale: Math.random() * 0.7 + 0.3,
-        });
-      }
+  //     for (let i = 0; i < objectCount.bags; i++) {
+  //       newObjects.bags.push({
+  //         id: `bag-${i}`,
+  //         x: Math.random() * window.innerWidth - window.innerWidth / 2,
+  //         y: Math.random() * window.innerHeight - window.innerHeight / 2,
+  //         z: Math.random() * -1000 - 500,
+  //         delay: Math.random() * 5,
+  //         scale: Math.random() * 0.7 + 0.3,
+  //       });
+  //     }
 
-      setFloatingObjects(newObjects);
-    };
+  //     setFloatingObjects(newObjects);
+  //   };
 
-    createFloatingObjects();
-  }, []);
+  //   createFloatingObjects();
+  // }, []);
 
   const scrollToContent = () => {
     window.scrollTo({
@@ -184,7 +184,7 @@ export function LandingPage() {
       <div className="landing-depth-layer-3"></div>
 
       {/* Floating 3D objects */}
-      <div className="floating-3d-objects">
+      {/* <div className="floating-3d-objects">
         {floatingObjects.hearts.map((obj) => (
           <div
             key={obj.id}
@@ -289,8 +289,8 @@ export function LandingPage() {
               } as React.CSSProperties
             }
           />
-        ))}
-      </div>
+        ))} */}
+      {/* </div> */}
 
       <div className="landing-content">
         <motion.div className="landing-text">
