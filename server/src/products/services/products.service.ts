@@ -51,167 +51,73 @@ export class ProductsService {
     user?: UserDocument,
     status?: ProductStatus,
     brand?: string,
-    mainCategory?: string,
+    mainCategory?: MainCategory,
     subCategory?: string,
-    sortBy: string = 'createdAt',
+    sortBy?: string,
     sortDirection: 'asc' | 'desc' = 'desc',
     ageGroup?: AgeGroup,
-  ): Promise<PaginatedResponse<Product>> {
-    const pageSize = parseInt(limit ?? '10');
-    const currentPage = parseInt(page ?? '1');
+  ) {
+    const query: any = {};
+    
+    if (keyword) {
+      query.$or = [
+        { name: { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } },
+      ];
+    }
 
-    const decodedKeyword = keyword ? decodeURIComponent(keyword) : '';
+    if (user) {
+      query.user = user._id;
+    }
 
-    const searchPattern = decodedKeyword
-      ? decodedKeyword
-          .split(' ')
-          .map((term) => `(?=.*${term})`)
-          .join('')
-      : '';
+    if (status) {
+      query.status = status;
+    }
 
-    let mainCategoryQuery = {};
+    if (brand) {
+      query.brand = brand;
+    }
+
     if (mainCategory) {
-      mainCategoryQuery = {
-        $or: [
-          { 'categoryStructure.main': mainCategory },
-          ...(mainCategory === 'CLOTHING'
-            ? [
-                {
-                  categoryStructure: { $exists: false },
-                  category: {
-                    $in: CLOTHING_CATEGORIES,
-                  },
-                },
-              ]
-            : []),
-          ...(mainCategory === 'ACCESSORIES'
-            ? [
-                {
-                  categoryStructure: { $exists: false },
-                  category: {
-                    $in: ACCESSORIES_CATEGORIES,
-                  },
-                },
-              ]
-            : []),
-          ...(mainCategory === 'FOOTWEAR'
-            ? [
-                {
-                  categoryStructure: { $exists: false },
-                  category: {
-                    $in: FOOTWEAR_CATEGORIES,
-                  },
-                },
-              ]
-            : []),
-          ...(mainCategory === 'SWIMWEAR'
-            ? [
-                {
-                  categoryStructure: { $exists: false },
-                  category: {
-                    $in: SWIMWEAR_CATEGORIES,
-                  },
-                },
-              ]
-            : []),
-        ],
-      };
+      query['categoryStructure.main'] = mainCategory;
     }
 
-    let ageGroupQuery = {};
+    if (subCategory) {
+      query['categoryStructure.sub'] = subCategory;
+    }
+
     if (ageGroup) {
-      ageGroupQuery = { 'categoryStructure.ageGroup': ageGroup };
+      query['categoryStructure.ageGroup'] = ageGroup;
     }
 
-    const searchQuery = decodedKeyword
-      ? {
-          $and: [
-            {
-              $or: [
-                { name: { $regex: searchPattern, $options: 'i' } },
-                { description: { $regex: searchPattern, $options: 'i' } },
-                { brand: { $regex: searchPattern, $options: 'i' } },
-                { category: { $regex: searchPattern, $options: 'i' } },
-              ],
-            },
-            user ? { user: user._id } : {},
-            brand ? { brand: brand } : {},
-            mainCategory ? mainCategoryQuery : {},
-            subCategory ? { category: subCategory } : {},
-            ageGroup ? ageGroupQuery : {},
-          ],
-        }
-      : {
-          ...(user ? { user: user._id } : {}),
-          ...(brand ? { brand: brand } : {}),
-          ...(mainCategory ? mainCategoryQuery : {}),
-          ...(subCategory ? { category: subCategory } : {}),
-          ...(ageGroup ? ageGroupQuery : {}),
-        };
+    const sortOptions: any = {};
+    if (sortBy) {
+      sortOptions[sortBy] = sortDirection === 'asc' ? 1 : -1;
+    }
 
-    console.log('Search query:', JSON.stringify(searchQuery, null, 2));
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 10;
+    const skip = (pageNum - 1) * limitNum;
 
-    const searchQueryWithStatus = {
-      ...searchQuery,
-      ...(status && { status }),
-    };
-
-    const count = await this.productModel.countDocuments(searchQueryWithStatus);
-    const products = await this.productModel
-      .find(searchQueryWithStatus)
-      .populate({
-        path: 'user',
-        select: 'name email phoneNumber seller',
-      })
-      .sort({ [sortBy]: sortDirection === 'desc' ? -1 : 1 })
-      .limit(pageSize)
-      .skip(pageSize * (currentPage - 1));
-
-    const processedProducts = products.map((product) => {
-      const doc = product.toObject();
-
-      if (!doc.categoryStructure) {
-        let mainCat = MainCategory.CLOTHING; // Default to CLOTHING
-
-        if (CLOTHING_CATEGORIES.includes(doc.category)) {
-          mainCat = MainCategory.CLOTHING;
-        } else if (ACCESSORIES_CATEGORIES.includes(doc.category)) {
-          mainCat = MainCategory.ACCESSORIES;
-        } else if (FOOTWEAR_CATEGORIES.includes(doc.category)) {
-          mainCat = MainCategory.FOOTWEAR;
-        } else if (SWIMWEAR_CATEGORIES.includes(doc.category)) {
-          mainCat = MainCategory.SWIMWEAR;
-        } else {
-          // Handle legacy categories
-          const mappedCategory = CATEGORY_MAPPING[doc.category];
-          if (mappedCategory) {
-            if (CLOTHING_CATEGORIES.includes(mappedCategory)) {
-              mainCat = MainCategory.CLOTHING;
-            } else if (ACCESSORIES_CATEGORIES.includes(mappedCategory)) {
-              mainCat = MainCategory.ACCESSORIES;
-            } else if (FOOTWEAR_CATEGORIES.includes(mappedCategory)) {
-              mainCat = MainCategory.FOOTWEAR;
-            } else if (SWIMWEAR_CATEGORIES.includes(mappedCategory)) {
-              mainCat = MainCategory.SWIMWEAR;
-            }
-            doc.category = mappedCategory;
-          }
-        }
-
-        doc.categoryStructure = {
-          main: mainCat,
-          sub: doc.category,
-        };
-      }
-
-      return doc;
-    });
+    const [products, total] = await Promise.all([
+      this.productModel
+        .find(query)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limitNum)
+        .populate({
+          path: 'user',
+          select: 'name email phoneNumber seller',
+        })
+        .exec(),
+      this.productModel.countDocuments(query),
+    ]);
 
     return {
-      items: processedProducts || [], // Ensure we always return an array
-      total: count,
-      page: currentPage,
-      pages: Math.ceil(count / pageSize),
+      products,
+      page: pageNum,
+      pages: Math.ceil(total / limitNum),
+      total,
     };
   }
 
@@ -409,7 +315,7 @@ export class ProductsService {
 
   async create(productData: Partial<Product>): Promise<ProductDocument> {
     const status =
-      productData.user.role === Role.Admin
+      productData.user?.role === Role.Admin
         ? ProductStatus.APPROVED
         : ProductStatus.PENDING;
 
@@ -433,7 +339,8 @@ export class ProductsService {
     if (!productData.categoryStructure) {
       productData.categoryStructure = {
         main: mainCat,
-        sub: category,
+        sub: productData.category,
+        ageGroup: productData.categoryStructure?.ageGroup || undefined
       };
     }
 
@@ -460,4 +367,40 @@ export class ProductsService {
     // Additional logic for fetching products based on the query
     return this.productModel.find(query).exec();
   }
+
+  async getFilteredProducts(
+    main?: MainCategory,
+    sub?: string,
+    ageGroup?: AgeGroup
+  ): Promise<Product[]> {
+    const query: any = {};
+
+    if (main) {
+      query['categoryStructure.main'] = main;
+    }
+    
+    if (sub) {
+      query['categoryStructure.sub'] = sub;
+    }
+
+    if (ageGroup) {
+      query['categoryStructure.ageGroup'] = ageGroup;
+    }
+
+    return this.productModel
+      .find(query)
+      .populate({
+        path: 'user',
+        select: 'name email phoneNumber seller',
+      })
+      .exec();
+  }
 }
+
+// Example API calls:
+// GET /products                                     // Get all products
+// GET /products?mainCategory=CLOTHING               // Filter by main category
+// GET /products?mainCategory=CLOTHING&subCategory=T-SHIRTS  // Filter by main and sub category
+// GET /products?ageGroup=ADULTS                    // Filter by age group
+// GET /products?keyword=shirt                      // Search by keyword
+// GET /products?sortBy=price&sortDirection=desc    // Sort by price descending

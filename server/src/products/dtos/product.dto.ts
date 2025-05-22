@@ -98,6 +98,10 @@ export class ProductDto {
   @IsString()
   @IsOptional()
   brandLogoUrl?: string;
+
+  @IsOptional()
+  @IsEnum(AgeGroup)
+  ageGroup?: AgeGroup;
 }
 
 export class FindAllProductsDto {
@@ -136,6 +140,20 @@ export class FindAllProductsDto {
   @IsOptional()
   @IsString()
   sortOrder?: string;
+
+  @IsOptional()
+  @IsEnum(AgeGroup)
+  ageGroup?: AgeGroup;
+}
+
+export class FilterProductsDto {
+  @IsOptional()
+  @IsEnum(MainCategory)
+  main?: MainCategory;
+
+  @IsOptional()
+  @IsString()
+  sub?: string;
 
   @IsOptional()
   @IsEnum(AgeGroup)

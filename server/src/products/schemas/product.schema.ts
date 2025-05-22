@@ -42,6 +42,13 @@ export enum MainCategory {
   SWIMWEAR = 'SWIMWEAR',
 }
 
+export const SubCategories = {
+  CLOTHING: ['T-SHIRTS', 'JACKETS', 'PANTS'],
+  ACCESSORIES: ['BAGS', 'JEWELRY', 'HATS'],
+  FOOTWEAR: ['SNEAKERS', 'BOOTS', 'SANDALS'],
+  SWIMWEAR: ['BIKINIS', 'SWIM SHORTS'],
+};
+
 export enum AgeGroup {
   ADULTS = 'ADULTS',
   KIDS = 'KIDS',
@@ -77,6 +84,9 @@ export class Product {
 
   @Prop({ required: true })
   category!: string;
+
+  @Prop({ type: String, enum: AgeGroup })
+  ageGroup?: AgeGroup;
 
   @Prop({ type: Object })
   categoryStructure?: CategoryStructure;
