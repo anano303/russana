@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLogin } from "../hooks/use-auth";
-import { FaGoogle, FaEnvelope, FaLock, FaHeart } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { toast } from "@/hooks/use-toast";
 import "./login-form.css";
 import { useLanguage } from "@/hooks/LanguageContext";
@@ -15,6 +15,7 @@ import { useLanguage } from "@/hooks/LanguageContext";
 const schema = z.object({
   email: z.string().email({ message: "არასწორი ელ-ფოსტის ფორმატი" }),
   password: z.string().min(6, { message: "მინიმუმ 6 სიმბოლო" }),
+  rememberPassword: z.boolean().optional(),
 });
 
 type LoginFormValues = z.infer<typeof schema>;
@@ -35,6 +36,9 @@ export function LoginForm() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      rememberPassword: false,
+    },
   });
 
   const onSubmit = async (data: LoginFormValues) => {
@@ -64,84 +68,84 @@ export function LoginForm() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-wave"></div>
+    <div className="login-content">
+      <h1 className="login-title">ავტორიზაცია</h1>
 
-      <div className="login-content">
-        <div className="login-greeting">
-          <div className="login-greeting-icon">
-            <FaHeart />
-          </div>
-          <p className="login-greeting-text">{t("auth.welcomeBack")}</p>
+      {loginError && <div className="login-error">{loginError}</div>}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+        <div className="login-field">
+          <input
+            id="email"
+            type="email"
+            placeholder="მეილი"
+            {...register("email")}
+          />
+          {errors.email && <p className="error-text">{errors.email.message}</p>}
         </div>
 
-        {loginError && <div className="login-error">{loginError}</div>}
+        <div className="login-field">
+          <input
+            id="password"
+            type="password"
+            placeholder="პაროლი"
+            {...register("password")}
+          />
+          {errors.password && (
+            <p className="error-text">{errors.password.message}</p>
+          )}
+        </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="login-form">
-          <div className="login-field">
-            <label htmlFor="email">{t("auth.email")}</label>
+        <div className="checkbox-container">
+          <div className="remember-password">
             <input
-              id="email"
-              type="email"
-              placeholder="youremail@example.com"
-              {...register("email")}
+              id="rememberPassword"
+              type="checkbox"
+              {...register("rememberPassword")}
             />
-            <FaEnvelope className="login-field-icon" />
-            {errors.email && (
-              <p className="error-text">{errors.email.message}</p>
-            )}
+            <label htmlFor="rememberPassword">დაიმახსოვრე პაროლი</label>
           </div>
-
-          <div className="login-field">
-            <label htmlFor="password">{t("auth.password")}</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register("password")}
-            />
-            <FaLock className="login-field-icon" />
-            {errors.password && (
-              <p className="error-text">{errors.password.message}</p>
-            )}
-          </div>
-
           <Link href="/forgot-password" className="forgot-password">
-            {t("auth.forgotPassword")}
+            დაგავიწყდა პაროლი?
           </Link>
-
-          <button type="submit" className="login-button" disabled={isPending}>
-            {isPending ? (
-              <>
-                <span className="login-loading"></span>
-                {t("auth.loggingIn")}...
-              </>
-            ) : (
-              t("auth.loginButton")
-            )}
-          </button>
-        </form>
-
-        <div className="login-divider">
-          <span>{t("auth.orContinueWith")}</span>
         </div>
 
-        <div className="social-login">
-          <button
-            className="social-button google-button"
-            onClick={handleGoogleAuth}
-          >
+        <button type="submit" className="login-button" disabled={isPending}>
+          {isPending ? "შესვლა..." : "შესვლა"}
+        </button>
+      </form>
+
+      <div className="login-divider">
+        <span>ან შედით </span>
+      </div>
+
+      <div className="social-login">
+        <button
+          className="social-button google-button"
+          onClick={handleGoogleAuth}
+        >
+          <div className="google-icon">
             <FaGoogle />
-            <span>Google</span>
-          </button>
-        </div>
+          </div>
+          <span>
+            <span className="google-brand">
+              <span className="google-blue">G</span>
+              <span className="google-red">o</span>
+              <span className="google-yellow">o</span>
+              <span className="google-blue">g</span>
+              <span className="google-green">l</span>
+              <span className="google-red">e</span>
+            </span>
+           
+          </span>
+        </button>
+      </div>
 
-        <div className="register-prompt">
-          {t("auth.dontHaveAccount")}{" "}
-          <Link href="/register" className="register-link">
-            {t("auth.createAccount")}
-          </Link>
-        </div>
+      <div className="register-prompt">
+        <Link href="/register" className="register-link">
+          დარეგისტრირდი
+        </Link>
+        ახლავე რათა დააპიპინოოო{" "}
       </div>
     </div>
   );
