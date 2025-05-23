@@ -85,6 +85,7 @@
   overflow: hidden;
   background-color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* Make the wrapper clickable */
 }
 
 .details-image {
@@ -426,6 +427,55 @@ select:focus {
 
 .prose p {
   margin-bottom: 1rem;
+}
+
+/* Full screen image modal */
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.fullscreen-image-container {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.fullscreen-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+  border: none;
+  z-index: 1001;
 }
 
 /* Responsive */

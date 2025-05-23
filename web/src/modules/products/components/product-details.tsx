@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { StarIcon } from "lucide-react";
+import { StarIcon, X } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
 import { ReviewForm } from "./review-form";
 import { ProductReviews } from "./product-reviews";
@@ -24,6 +24,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
   const [isRoomViewerOpen, setIsRoomViewerOpen] = useState(false);
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false); // New state for fullscreen modal
   const [dimensions, setDimensions] = useState<{
     width?: number;
     height?: number;
@@ -65,6 +66,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
   const isOutOfStock = product.countInStock === 0;
 
+  // Function to open fullscreen image
+  const openFullscreen = () => {
+    setIsFullscreenOpen(true);
+  };
+
+  // Function to close fullscreen image
+  const closeFullscreen = () => {
+    setIsFullscreenOpen(false);
+  };
+
   return (
     <div className="container">
       <div className="grid">
@@ -101,6 +112,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
                 className="image-wrapper"
+                onClick={openFullscreen} // Add click handler to open fullscreen
               >
                 <Image
                   src={product.images[currentImageIndex]}
@@ -224,6 +236,34 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             className="custom-style-2"
           />
         </div>
+
+        {/* Fullscreen Image Modal */}
+        {isFullscreenOpen && (
+          <div className="fullscreen-modal" onClick={closeFullscreen}>
+            <button
+              className="fullscreen-close"
+              onClick={(e) => {
+                e.stopPropagation();
+                closeFullscreen();
+              }}
+            >
+              <X />
+            </button>
+            <div
+              className="fullscreen-image-container"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={product.images[currentImageIndex]}
+                alt={displayName}
+                width={1200}
+                height={1200}
+                quality={100}
+                className="fullscreen-image"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Tabs - Full Width */}
         <div className="tabs">
