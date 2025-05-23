@@ -8,21 +8,14 @@ interface AuthLayoutProps {
   subtitle: string;
 }
 
-export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
+export function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="auth-layout">
-      {/* Floating hearts background */}
-      <div className="floating-heart"></div>
-      <div className="floating-heart"></div>
-      <div className="floating-heart"></div>
-      <div className="floating-heart"></div>
-      <div className="floating-heart"></div>
-
       <div className="auth-layout-inner">
-        <div className="auth-layout-header">
+        {/* <div className="auth-layout-header">
           <h1 className="auth-layout-title">{title}</h1>
           <p className="auth-layout-subtitle">{subtitle}</p>
-        </div>
+        </div> */}
         <div className="auth-layout-children">{children}</div>
       </div>
     </div>

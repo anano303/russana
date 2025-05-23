@@ -67,135 +67,115 @@ export function RegisterForm() {
       },
     } as RegisterUserOptions);
   };
+
   const handleGoogleAuth = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   if (isSuccess) {
     return (
-      <div className="register-container">
-        <div className="register-content">
-          <div className="register-success">
-            <div className="register-success-icon">
-              <FaCheck />
-            </div>
-            <h3 className="register-success-title">
-              {t("auth.registrationSuccessful")}
-            </h3>
-            <p className="register-success-text">
-              {t("auth.accountCreatedSuccessfully")}
-            </p>
-            <p className="register-success-text">
-              {t("auth.redirectingToLogin")}
-            </p>
+      <div className="register-content">
+        <div className="register-success">
+          <div className="register-success-icon">
+            <FaCheck />
           </div>
+          <h3 className="register-success-title">
+            {t("auth.registrationSuccessful")}
+          </h3>
+          <p className="register-success-text">
+            {t("auth.accountCreatedSuccessfully")}
+          </p>
+          <p className="register-success-text">
+            {t("auth.redirectingToLogin")}
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="register-container">
-      <div className="register-decoration"></div>
-      <div className="register-circles"></div>
+    <div className="register-content">
+      <h1 className="register-title">რეგისტრაცია</h1>
 
-      <div className="register-content">
-        <div className="register-header">
-          <h2 className="register-title">{t("auth.createAccount")}</h2>
+      {registrationError && (
+        <div className="register-error-message">{registrationError}</div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="register-form">
+        <div className="register-field">
+          <input
+            id="name"
+            type="text"
+            placeholder="სახელი"
+            {...register("name")}
+          />
+          {errors.name && <p className="error-text">{errors.name.message}</p>}
         </div>
 
-        {registrationError && (
-          <div className="register-error-message">{registrationError}</div>
-        )}
-
-        <form onSubmit={handleSubmit(onSubmit)} className="register-form">
-          <div className="register-field">
-            <label className="register-label" htmlFor="name">
-              {t("auth.fullName")}
-            </label>
-            <input
-              className="register-input"
-              id="name"
-              type="text"
-              placeholder="John Doe"
-              {...register("name")}
-            />
-            {errors.name && (
-              <p className="register-error">{errors.name.message}</p>
-            )}
-          </div>
-
-          <div className="register-field">
-            <label className="register-label" htmlFor="email">
-              {t("auth.email")}
-            </label>
-            <input
-              className="register-input"
-              id="email"
-              type="email"
-              placeholder="name@example.com"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="register-error">{errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="register-field">
-            <label className="register-label" htmlFor="password">
-              {t("auth.password")}
-            </label>
-            <input
-              className="register-input"
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="register-error">{errors.password.message}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="register-button"
-            disabled={isPending}
-          >
-            {isPending ? (
-              <>
-                <span className="register-loading"></span>
-                {t("auth.registering")}...
-              </>
-            ) : (
-              <>{t("auth.register")}</>
-            )}
-          </button>
-        </form>
-
-        <div className="register-separator">
-          <span>{t("auth.orContinueWith")}</span>
+        <div className="register-field">
+          <input
+            id="email"
+            type="email"
+            placeholder="მეილი"
+            {...register("email")}
+          />
+          {errors.email && <p className="error-text">{errors.email.message}</p>}
         </div>
 
-        <div className="social-buttons">
-          <button
-            className="social-button"
-            onClick={handleGoogleAuth}
-            disabled={isPending}
-          >
-            <span className="google-icon">
-              <FaGoogle />
+        <div className="register-field">
+          <input
+            id="password"
+            type="password"
+            placeholder="პაროლი"
+            {...register("password")}
+          />
+          {errors.password && (
+            <p className="error-text">{errors.password.message}</p>
+          )}
+        </div>
+
+        <button type="submit" className="register-button" disabled={isPending}>
+          {isPending ? (
+            <>
+              <span className="register-loading"></span>
+              რეგისტრაცია...
+            </>
+          ) : (
+            "რეგისტრაცია"
+          )}
+        </button>
+      </form>
+
+      <div className="register-divider">
+        <span>ან</span>
+      </div>
+
+      <div className="social-login">
+        <button
+          className="social-button google-button"
+          onClick={handleGoogleAuth}
+        >
+          <div className="google-icon">
+            <FaGoogle />
+          </div>
+          <span>
+            <span className="google-brand">
+              <span className="google-blue">G</span>
+              <span className="google-red">o</span>
+              <span className="google-yellow">o</span>
+              <span className="google-blue">g</span>
+              <span className="google-green">l</span>
+              <span className="google-red">e</span>
             </span>
-            Google
-          </button>
-        </div>
+          </span>
+        </button>
+      </div>
 
-        <div className="register-footer">
-          {t("auth.alreadyHaveAccount")}{" "}
-          <Link href="/login" className="login-link">
-            {t("auth.login")}
-          </Link>
-        </div>
+      <div className="login-prompt">
+        თუ ჩვენთან უკვე დააპიპინე გაიარე
+        <Link href="/login" className="login-link">
+          ავტორიზაცია
+        </Link>
       </div>
     </div>
   );

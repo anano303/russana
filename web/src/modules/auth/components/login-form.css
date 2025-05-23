@@ -57,9 +57,23 @@
   border: 1px solid rgba(207, 10, 10, 1);
   border-radius: 8px;
   background-color: rgba(255, 229, 232, 0.7);
-  font-size: 1rem;
   transition: border-color 0.3s;
   box-sizing: border-box;
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: rgba(207, 10, 10, 1);
+}
+
+.login-field input::placeholder {
+  color: rgba(207, 10, 10, 0.7);
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 
 /* Override browser autofill styling */
@@ -67,7 +81,7 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-text-fill-color: rgba(207, 10, 10, 0.7) !important;
+  -webkit-text-fill-color: rgba(207, 10, 10, 1) !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 

@@ -485,9 +485,11 @@ input:focus {
 }
 
 .register-content {
-  padding: 2.5rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .register-header {
@@ -496,12 +498,16 @@ input:focus {
 }
 
 .register-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #e91e63;
-  margin-bottom: 0.5rem;
-  position: relative;
-  display: inline-block;
+  color: rgba(207, 10, 10, 1);
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 3.5rem;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 
 .register-title::after {
@@ -522,75 +528,92 @@ input:focus {
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .register-field {
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.register-label {
-  display: block;
-  font-size: 0.85rem;
-  color: #777;
-  margin-bottom: 0.5rem;
-  transition: all 0.3s;
+.register-field input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(207, 10, 10, 1);
+  border-radius: 8px;
+  background-color: rgba(255, 229, 232, 0.7);
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: rgba(207, 10, 10, 1);
 }
 
-.register-input {
-  width: 90%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  font-size: 1rem;
-  color: #333;
-  transition: all 0.3s;
-  background-color: #f9f9f9;
+.register-field input::placeholder {
+  color: rgba(207, 10, 10, 0.7);
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 
-.register-input:focus {
-  border-color: #e91e63;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+/* Override browser autofill styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: rgba(207, 10, 10, 1) !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
-.register-error {
-  color: #e91e63;
-  font-size: 0.8rem;
+input:-internal-autofill-selected {
+  background-color: rgba(255, 229, 232, 0.7) !important;
+  appearance: none;
+}
+
+.register-field input:focus {
+  border-color: rgba(207, 10, 10, 1);
+  outline: none;
+}
+
+.error-text {
+  color: rgba(207, 10, 10, 1);
+  font-size: 0.875rem;
   margin-top: 0.25rem;
 }
 
 .register-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: none;
-  background: #e91e63;
+  background-color: rgba(207, 10, 10, 1);
   color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
   font-size: 1rem;
-  font-weight: 600;
-  border-radius: 10px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 0.5rem;
-}
-
-.register-button::after {
-  content: "→";
-  opacity: 0;
-  transform: translateX(-10px);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s;
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  margin: 1rem 0;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 10%;
 }
 
 .register-button:hover {
-  background-color: #d81b60;
-}
-
-.register-button:hover::after {
-  opacity: 1;
-  transform: translateX(5px);
+  background-color: rgba(177, 8, 8, 1);
 }
 
 .register-button:disabled {
@@ -598,29 +621,29 @@ input:focus {
   cursor: not-allowed;
 }
 
-.register-separator {
+.register-divider {
   display: flex;
   align-items: center;
-  margin: 1.5rem 0;
-  color: #999;
+  text-align: center;
+  color: #777;
+  font-size: 0.875rem;
+  margin: 1rem 0;
 }
 
-.register-separator::before,
-.register-separator::after {
+.register-divider::before,
+.register-divider::after {
   content: "";
   flex: 1;
-  border-top: 1px dashed #ddd;
+  border-bottom: 1px solid rgba(255, 229, 232, 0.7);
 }
 
-.register-separator span {
+.register-divider span {
   padding: 0 0.75rem;
-  font-size: 0.85rem;
 }
 
-.social-buttons {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+.social-login {
+  display: flex;
+  justify-content: center;
 }
 
 .social-button {
@@ -628,96 +651,132 @@ input:focus {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 1rem;
-  width: 90%;
-  border: none;
-  border-radius: 10px;
-  background-color: #db4437;
-  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 3px 6px rgba(219, 68, 55, 0.3);
+  background-color: white;
+  transition: all 0.3s ease;
+  width: 60%;
+  border: 1px solid #ddd;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .social-button:hover {
-  background-color: #c23321;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(219, 68, 55, 0.4);
+  background-color: rgba(255, 229, 232, 0.7);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.google-icon {
-  color: white;
+.social-button svg {
+  color: #4285f4;
+  font-size: 20px;
 }
 
-.register-footer {
-  margin-top: 2rem;
+.google-button {
+  position: relative;
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+.google-brand {
+  font-weight: 500;
+  letter-spacing: 2px;
+}
+
+.google-blue {
+  color: #4285f4;
+}
+
+.google-red {
+  color: #db4437;
+}
+
+.google-yellow {
+  color: #f4b400;
+}
+
+.google-green {
+  color: #0f9d58;
+}
+
+.login-prompt {
   text-align: center;
-  color: #777;
-  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  color: #555;
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 
 .login-link {
-  color: #e91e63;
-  font-weight: 600;
+  color: rgba(207, 10, 10, 1);
   text-decoration: none;
-  display: block;
-  margin-top: 8px; /* Add space between text and link */
+  font-weight: 500;
 }
 
 .login-link:hover {
   text-decoration: underline;
 }
 
-/* Success message */
-.register-success {
-  background-color: #e8f5e9;
-  border-left: 4px solid #4caf50;
-  padding: 1.5rem;
-  border-radius: 10px;
+.register-error-message {
+  color: rgba(207, 10, 10, 1);
   text-align: center;
   margin-bottom: 1rem;
-}
-
-.register-success-icon {
-  font-size: 2.5rem;
-  color: #4caf50;
-  margin-bottom: 1rem;
-}
-
-.register-success-title {
-  font-size: 1.25rem;
-  color: #1b5e20;
-  margin-bottom: 0.5rem;
-}
-
-.register-success-text {
-  color: #2e7d32;
+  font-size: 0.875rem;
 }
 
 .register-loading {
-  display: inline-block;
-  width: 1.2rem;
-  height: 1.2rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
   border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s infinite linear;
+  width: 1rem;
+  height: 1rem;
+  animation: spin 1s linear infinite;
   margin-right: 0.5rem;
 }
 
 @keyframes spin {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
 }
 
-@media (max-width: 480px) {
-  .register-content {
-    padding: 1.5rem;
-  }
+.register-success {
+  text-align: center;
+  padding: 2rem;
+}
 
-  .register-title {
-    font-size: 1.5rem;
-  }
+.register-success-icon {
+  color: rgba(207, 10, 10, 1);
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.register-success-title {
+  color: rgba(207, 10, 10, 1);
+  font-family: ALK Katerina;
+  font-size: 32px;
+  margin-bottom: 1rem;
+}
+
+.register-success-text {
+  color: #555;
+  margin-bottom: 0.5rem;
+  font-size: 16px;
 }
