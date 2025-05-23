@@ -72,37 +72,14 @@ async function bootstrap() {
   }
 
   const config = new DocumentBuilder()
-    .setTitle('SoulArt API')
-    .setDescription('SoulArt E-commerce REST API Documentation')
+    .setTitle('SoulArt  API')
+    .setDescription('SoulArt E-commerce REST API')
     .setVersion('1.0')
-    .addTag('Products', 'Product management endpoints')
-    .addTag('Auth', 'Authentication endpoints')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token',
-        in: 'header',
-      },
-      'access-token', // This name here is used to refer to the security scheme
-    )
+    .addBearerAuth()
     .build();
 
-  const document = SwaggerModule.createDocument(app, config, {
-    deepScanRoutes: true,
-    extraModels: [], // Add any extra models here if needed
-  });
-
-  SwaggerModule.setup('docs', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-      tagsSorter: 'alpha',
-      operationsSorter: 'alpha',
-    },
-    customSiteTitle: 'SoulArt API Documentation',
-  });
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document); // დარწმუნდით, რომ როუტი არის '/docs'
 
   app.enableShutdownHooks();
 
@@ -112,5 +89,3 @@ async function bootstrap() {
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
-
-

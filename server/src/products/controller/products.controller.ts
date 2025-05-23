@@ -19,8 +19,6 @@ import {
 import { RolesGuard } from '@/guards/roles.guard';
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { ProductDto, FindAllProductsDto } from '../dtos/product.dto';
-import { FilterProductsDto } from '../dtos/filter-products.dto'; // Add this import
-import { ProductResponseDto } from '../dtos/product-response.dto'; // Add this import
 import { ReviewDto } from '../dtos/review.dto';
 import { ProductsService } from '../services/products.service';
 import { UserDocument } from '@/users/schemas/user.schema';
@@ -31,7 +29,6 @@ import {
   FilesInterceptor,
 } from '@nestjs/platform-express';
 import { AppService } from '@/app/services/app.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 
 import { Response } from 'express';
 import { Roles } from '@/decorators/roles.decorator';
@@ -39,7 +36,6 @@ import { Role } from '@/types/role.enum';
 import { ProductStatus } from '../schemas/product.schema';
 import { MainCategory, AgeGroup } from '@/types';
 
-@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(
@@ -48,27 +44,35 @@ export class ProductsController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get filtered products' })
-  @ApiResponse({
-    status: 200,
-    description: 'Returns filtered products with pagination',
-    type: ProductResponseDto,
-  })
-  async getProducts(
-    @Query() filterDto: FilterProductsDto,
+  getProducts(
+    @Query('keyword') keyword: string,
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query('brand') brand: string,
+    @Query('mainCategory') mainCategory: string,
+    @Query('subCategory') subCategory: string,
+    @Query('sortBy') sortBy: string,
+    @Query('sortDirection') sortDirection: 'asc' | 'desc',
+    @Query('ageGroup') ageGroup: AgeGroup,
   ) {
+    console.log(
+      'Getting products with mainCategory:',
+      mainCategory,
+      'ageGroup:',
+      ageGroup,
+    );
     return this.productsService.findMany(
-      filterDto.keyword,
-      filterDto.page?.toString(),
-      filterDto.limit?.toString(),
+      keyword,
+      page,
+      limit,
       undefined,
-      undefined,
-      undefined,
-      filterDto.mainCategory,
-      filterDto.subCategory,
-      filterDto.sortBy,
-      filterDto.sortDirection,
-      filterDto.ageGroup,
+      ProductStatus.APPROVED,
+      brand,
+      mainCategory,
+      subCategory,
+      sortBy,
+      sortDirection,
+      ageGroup,
     );
   }
 
