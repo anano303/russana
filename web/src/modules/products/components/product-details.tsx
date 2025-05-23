@@ -106,10 +106,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   src={product.images[currentImageIndex]}
                   alt={displayName}
                   fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
                   quality={90}
                   priority
-                  className="object-contain"
+                  className="details-image"
                 />
               </motion.div>
             </AnimatePresence>
