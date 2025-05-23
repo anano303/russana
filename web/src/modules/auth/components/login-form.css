@@ -227,36 +227,27 @@ input:-internal-autofill-selected {
 }
 
 .social-button svg {
-  color: #4285f4;
+  color: #000;
   font-size: 20px;
 }
 
 .google-button {
   position: relative;
   background-color: white;
-
   border: 1px solid #ddd;
 }
 
 .google-brand {
   font-weight: 500;
   letter-spacing: 2px;
+  color: #000;
 }
 
-.google-blue {
-  color: #4285f4;
-}
-
-.google-red {
-  color: #db4437;
-}
-
-.google-yellow {
-  color: #f4b400;
-}
-
+.google-blue,
+.google-red,
+.google-yellow,
 .google-green {
-  color: #0f9d58;
+  color: #000;
 }
 
 /* Remove this since we're replacing it with the colored version */

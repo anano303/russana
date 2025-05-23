@@ -674,8 +674,7 @@ input:-internal-autofill-selected {
 }
 
 .social-button svg {
-  color: #4285f4;
-  font-size: 20px;
+  color: #000;
 }
 
 .google-button {
@@ -687,22 +686,14 @@ input:-internal-autofill-selected {
 .google-brand {
   font-weight: 500;
   letter-spacing: 2px;
+  color: #000;
 }
 
-.google-blue {
-  color: #4285f4;
-}
-
-.google-red {
-  color: #db4437;
-}
-
-.google-yellow {
-  color: #f4b400;
-}
-
+.google-blue,
+.google-red,
+.google-yellow,
 .google-green {
-  color: #0f9d58;
+  color: #000;
 }
 
 .login-prompt {
