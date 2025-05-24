@@ -1,11 +1,156 @@
 .cart-item {
   display: flex;
   gap: 16px;
-  border-radius: 8px;
-  border: 1px solid #e5e5e5;
-  padding: 16px;
+  border-bottom: 2px solid #CF0A0A;
+  margin-bottom: 70px;
+  padding: 30px;
+  padding-bottom: 70px;
   flex-direction: row;
   align-items: center;
+  position: relative;
+}
+
+
+
+.cart-item-image {
+  position: relative;
+  height: 96px;
+  width: 96px;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.cart-item-details {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 30%;
+}
+
+.cart-item-name {
+  font-family: 'ALK Katerina', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  color: #CF0A0A;
+  /* text-decoration: underline; */
+}
+
+.cart-item-price {
+  font-size: 0.875rem;
+  color: #000000;
+  font-size: 20px;
+}
+
+.cart-item-actions {
+  display: flex;
+  gap: 84px;
+}
+
+.cart-item-quantity select {
+  width: 42px;
+  height: 32px;
+  font-size: 18px;
+  font-style: bold;
+  font-family: 'ALK Katerina';
+  color: #CF0A0A;
+  border: 2px solid #CF0A0A;
+  outline: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0 5px;
+  margin-top: 38px;
+}
+
+/* Styling the dropdown arrow */
+.cart-item-quantity select::-ms-expand {
+  color: #CF0A0A;
+}
+
+.cart-item-quantity select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url("data:image/svg+xml;utf8,<svg fill='%23CF0A0A' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right center;
+  padding-right: 25px;
+}
+
+.cart-item-total {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.cart-item-total-price {
+  font-size: 24px;
+  font-family: 'ALK Katerina';
+  color: #000000;
+  text-align: start;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+}
+
+.cart-item:hover .remove-button {
+  text-decoration: underline;
+}
+
+
+.cart-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Heart background */
+.cart-item > div:first-child::before {
+  content: "";
+  position: absolute;
+  top: 56%;
+  left: -48px; /* გადავწიოთ მარცხნივ */
+  width: 200px; /* განვსაზღვროთ გულის ზომა */
+  height: 200px;
+  transform: translateY(-50%); /* ვერტიკალურად ცენტრში მოთავსება */
+  background: url("../../../assets/Images/HEART20.png") no-repeat center center;
+  background-size: contain;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Left diamond */
+.cart-item::before {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: -5px;
+  width: 8px;
+  height: 8px;
+  background-color: #CF0A0A;
+  transform: rotate(45deg);
+  z-index: 2;
+}
+
+/* Right diamond */
+.cart-item::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  background-color: #CF0A0A;
+  transform: rotate(45deg);
+  z-index: 2;
 }
 
 .cart-item-image {
@@ -26,35 +171,67 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-left: 30%;
 }
 
 .cart-item-name {
-  font-weight: 500;
-  text-decoration: underline;
+  font-family: 'ALK Katerina', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  color: #CF0A0A;
+  /* text-decoration: underline; */
 }
 
 .cart-item-price {
   font-size: 0.875rem;
-  color: #6c6c6c;
+  color: #000000;
+  font-size: 20px;
 }
 
 .cart-item-actions {
   display: flex;
-  gap: 16px;
+  gap: 84px;
 }
 
 .cart-item-quantity select {
-  width: 80px;
+  width: 42px;
+  height: 32px;
+  font-size: 18px;
+  font-style: bold;
+  font-family: 'ALK Katerina';
+  color: #CF0A0A;
+  border: 2px solid #CF0A0A;
+  outline: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0 5px;
+  margin-top: 38px;
+}
+
+/* Styling the dropdown arrow */
+.cart-item-quantity select::-ms-expand {
+  color: #CF0A0A;
+}
+
+.cart-item-quantity select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url("data:image/svg+xml;utf8,<svg fill='%23CF0A0A' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right center;
+  padding-right: 25px;
 }
 
 .cart-item-total {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 48px;
 }
 
 .cart-item-total-price {
-  font-weight: 500;
+  font-size: 24px;
+  font-family: 'ALK Katerina';
+  color: #000000;
+  text-align: start;
 }
 
 .remove-button {
@@ -67,6 +244,7 @@
 .cart-item:hover .remove-button {
   text-decoration: underline;
 }
+
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
