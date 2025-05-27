@@ -98,21 +98,21 @@
 }
 
 /* Media queries for responsive adjustments */
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .heart2 {
     width: 200%;
     height: 160%;
   }
 
   .left-wing {
-    left: -15%;
+    left: 1%;
   }
 
   .right-wing {
-    right: -125%;
+    right: -110%;
   }
   .wing {
-    top: -22%;
+    top: 3%;
   }
 }
 
@@ -134,9 +134,7 @@
 } */
 
 @media (max-width: 768px) {
-  /* .heart-container {
-    right: 8vw;
-  } */
+ 
 
   .heart2 {
     width: 180%;
@@ -144,15 +142,15 @@
   }
 
   .left-wing {
-    left: -13%;
+    left: 0;
   }
 
   .right-wing {
-    right: -105%;
+    right: -92%;
   }
 
   .wing {
-    top: -31%;
+    top: -2%;
   }
 }
 
@@ -161,24 +159,14 @@
     width: 160%;
     height: 120%;
   }
+  .wing{
+    top: 2%;
+  }
 
   .right-wing {
-    right: -82%;
+    right: -66%;
   }
   .left-wing {
-    left: -12%;
-  }
-  .wing {
-    top: -28% !important;
-    width: 116px !important;
-    height: 116px !important;
-  }
-}
-
-@media (max-width: 440px) {
-  .wing {
-    top: -25% !important;
-    width: 99px !important;
-    height: 99px !important;
+    left: 12%;
   }
 }

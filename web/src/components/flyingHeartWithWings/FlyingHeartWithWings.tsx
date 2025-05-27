@@ -21,25 +21,25 @@ const FlyingHeartWithWings: React.FC<FlyingHeartWithWingsProps> = ({
       let newSize = size;
       let newWingSize = size * 0.8;
 
-      if (viewportWidth < 1024) {
+      if (viewportWidth < 1100) {
         newSize = Math.max(100, size * 0.9);
-        newWingSize = newSize * 0.82;
+        newWingSize = 105;
       }
 
       // Special adjustment for tablets around 700px
       if (viewportWidth <= 800 && viewportWidth >= 600) {
         newSize = Math.max(95, size * 0.85);
-        newWingSize = newSize * 0.9; // Larger wings for better visibility
+        newWingSize = 105;
       }
 
       if (viewportWidth < 768) {
         newSize = Math.max(90, size * 0.8);
-        newWingSize = newSize * 0.85; // Slightly larger wings for better visibility
+        newWingSize = 90;
       }
 
       if (viewportWidth < 480) {
         newSize = Math.max(70, size * 0.7);
-        newWingSize = newSize * 0.85; // Larger wings for better visibility
+        newWingSize = 60;
       }
 
       setDynamicSize(newSize);

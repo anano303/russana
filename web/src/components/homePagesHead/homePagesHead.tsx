@@ -25,7 +25,7 @@ const HomePagesHead = () => {
           <FlyingHeartWithWings size={200} />
         </div>
 
-        <p className="sub-slogan">პიიიპ პიიიიპ!</p>
+        <p className="sub-slogan slogan2">პიიიპ პიიიიპ!</p>
       </div>
     </div>
   );
