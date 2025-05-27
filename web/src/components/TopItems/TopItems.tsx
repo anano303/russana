@@ -41,16 +41,18 @@ const TopItems: React.FC = () => {
       </div>
 
       <div className="top-items-grid">
-        {topProducts?.map((product: Product) => (
-          <ProductCard key={product._id} product={product} />
+        {topProducts?.map((product: Product, index: number) => (
+          <div
+            key={product._id}
+            className={`product-card-wrapper ${
+              index === 0 ? "first-product" : ""
+            }`}
+            style={index === 0 ? { paddingLeft: "5px" } : {}}
+          >
+            <ProductCard product={product} />
+          </div>
         ))}
       </div>
-
-      {/* <div className="view-all-products">
-        <Link href="/shop" className="view-all-button">
-          იხილეთ ყველა პროდუქტი
-        </Link>
-      </div> */}
     </div>
   );
 };

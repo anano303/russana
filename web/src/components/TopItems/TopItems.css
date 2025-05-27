@@ -2,17 +2,20 @@
   width: 90%;
   justify-self: center;
   margin-top: 10%;
+  overflow: hidden; /* Prevent any potential overflow issues */
 }
 
 .top-items-title-container {
   position: relative;
   margin-bottom: 30px;
   text-align: left;
+  padding-left: 0; /* Remove any left padding */
 }
 
 .top-items-title {
   font-family: ALK Life;
-  margin-left: 2%;
+  margin-left: 0; /* Remove left margin */
+  padding-left: 0; /* Remove left padding */
   color: #e50000;
   font-size: 2.2rem;
   font-weight: 400;
@@ -46,11 +49,47 @@
 }
 
 .top-items-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  padding: 0 20px;
-  justify-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: min(70px);
+  padding: 15px 20px 5px 20px; /* Restore padding on both sides */
+  margin-left: 0;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #e91e63 #f5f5f5;
+  align-items: stretch;
+  min-height: 400px; /* Increased to allow more space for content */
+  padding: 15px 20px 5px 20px; /* Added top padding to prevent cut-off */
+  justify-content: space-between;
+}
+
+/* Add this class for the first product card to ensure it's not cut off */
+.product-card-wrapper:first-child {
+  margin-left: 5%; /* Small margin to prevent cut-off */
+}
+
+.top-items-grid > * {
+  flex: 0 0 auto;
+  width: 300px;
+  margin-bottom: 10px; /* Add some bottom margin */
+  height: auto; /* Let height be determined by content */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure product cards don't overlap by setting a min-width */
+.top-items-grid > * {
+  min-width: 300px;
+  box-sizing: border-box; /* Include padding in width calculation */
+  transition: transform 0.2s ease; /* Smooth hover transition */
+}
+
+/* Optional: add hover effect for better UX */
+.top-items-grid > *:hover {
+  transform: translateY(-5px);
 }
 
 .view-all-products {
@@ -86,16 +125,14 @@
 
 /* Responsive styles */
 @media (max-width: 1200px) {
-  .top-items-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
+  .top-items-grid > * {
+    width: 280px;
   }
 }
 
 @media (max-width: 992px) {
-  .top-items-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+  .top-items-grid > * {
+    width: 250px;
   }
 }
 
@@ -104,29 +141,26 @@
     font-size: 1.8rem;
     gap: 10px;
   }
-}
 
-/* @media (max-width: 576px) {
-  .top-items-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
+  .top-items-grid > * {
+    width: 220px;
   }
-} */
+}
 
 @media (max-width: 480px) {
   .top-items-container {
     margin: 30px auto;
+    width: 95%;
   }
 
   .top-items-title {
     font-size: 1.5rem;
     gap: 8px;
+    margin-left: 0; /* Ensure no left margin on mobile */
   }
 
-  .top-items-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 8px;
-    padding: 0 10px;
+  .top-items-grid > * {
+    width: 180px;
   }
 
   .view-all-button {
@@ -136,8 +170,7 @@
 }
 
 @media (max-width: 320px) {
-  .top-items-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+  .top-items-grid > * {
+    width: 160px;
   }
 }
