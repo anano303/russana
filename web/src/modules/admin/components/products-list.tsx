@@ -164,7 +164,7 @@ export function ProductsList() {
               <td className="prd-td">
                 <StatusBadge status={product.status} />
               </td>
-              <td className="prd-td">
+              {/* <td className="prd-td">
                 <div className="delivery-info">
                   <span>{product.deliveryType || "SOULART"}</span>
                   {product.deliveryType === "SELLER" &&
@@ -175,7 +175,7 @@ export function ProductsList() {
                       </p>
                     )}
                 </div>
-              </td>
+              </td> */}
               <td className="prd-td">
                 <div className="seller-info">
                   <p className="font-medium">{product.user?.name || "N/A"}</p>

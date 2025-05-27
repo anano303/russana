@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, XCircle, Truck, Store } from "lucide-react";
+import { CheckCircle2, XCircle, Store } from "lucide-react";
 import { useLanguage } from "@/hooks/LanguageContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -143,10 +143,10 @@ export function OrderDetails({ order }: OrderDetailsProps) {
 
             {soulartDeliveryItems.length > 0 && (
               <div className="delivery-group">
-                <div className="delivery-group-header">
+                {/* <div className="delivery-group-header">
                   <Truck className="icon" />
                   <h3>{t("SoulArt Courier")}</h3>
-                </div>
+                </div> */}
                 {soulartDeliveryItems.map((item) => (
                   <div key={item.productId} className="order-item">
                     <div className="order-item-image">

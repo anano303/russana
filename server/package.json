@@ -1,8 +1,8 @@
 {
   "name": "server",
   "version": "0.0.1",
-  "description": "E-commerce SoulArt Server",
-  "author": "SoulArt",
+  "description": "E-commerce Russana Server",
+  "author": "Russana",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

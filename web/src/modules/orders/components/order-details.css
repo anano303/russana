@@ -2,6 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  font-family: "ALK Life", "Georgia", serif;
 }
 
 .order-header {
@@ -9,11 +10,13 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 .order-title {
   font-size: 24px;
   font-weight: bold;
+  color: #e50000;
 }
 
 .order-badge {
@@ -23,12 +26,12 @@
 }
 
 .order-badge.paid {
-  background: #28a745;
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
   color: #fff;
 }
 
 .order-badge.pending {
-  background: #dc3545;
+  background: linear-gradient(90deg, #e50000, #e91e63);
   color: #fff;
 }
 
@@ -42,35 +45,73 @@
 .order-card {
   background: #fff;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(229, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.order-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #e50000, #ff5252, #e50000);
+  background-size: 200% 100%;
+  animation: gradientAnimation 3s infinite alternate;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .order-subtitle {
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  color: #e50000;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 8px;
 }
 
 .order-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.order-item:hover {
+  background-color: #ffeef2;
 }
 
 .order-item-image {
   position: relative;
   width: 60px;
   height: 60px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.1);
 }
 
 .order-item-link {
   font-weight: 500;
   text-decoration: none;
-  color: #007bff;
+  color: #e91e63;
+  transition: color 0.2s;
 }
 
 .order-item-link:hover {
+  color: #e50000;
   text-decoration: underline;
 }
 
@@ -78,20 +119,22 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
   font-size: 14px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .alert.success {
   background: #d4edda;
   color: #155724;
+  border-left: 4px solid #28a745;
 }
 
 .alert.error {
   background: #f8d7da;
   color: #721c24;
+  border-left: 4px solid #dc3545;
 }
 
 .icon {
@@ -100,21 +143,23 @@
 }
 
 .order-summary {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
-  padding: 4px 0;
+  padding: 8px 0;
+  color: #333;
 }
 
 .summary-total {
   display: flex;
   justify-content: space-between;
   font-weight: bold;
-  font-size: 16px;
-  margin-top: 10px;
+  font-size: 18px;
+  margin-top: 15px;
+  color: #e50000;
 }
 
 .summary-total-usd {
@@ -127,16 +172,21 @@
 }
 
 hr {
-  margin: 10px 0;
+  margin: 15px 0;
   border: none;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #f0f0f0;
 }
 
 .delivery-group {
   margin-bottom: 1.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
   overflow: hidden;
+  transition: box-shadow 0.3s;
+}
+
+.delivery-group:hover {
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.1);
 }
 
 .delivery-group:last-child {
@@ -148,26 +198,28 @@ hr {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background-color: #f3f4f6;
-  border-bottom: 1px solid #e5e7eb;
+  background-color: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .delivery-group-header h3 {
   margin: 0;
   font-weight: 500;
   font-size: 1rem;
+  color: #e50000;
 }
 
 .delivery-group-header .icon {
   width: 18px;
   height: 18px;
+  color: #e91e63;
 }
 
 .delivery-time {
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #b7791f;
-  background-color: #ffecb3;
+  color: #e91e63;
+  background-color: #ffeef2;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   display: inline-block;
@@ -177,5 +229,36 @@ hr {
   .order-grid {
     grid-template-columns: 1fr;
   }
-  
+
+  .order-card {
+    padding: 15px;
+  }
+
+  .order-card::before {
+    height: 4px;
+  }
+
+  .order-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .order-container {
+    padding: 15px;
+  }
+
+  .order-card {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .order-subtitle {
+    font-size: 16px;
+  }
+
+  .summary-total {
+    font-size: 16px;
+  }
 }

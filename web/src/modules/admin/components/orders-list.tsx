@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import Link from "next/link";
-import { CheckCircle2, XCircle, Truck, Store } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { Order } from "@/types/order";
 import "./ordersList.css";
 
@@ -61,7 +61,7 @@ export function OrdersList() {
                   <td>{order.user.email}</td>
                   <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td>${order.totalPrice.toFixed(2)}</td>
-                  <td>
+                  {/* <td>
                     {order.orderItems.some(item => 
                       item.product && String(item.product.deliveryType) === "SELLER"
                     ) ? (
@@ -79,12 +79,12 @@ export function OrdersList() {
                           ))}
                       </span>
                     ) : (
-                      <span className="delivery-badge soulart">
-                        <Truck className="icon" />
-                        SoulArt-ის კურიერი
-                      </span>
+                      // <span className="delivery-badge soulart">
+                      //   <Truck className="icon" />
+                      //   SoulArt-ის კურიერი
+                      // </span>
                     )}
-                  </td>
+                  </td> */}
                   <td>
                     {order.isPaid ? (
                       <span className="status-badge success">

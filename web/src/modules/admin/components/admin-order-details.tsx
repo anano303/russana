@@ -152,7 +152,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
               <div className="delivery-group">
                 <div className="delivery-group-header">
                   <Truck size={18} />
-                  <h3>SoulArt-ის კურიერი</h3>
+                  {/* <h3>SoulArt-ის კურიერი</h3> */}
                 </div>
                 {soulartDeliveryItems.map((item) => (
                   <div key={item.productId} className="order-item">

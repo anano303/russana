@@ -72,8 +72,8 @@ async function bootstrap() {
   }
 
   const config = new DocumentBuilder()
-    .setTitle('SoulArt  API')
-    .setDescription('SoulArt E-commerce REST API')
+    .setTitle('Russana  API')
+    .setDescription('Russana E-commerce REST API')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

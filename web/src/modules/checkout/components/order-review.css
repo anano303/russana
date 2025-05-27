@@ -4,8 +4,9 @@
   gap: 32px;
   max-width: 1200px;
   margin: 0 auto;
-  font-family: 'Georgia', serif;
-  color: #4a3f35;
+  font-family: "ALK Life", "Georgia", serif;
+  color: #333;
+  width: 90%;
 }
 
 .order-details {
@@ -14,27 +15,49 @@
 
 .card {
   padding: 2rem;
-  background-color: #faf6f2;
+  background-color: white;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(122, 94, 65, 0.08);
-  border: 1px solid #e0d5c8;
+  box-shadow: 0 8px 20px rgba(229, 0, 0, 0.08);
+  border: 1px solid #f5f5f5;
   margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #e50000, #ff5252, #e50000);
+  background-size: 200% 100%;
+  animation: gradientAnimation 3s infinite alternate;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .section-title {
   font-size: 1.75rem;
   font-weight: normal;
   margin-bottom: 1.25rem;
-  color: #5d4037;
-  font-family: 'Playfair Display', serif;
+  color: #e50000;
+  font-family: "ALK Life", "Georgia", serif;
   letter-spacing: 1px;
-  border-bottom: 2px solid #e0d5c8;
+  border-bottom: 2px solid #f5f5f5;
   padding-bottom: 0.75rem;
 }
 
 .address-details,
 .payment-method {
-  color: #7d6e63;
+  color: #666;
   font-size: 1.05rem;
   line-height: 1.6;
 }
@@ -48,12 +71,12 @@
   align-items: center;
   gap: 1.25rem;
   padding: 1rem;
-  border-bottom: 1px solid #e0d5c8;
+  border-bottom: 1px solid #f0f0f0;
   transition: background-color 0.2s;
 }
 
 .order-item:hover {
-  background-color: #f5f0e9;
+  background-color: #ffeef2;
 }
 
 .image-container {
@@ -62,19 +85,19 @@
   width: 80px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(122, 94, 65, 0.1);
-  border: 1px solid #e0d5c8;
+  /* box-shadow: 0 4px 8px rgba(233, 30, 99, 0.1); */
+  border: 1px solid #f0f0f0;
 }
 
 .item-name {
   font-weight: 600;
-  color: #5d4037;
+  color: #e50000;
   font-size: 1.1rem;
 }
 
 .item-price {
   font-size: 1rem;
-  color: #7d6e63;
+  color: #666;
   font-style: italic;
 }
 
@@ -94,32 +117,57 @@
 }
 
 .summary-label {
-  color: #7d6e63;
+  color: #666;
 }
 
 .separator {
-  border-top: 1px solid #e0d5c8;
+  border-top: 1px solid #f0f0f0;
   margin: 1.25rem 0;
 }
 
 .place-order-button {
   width: 100%;
-  padding: 0.9rem;
-  font-size: 1.1rem;
-  background-color: #8d6e63;
+  background: linear-gradient(90deg, #e50000, #e91e63);
   color: white;
+  padding: 0.9rem;
+  font-family: "ALK Katerina", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0.1em;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
   transition: all 0.3s ease;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.place-order-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.6s ease;
+}
+
+.place-order-button:hover::before {
+  left: 100%;
 }
 
 .place-order-button:hover {
-  background-color: #6d4c41;
+  background: linear-gradient(90deg, #e91e63, #e50000);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(109, 76, 65, 0.3);
+  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
 }
 
 /* Responsive adjustments */
@@ -127,7 +175,7 @@
   .order-details {
     grid-column: span 7;
   }
-  
+
   .order-summary {
     grid-column: span 5;
   }
@@ -137,35 +185,59 @@
   .order-review-grid {
     grid-template-columns: 1fr;
     gap: 24px;
+    width: 95%;
   }
-  
+
   .order-details,
   .order-summary {
     grid-column: span 12;
   }
-  
+
   .card {
     padding: 1.5rem;
   }
-  
+
   .section-title {
     font-size: 1.5rem;
+  }
+
+  .place-order-button {
+    font-size: 18px;
   }
 }
 
 @media (max-width: 480px) {
+  .order-review-grid {
+    width: 90%;
+  }
+
   .card {
     padding: 1rem;
   }
-  
+
+  .card::before {
+    height: 4px;
+  }
+
   .order-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
   }
-  
+
   .place-order-button {
     padding: 0.75rem;
-    font-size: 1rem;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 320px) {
+  .card {
+    padding: 0.75rem;
+  }
+
+  .place-order-button {
+    padding: 0.5rem;
+    font-size: 15px;
   }
 }

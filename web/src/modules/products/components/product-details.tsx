@@ -143,7 +143,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           <ShareButtons
             url={typeof window !== "undefined" ? window.location.href : ""}
-            title={`Check out ${displayName} by ${product.brand} on SoulArt`}
+            title={`Check out ${displayName} by ${product.brand} on Russana`}
           />
 
           {!isOutOfStock && (

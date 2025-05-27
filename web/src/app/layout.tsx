@@ -18,27 +18,27 @@ export const metadata: Metadata = {
   ),
   title: "Russana",
   description:
-    "SoulArt - ნახატების ონლაინ პლატფორმა, სადაც შეგიძლიათ შეიძინოთ უნიკალური ხელოვნების ნიმუშები. შექმენით პირადი გალერეა და გახდით კოლექციონერი.",
+    "Russana - დააპიპინეეეეეე",
   openGraph: {
     type: "website",
     locale: "ka_GE",
-    url: "https://soulart.ge/",
-    siteName: "soulart",
-    title: "soulart",
+    url: "https://russana.ge/",
+    siteName: "Russana",
+    title: "Russana",
     images: [
       {
         url: "/van%20gog.jpg",
         width: 1200,
         height: 630,
-        alt: "SoulArt Sharing Image",
+        alt: "Russana Sharing Image",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SoulArt",
+    title: "Russana",
     description:
-      "SoulArt - ნახატების ონლაინ პლატფორმა უნიკალური ხელოვნების ნიმუშებისთვის.",
+      "Russana - შეიძინე და აპიპინეეეე.",
     images: ["/van%20gog.jpg"],
   },
 };

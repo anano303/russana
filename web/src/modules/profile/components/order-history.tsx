@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, XCircle, Truck, Store } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import Link from "next/link";
 import "./history.css";
 
@@ -50,7 +50,7 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
             <th>ID</th>
             <th>DATE</th>
             <th>TOTAL</th>
-            <th>DELIVERY</th>
+            {/* <th>DELIVERY</th> */}
             <th>PAID</th>
             <th>DELIVERED</th>
             <th className="actions">ACTIONS</th>
@@ -62,7 +62,7 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
               <td className="order-id">#{order._id.substring(0, 8)}</td>
               <td>{new Date(order.createdAt).toLocaleDateString()}</td>
               <td>{order.totalPrice.toFixed(2)} ₾ </td>
-              <td>
+              {/* <td>
                 {order.orderItems.some(
                   (item) =>
                     item.product &&
@@ -78,7 +78,7 @@ export function OrderHistory({ orders }: OrderHistoryProps) {
                     SoulArt-ის კურიერი
                   </span>
                 )}
-              </td>
+              </td> */}
               <td>
                 {order.isPaid ? (
                   <span className="badge badge-green">
