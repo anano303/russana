@@ -44,6 +44,10 @@ a {
 .cart-text {
   display: inline-block;
   margin-left: 5px;
+  font-size: 14px;
+    font-weight: 500;
+    font-family: "ALK Katerina", sans-serif;
+
 }
 
 /* Hide text on mobile */
