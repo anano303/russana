@@ -86,17 +86,9 @@
 }
 
 /* For very small screens */
-@media (max-width: 480px) {
-  .main-slogan {
-    font-size: 24px;
-  }
-
-  .sub-slogan-container {
-    flex-direction: column;
-  }
-
+@media (max-width: 600px) {
   .sub-slogan {
-    margin: 5px 0;
+    display: none;
   }
   .home-pages-head h1 {
     font-size: 28px;
