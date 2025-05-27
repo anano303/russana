@@ -95,12 +95,14 @@
 }
 
 /* Product Info Section */
-.product-info {
+.product-info-details {
   grid-column: 3;
   grid-row: 1;
   display: flex;
   flex-direction: column;
   padding: 0 1rem;
+  justify-self: center;
+  align-items: center;
 }
 
 .brand-container {
@@ -220,10 +222,10 @@
 }
 
 .stock-info {
-  margin: 1.5rem 0;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  justify-self: center;
+  align-self: center;
 }
 
 .stock-badge {
@@ -252,7 +254,7 @@
 }
 
 select {
-  padding: 0.7rem 1.2rem;
+  /* padding: 0.7rem 1.2rem; */
   border: 2px solid #eee;
   border-radius: 8px;
   background-color: white;
@@ -323,10 +325,42 @@ select:focus {
   margin: 1.5rem 0 !important;
   text-align: center !important;
   display: block !important;
-  width: 100% !important;
+  width: auto !important;
   box-shadow: 0 4px 12px rgba(207, 10, 10, 0.2) !important;
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 1);
+}
+.product-options-container {
+  display: flex;
+
+  gap: 3rem;
+  margin-bottom: 1.5rem;
 }
 
+.option-select {
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: rgba(207, 10, 10, 1);
+  border: 1px solid rgba(207, 10, 10, 1);
+  background-color: rgba(255, 229, 232, 1);
+}
+.option-select2 {
+  font-family: Roboto;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: rgba(207, 10, 10, 1);
+  border: 1px solid rgba(207, 10, 10, 1);
+  background-color: rgba(255, 229, 232, 1);
+}
 .custom-style-2:hover {
   background-color: rgba(207, 10, 10, 0.95) !important;
   transform: translateY(-2px) !important;
@@ -371,10 +405,22 @@ select:focus {
   display: none;
 }
 
+.tabs h3 {
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 1);
+}
 /* Tabs */
-.tabs {
-  margin-top: 3rem;
-  grid-column: 1 / -1;
+.tabs p {
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: rgba(0, 0, 0, 1);
 }
 
 .tabs-list {
@@ -501,17 +547,13 @@ select:focus {
     padding-bottom: 1rem;
   }
 
-  .product-info {
+  .product-info-details {
     grid-column: 1 / -1;
     grid-row: 3;
     padding: 0;
     margin-top: 1rem;
-  }
-
-  .image-container {
-    width: 400px; /* Smaller on tablets */
-    height: 400px;
-    background-size: contain;
+    justify-self: center;
+    align-items: center;
   }
 
   /* Ensure images are properly centered and sized on tablets */
@@ -529,10 +571,13 @@ select:focus {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-
+  .image-wrapper {
+    width: 200px;
+    height: 200px;
+  }
   .image-container {
-    width: 350px; /* Even smaller on mobile */
-    height: 350px;
+    width: 400px; /* Even smaller on mobile */
+    height: 400px;
   }
 
   /* Fix thumbnails on mobile */
@@ -572,18 +617,30 @@ select:focus {
     width: 280px; /* Smallest on small mobile */
     height: 280px;
   }
+  .image-wrapper {
+    width: 150px;
+    height: 150px;
+  }
 
   .thumbnail {
     width: 60px;
     height: 60px;
   }
 
-  .product-title {
+  .product-title,
+  .price {
     font-size: 1.8rem;
+    font-family: ALK Katerina;
+    font-weight: 400;
+
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: rgba(207, 10, 10, 1);
   }
 
   .price {
     font-size: 1.8rem;
+    color: rgba(0, 0, 0, 1);
   }
 
   .tabs-list {

@@ -128,21 +128,21 @@ header {
   }
 
   /* Mobile responsiveness */
-  @media (max-width: 811px) {
+  @media (max-width: 900px) {
     .main-nav ul {
       display: flex;
       flex-direction: column;
       background-color: rgba(249, 249, 249, 0.95);
-      position: fixed; /* Change from absolute to fixed for smoother animation */
-      top: 100px; /* Fixed distance from top */
+      position: fixed;
+      top: 11%;
       right: 0;
       left: 0;
       width: 100%;
       border-radius: 0 0 5px 5px;
       box-shadow: 0px 4px 25px 0px rgba(207, 10, 10, 0.25);
-      max-height: 0; /* Initially collapsed */
-      overflow: hidden; /* Hide overflow */
-      transition: max-height 0.5s ease, padding 0.3s ease; /* Smooth transition */
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, padding 0.3s ease;
       z-index: 999;
       padding: 0;
       margin: 0;
@@ -250,7 +250,7 @@ header {
 }
 
 // Mobile support for language switcher
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .auth-cart {
     .language-switcher-container {
       margin-right: 4px;
@@ -391,7 +391,7 @@ header {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .wireframe-style {
     .header-container {
       flex-wrap: wrap;
@@ -409,7 +409,7 @@ header {
           visibility 0.4s ease;
 
         .mobile-menu-user-actions {
-          display: flex !important; /* Force show in mobile menu */
+          display: flex !important;
           width: 100%;
           margin-top: 20px;
           padding: 15px 0;

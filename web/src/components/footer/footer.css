@@ -1,7 +1,7 @@
 /* Main Footer Styles */
 .site-footer {
   background-color: #ffffff;
-  border-top: 2px solid #CF0A0A;
+  border-top: 2px solid #cf0a0a;
   padding: 40px 0 20px 0px;
   color: #333;
   font-family: "ALK Katerina", "firaGo", sans-serif;
@@ -74,7 +74,7 @@
 }
 
 .footer-link:hover {
-  color: #CF0A0A;
+  color: #cf0a0a;
 }
 
 /* Message Section */
@@ -173,13 +173,19 @@
 
 /* Animations */
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Responsive Styles - Tablet */
-@media (max-width: 768px) {
+@media (max-width: 950px) {
   .site-footer {
     padding: 30px 15px;
   }
