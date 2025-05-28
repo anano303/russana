@@ -22,7 +22,9 @@ const TopItems: React.FC = () => {
         `/products?${searchParams.toString()}`
       );
       const data = await response.json();
-      return data.items.slice(0, 6);
+      // Handle both response formats (items array or products array)
+      const products = data.items || data.products || [];
+      return products.slice(0, 6);
     },
   });
 

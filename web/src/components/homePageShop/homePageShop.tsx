@@ -21,7 +21,9 @@ export default function HomePageShop() {
     async function fetchProducts() {
       try {
         setIsLoading(true);
-        const { items } = await getProducts(1, 18);
+        const response = await getProducts(1, 18);
+        // Handle both response formats
+        const items = response.items || response.products || [];
         console.log("Fetched products:", items);
 
         const processedItems = items.map((item) => {

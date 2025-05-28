@@ -218,7 +218,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <p>{displayDescription}</p>
               </div>
             </div> */}
-            <div className="stock-info">
+            {/* <div className="stock-info">
               {isOutOfStock ? (
                 <span className="stock-badge out-of-stock">
                   {t("shop.outOfStock")}
@@ -228,7 +228,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   {t("shop.inStock")}
                 </span>
               )}
-            </div>
+            </div> */}
             <AddToCartButton
               productId={product._id}
               countInStock={product.countInStock}

@@ -104,8 +104,15 @@ export class ProductsController {
   }
 
   @Get('topRated')
-  getTopRatedProducts() {
-    return this.productsService.findTopRated();
+  async getTopRatedProducts() {
+    const products = await this.productsService.findTopRated();
+    // Return in a consistent format for the frontend
+    return {
+      items: products,
+      total: products.length,
+      page: 1,
+      pages: 1,
+    };
   }
 
   @Get(':id')

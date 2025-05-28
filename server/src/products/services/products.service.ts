@@ -61,9 +61,7 @@ export class ProductsService {
     return products;
   }
 
-  async findMany(
-    params: FindManyParams,
-  ): Promise<{ products: Product[]; page: number; pages: number }> {
+  async findMany(params: FindManyParams): Promise<PaginatedResponse<Product>> {
     const {
       keyword,
       page = '1',
@@ -171,8 +169,10 @@ export class ProductsService {
 
     const products = await productQuery.exec();
 
+    // Return in consistent format that matches PaginatedResponse
     return {
-      products,
+      items: products,
+      total: count,
       page: pageNumber,
       pages: Math.ceil(count / limitNumber),
     };
