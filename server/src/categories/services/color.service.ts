@@ -8,7 +8,6 @@ import { Model } from 'mongoose';
 import { Color, ColorDocument } from '../schemas/color.schema';
 import { CreateColorDto, UpdateColorDto } from '../dto/color.dto';
 
-
 @Injectable()
 export class ColorService {
   constructor(
@@ -16,8 +15,18 @@ export class ColorService {
   ) {}
 
   async findAll(includeInactive = false): Promise<Color[]> {
-    const filter = includeInactive ? {} : { isActive: true };
-    return this.colorModel.find(filter).sort({ name: 1 }).exec();
+    try {
+      const filter = includeInactive ? {} : { isActive: true };
+      const colors = await this.colorModel
+        .find(filter)
+        .sort({ name: 1 })
+        .exec();
+      console.log(`Color service found ${colors.length} colors`);
+      return colors;
+    } catch (error) {
+      console.error('Error finding colors:', error);
+      return [];
+    }
   }
 
   async findById(id: string): Promise<Color> {

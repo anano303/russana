@@ -177,21 +177,39 @@ export class SubCategoryService {
 
   // Global attribute management methods
   async getAllColors(): Promise<string[]> {
-    return this.colorService
-      .findAll(false)
-      .then((colors) => colors.map((color) => color.name));
+    try {
+      console.log('Getting all colors from service');
+      const colors = await this.colorService.findAll(false);
+      console.log(`Found ${colors.length} colors`);
+      return colors.map((color) => color.name);
+    } catch (error) {
+      console.error('Error getting all colors:', error);
+      return [];
+    }
   }
 
   async getAllSizes(): Promise<string[]> {
-    return this.sizeService
-      .findAll(false)
-      .then((sizes) => sizes.map((size) => size.value));
+    try {
+      console.log('Getting all sizes from service');
+      const sizes = await this.sizeService.findAll(false);
+      console.log(`Found ${sizes.length} sizes`);
+      return sizes.map((size) => size.value);
+    } catch (error) {
+      console.error('Error getting all sizes:', error);
+      return [];
+    }
   }
 
   async getAllAgeGroups(): Promise<string[]> {
-    return this.ageGroupService
-      .findAll(false)
-      .then((ageGroups) => ageGroups.map((ageGroup) => ageGroup.name));
+    try {
+      console.log('Getting all age groups from service');
+      const ageGroups = await this.ageGroupService.findAll(false);
+      console.log(`Found ${ageGroups.length} age groups`);
+      return ageGroups.map((ageGroup) => ageGroup.name);
+    } catch (error) {
+      console.error('Error getting all age groups:', error);
+      return [];
+    }
   }
 
   // Color management

@@ -8,14 +8,20 @@ import { Model } from 'mongoose';
 import { Size, SizeDocument } from '../schemas/size.schema';
 import { CreateSizeDto, UpdateSizeDto } from '../dto/size.dto';
 
-
 @Injectable()
 export class SizeService {
   constructor(@InjectModel(Size.name) private sizeModel: Model<SizeDocument>) {}
 
   async findAll(includeInactive = false): Promise<Size[]> {
-    const filter = includeInactive ? {} : { isActive: true };
-    return this.sizeModel.find(filter).sort({ value: 1 }).exec();
+    try {
+      const filter = includeInactive ? {} : { isActive: true };
+      const sizes = await this.sizeModel.find(filter).sort({ value: 1 }).exec();
+      console.log(`Size service found ${sizes.length} sizes`);
+      return sizes;
+    } catch (error) {
+      console.error('Error finding sizes:', error);
+      return [];
+    }
   }
 
   async findById(id: string): Promise<Size> {

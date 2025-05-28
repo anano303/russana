@@ -1,0 +1,113 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  Query,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
+import { SubCategoryService } from '../services/subCategory.service';
+import {
+  CreateSubCategoryDto,
+  UpdateSubCategoryDto,
+} from '../dto/subcategory.dto';
+import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
+import { RolesGuard } from '@/guards/roles.guard';
+import { Role } from '@/types/role.enum';
+import { Roles } from '@/decorators/roles.decorator';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+
+@ApiTags('subcategories')
+@Controller('categories/sub')
+export class SubCategoriesController {
+  constructor(private readonly subCategoryService: SubCategoryService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'Get all subcategories' })
+  @ApiQuery({
+    name: 'categoryId',
+    required: false,
+    description: 'Filter by category ID',
+  })
+  @ApiQuery({
+    name: 'includeInactive',
+    required: false,
+    type: Boolean,
+    description: 'Include inactive subcategories',
+  })
+  @ApiResponse({ status: 200, description: 'Returns all subcategories' })
+  findAllSubCategories(
+    @Query('categoryId') categoryId?: string,
+    @Query('includeInactive') includeInactive?: string,
+  ) {
+    return this.subCategoryService.findAll(
+      categoryId,
+      includeInactive === 'true',
+    );
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get subcategory by ID' })
+  @ApiParam({ name: 'id', description: 'Subcategory ID' })
+  @ApiResponse({ status: 200, description: 'Returns the subcategory' })
+  @ApiResponse({ status: 404, description: 'Subcategory not found' })
+  findSubCategoryById(@Param('id') id: string) {
+    return this.subCategoryService.findById(id);
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create a new subcategory' })
+  @ApiResponse({
+    status: 201,
+    description: 'The subcategory has been created successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request - Invalid data or duplicate subcategory',
+  })
+  @ApiResponse({ status: 404, description: 'Category not found' })
+  createSubCategory(@Body() createSubCategoryDto: CreateSubCategoryDto) {
+    return this.subCategoryService.create(createSubCategoryDto);
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update a subcategory' })
+  @ApiParam({ name: 'id', description: 'Subcategory ID' })
+  @ApiResponse({ status: 200, description: 'The subcategory has been updated' })
+  @ApiResponse({ status: 404, description: 'Subcategory not found' })
+  updateSubCategory(
+    @Param('id') id: string,
+    @Body() updateSubCategoryDto: UpdateSubCategoryDto,
+  ) {
+    return this.subCategoryService.update(id, updateSubCategoryDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a subcategory' })
+  @ApiParam({ name: 'id', description: 'Subcategory ID' })
+  @ApiResponse({ status: 200, description: 'The subcategory has been deleted' })
+  @ApiResponse({ status: 404, description: 'Subcategory not found' })
+  removeSubCategory(@Param('id') id: string) {
+    return this.subCategoryService.remove(id);
+  }
+}

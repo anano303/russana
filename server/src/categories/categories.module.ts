@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategoriesController } from './controllers/categories.controller';
+import { SubCategoriesController } from './controllers/subcategories.controller';
+import { AttributesController } from './controllers/attributes.controller';
 import { CategoryService } from './services/category.service';
 import { SubCategoryService } from './services/subCategory.service';
 import { Category, CategorySchema } from './schemas/category.schema';
@@ -22,7 +24,11 @@ import { AgeGroupService } from './services/age-group.service';
       { name: AgeGroup.name, schema: AgeGroupSchema },
     ]),
   ],
-  controllers: [CategoriesController],
+  controllers: [
+    CategoriesController,
+    SubCategoriesController,
+    AttributesController,
+  ],
   providers: [
     CategoryService,
     SubCategoryService,

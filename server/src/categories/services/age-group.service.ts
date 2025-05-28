@@ -15,8 +15,18 @@ export class AgeGroupService {
   ) {}
 
   async findAll(includeInactive = false): Promise<AgeGroup[]> {
-    const filter = includeInactive ? {} : { isActive: true };
-    return this.ageGroupModel.find(filter).sort({ name: 1 }).exec();
+    try {
+      const filter = includeInactive ? {} : { isActive: true };
+      const ageGroups = await this.ageGroupModel
+        .find(filter)
+        .sort({ name: 1 })
+        .exec();
+      console.log(`Age group service found ${ageGroups.length} age groups`);
+      return ageGroups;
+    } catch (error) {
+      console.error('Error finding age groups:', error);
+      return [];
+    }
   }
 
   async findById(id: string): Promise<AgeGroup> {

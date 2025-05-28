@@ -296,7 +296,7 @@ export const useColors = () => {
   return useQuery<string[]>({
     queryKey: ["colors"],
     queryFn: async () => {
-      const response = await apiClient.get("/categories/colors");
+      const response = await apiClient.get("/categories/attributes/colors");
       return response.data;
     },
   });
@@ -307,7 +307,10 @@ export const useCreateColor = () => {
 
   return useMutation({
     mutationFn: async (data: AttributeInput) => {
-      const response = await apiClient.post("/categories/colors", data);
+      const response = await apiClient.post(
+        "/categories/attributes/colors",
+        data
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -333,7 +336,10 @@ export const useUpdateColor = () => {
       color: string;
       data: AttributeInput;
     }) => {
-      const response = await apiClient.put(`/categories/colors/${color}`, data);
+      const response = await apiClient.put(
+        `/categories/attributes/colors/${color}`,
+        data
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -355,7 +361,9 @@ export const useDeleteColor = () => {
 
   return useMutation({
     mutationFn: async (color: string) => {
-      const response = await apiClient.delete(`/categories/colors/${color}`);
+      const response = await apiClient.delete(
+        `/categories/attributes/colors/${color}`
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -375,7 +383,7 @@ export const useSizes = () => {
   return useQuery<string[]>({
     queryKey: ["sizes"],
     queryFn: async () => {
-      const response = await apiClient.get("/categories/sizes");
+      const response = await apiClient.get("/categories/attributes/sizes");
       return response.data;
     },
   });
@@ -386,7 +394,10 @@ export const useCreateSize = () => {
 
   return useMutation({
     mutationFn: async (data: AttributeInput) => {
-      const response = await apiClient.post("/categories/sizes", data);
+      const response = await apiClient.post(
+        "/categories/attributes/sizes",
+        data
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -412,7 +423,10 @@ export const useUpdateSize = () => {
       size: string;
       data: AttributeInput;
     }) => {
-      const response = await apiClient.put(`/categories/sizes/${size}`, data);
+      const response = await apiClient.put(
+        `/categories/attributes/sizes/${size}`,
+        data
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -434,7 +448,9 @@ export const useDeleteSize = () => {
 
   return useMutation({
     mutationFn: async (size: string) => {
-      const response = await apiClient.delete(`/categories/sizes/${size}`);
+      const response = await apiClient.delete(
+        `/categories/attributes/sizes/${size}`
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -454,7 +470,7 @@ export const useAgeGroups = () => {
   return useQuery<string[]>({
     queryKey: ["ageGroups"],
     queryFn: async () => {
-      const response = await apiClient.get("/categories/age-groups");
+      const response = await apiClient.get("/categories/attributes/age-groups");
       return response.data;
     },
   });
@@ -465,7 +481,10 @@ export const useCreateAgeGroup = () => {
 
   return useMutation({
     mutationFn: async (data: AttributeInput) => {
-      const response = await apiClient.post("/categories/age-groups", data);
+      const response = await apiClient.post(
+        "/categories/attributes/age-groups",
+        data
+      );
       return response.data;
     },
     onSuccess: () => {
@@ -494,7 +513,7 @@ export const useUpdateAgeGroup = () => {
       data: AttributeInput;
     }) => {
       const response = await apiClient.put(
-        `/categories/age-groups/${ageGroup}`,
+        `/categories/attributes/age-groups/${ageGroup}`,
         data
       );
       return response.data;
@@ -520,7 +539,7 @@ export const useDeleteAgeGroup = () => {
   return useMutation({
     mutationFn: async (ageGroup: string) => {
       const response = await apiClient.delete(
-        `/categories/age-groups/${ageGroup}`
+        `/categories/attributes/age-groups/${ageGroup}`
       );
       return response.data;
     },
