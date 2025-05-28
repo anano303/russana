@@ -1,10 +1,10 @@
 import * as mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Document, HydratedDocument } from 'mongoose';
 import { Category } from './category.schema';
 import { ApiProperty } from '@nestjs/swagger';
 
-export type SubCategoryDocument = HydratedDocument<SubCategory>;
+export type SubCategoryDocument = SubCategory & Document;
 
 @Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class SubCategory {
@@ -29,7 +29,7 @@ export class SubCategory {
     ref: 'Category',
     required: true,
   })
-  category: Category;
+  categoryId: Category;
 
   @ApiProperty({
     description: 'Available age groups',
@@ -67,7 +67,7 @@ export class SubCategory {
 export const SubCategorySchema = SchemaFactory.createForClass(SubCategory);
 
 // Create compound index for unique subcategories within a category
-SubCategorySchema.index({ name: 1, category: 1 }, { unique: true });
+SubCategorySchema.index({ name: 1, categoryId: 1 }, { unique: true });
 
 // Ensure the virtual id field is properly included in serialization
 SubCategorySchema.set('toJSON', {
