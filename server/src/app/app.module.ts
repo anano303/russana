@@ -14,6 +14,7 @@ import { AwsS3Module } from '@/aws-s3/aws-s3.module';
 import { GoogleStrategy } from '@/strategies/google.strategy';
 import { connectDB } from '@/utils/config';
 import { ProductsModule } from '@/products/products.module';
+import { CategoriesModule } from '@/categories/categories.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ProductsModule } from '@/products/products.module';
     CartModule,
     OrderModule,
     CloudinaryModule,
+    CategoriesModule,
     
     // SeedsModule,
     AwsS3Module,

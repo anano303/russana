@@ -15,7 +15,18 @@ export enum AgeGroup {
 export interface CategoryStructure {
   main: MainCategory;
   sub: string;
+  ageGroup?: string;
+  size?: string;
+  color?: string;
 }
+
+export interface ProductVariant {
+  size: string;
+  color: string;
+  stock: number;
+  sku?: string;
+}
+
 export interface Product {
   _id: string;
   user: User;
@@ -26,9 +37,17 @@ export interface Product {
   descriptionEn?: string;
   brand: string;
   brandLogo: string;
-  category: string; // Make sure this exists
+  category: string; // Legacy field
+  // New category system fields
+  mainCategory?: string | any; // Reference to Category
+  subCategory?: string | any; // Reference to SubCategory
+  ageGroup?: string;
+  size?: string;
+  color?: string;
+  categoryStructure?: CategoryStructure; // Legacy field
   price: number;
-  countInStock: number;
+  countInStock: number; // Legacy field
+  variants?: ProductVariant[]; // New field for inventory by size/color
   rating: number;
   numReviews: number;
   reviews: Review[];

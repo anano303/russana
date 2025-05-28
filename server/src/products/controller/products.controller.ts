@@ -9,9 +9,7 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
-  UploadedFile,
   UploadedFiles,
-  Res,
   BadRequestException,
   InternalServerErrorException,
   UnauthorizedException,
@@ -23,19 +21,15 @@ import { ReviewDto } from '../dtos/review.dto';
 import { ProductsService } from '../services/products.service';
 import { UserDocument } from '@/users/schemas/user.schema';
 import { CurrentUser } from '@/decorators/current-user.decorator';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-  FilesInterceptor,
-} from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { AppService } from '@/app/services/app.service';
-
-import { Response } from 'express';
 import { Roles } from '@/decorators/roles.decorator';
 import { Role } from '@/types/role.enum';
 import { ProductStatus } from '../schemas/product.schema';
-import { MainCategory, AgeGroup } from '@/types';
+import { AgeGroup } from '@/types';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(
@@ -44,6 +38,7 @@ export class ProductsController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get products with filters' })
   getProducts(
     @Query('keyword') keyword: string,
     @Query('page') page: string,
@@ -53,27 +48,34 @@ export class ProductsController {
     @Query('subCategory') subCategory: string,
     @Query('sortBy') sortBy: string,
     @Query('sortDirection') sortDirection: 'asc' | 'desc',
-    @Query('ageGroup') ageGroup: AgeGroup,
+    @Query('ageGroup') ageGroup: string,
+    @Query('size') size: string,
+    @Query('color') color: string,
+    @Query('includeVariants') includeVariants: string,
   ) {
-    console.log(
-      'Getting products with mainCategory:',
+    console.log('Getting products with filters:', {
       mainCategory,
-      'ageGroup:',
+      subCategory,
       ageGroup,
-    );
-    return this.productsService.findMany(
+      size,
+      color,
+    });
+
+    return this.productsService.findMany({
       keyword,
       page,
       limit,
-      undefined,
-      ProductStatus.APPROVED,
+      status: ProductStatus.APPROVED,
       brand,
       mainCategory,
       subCategory,
       sortBy,
       sortDirection,
       ageGroup,
-    );
+      size,
+      color,
+      includeVariants: includeVariants === 'true',
+    });
   }
 
   @Get('user')
@@ -85,12 +87,12 @@ export class ProductsController {
     @Query('page') page: string,
     @Query('limit') limit: string,
   ) {
-    return this.productsService.findMany(
+    return this.productsService.findMany({
       keyword,
       page,
       limit,
-      user.role === Role.Admin ? undefined : user,
-    );
+      user: user.role === Role.Admin ? undefined : user,
+    });
   }
 
   @Get('pending')
@@ -107,8 +109,42 @@ export class ProductsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get product by ID' })
+  @ApiParam({ name: 'id', description: 'Product ID' })
   getProduct(@Param('id') id: string) {
     return this.productsService.findById(id);
+  }
+
+  @Get(':id/variants')
+  @ApiOperation({ summary: 'Get available sizes and colors for a product' })
+  @ApiParam({ name: 'id', description: 'Product ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns available sizes, colors and variants',
+    schema: {
+      properties: {
+        sizes: { type: 'array', items: { type: 'string' } },
+        colors: { type: 'array', items: { type: 'string' } },
+        variants: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              size: { type: 'string' },
+              color: { type: 'string' },
+              stock: { type: 'number' },
+              sku: { type: 'string' },
+            },
+          },
+        },
+        hasVariants: { type: 'boolean' },
+        countInStock: { type: 'number' },
+      },
+    },
+  })
+  @ApiResponse({ status: 404, description: 'Product not found' })
+  getProductVariants(@Param('id') id: string) {
+    return this.productsService.getProductVariants(id);
   }
 
   @Get('find-all')
@@ -128,14 +164,8 @@ export class ProductsController {
   @UseInterceptors(
     FileFieldsInterceptor(
       [
-        {
-          name: 'images',
-          maxCount: 10,
-        },
-        {
-          name: 'brandLogo',
-          maxCount: 1,
-        },
+        { name: 'images', maxCount: 10 },
+        { name: 'brandLogo', maxCount: 1 },
       ],
       {
         fileFilter: (req, file, cb) => {
@@ -164,9 +194,6 @@ export class ProductsController {
   ) {
     const files = allFiles.images;
     const { brandLogo } = allFiles;
-    console.log('Received files:', files);
-    console.log('Received brand logo:', brandLogo);
-    console.log('Received product data:', productData);
 
     if (!files || files.length === 0) {
       throw new BadRequestException('At least one image is required');
@@ -180,34 +207,43 @@ export class ProductsController {
       let brandLogoUrl = null;
 
       if (brandLogo && brandLogo.length > 0) {
-        console.log('Processing brand logo file upload');
         brandLogoUrl = await this.appService.uploadImageToCloudinary(
           brandLogo[0],
         );
       } else if (productData.brandLogoUrl) {
-        console.log('Using provided brand logo URL:', productData.brandLogoUrl);
         brandLogoUrl = productData.brandLogoUrl;
       }
 
-      console.log('Final brand logo URL:', brandLogoUrl);
-      console.log('Creating product with data:', {
-        ...productData,
-        user,
-        images: imageUrls,
-        brandLogo: brandLogoUrl,
-      });
+      // Extract the main category data
+      const {
+        mainCategory,
+        subCategory,
+        ageGroup,
+        size,
+        color,
+        ...otherProductData
+      } = productData;
 
+      // Create the product with proper category references
       return this.productsService.create({
-        ...productData,
+        ...otherProductData,
+        // Keep legacy fields for backward compatibility
+        category: otherProductData.category || 'Other',
         categoryStructure:
           typeof productData.categoryStructure === 'string'
             ? JSON.parse(productData.categoryStructure)
             : productData.categoryStructure,
+        // New category system
+        mainCategory,
+        subCategory,
+        ageGroup,
+        size,
+        color,
         user,
         images: imageUrls,
         brandLogo: brandLogoUrl,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error creating product:', error);
       throw new InternalServerErrorException(
         'Failed to process images or create product ',
@@ -285,7 +321,7 @@ export class ProductsController {
       const { user: userFromData, ...productDataWithoutUser } =
         productData as any;
 
-      // Create update data object - fix the duplicate spread operator
+      // Create update data object
       const updateData = {
         ...productDataWithoutUser,
         ...(imageUrls && { images: imageUrls }),
@@ -329,5 +365,47 @@ export class ProductsController {
     }: { status: ProductStatus; rejectionReason?: string },
   ) {
     return this.productsService.updateStatus(id, status, rejectionReason);
+  }
+
+  @Get('colors')
+  @ApiOperation({ summary: 'Get all unique colors used in products' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all unique colors',
+    schema: {
+      type: 'array',
+      items: { type: 'string' },
+    },
+  })
+  getAllColors() {
+    return this.productsService.getAllColors();
+  }
+
+  @Get('sizes')
+  @ApiOperation({ summary: 'Get all unique sizes used in products' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all unique sizes',
+    schema: {
+      type: 'array',
+      items: { type: 'string' },
+    },
+  })
+  getAllSizes() {
+    return this.productsService.getAllSizes();
+  }
+
+  @Get('age-groups')
+  @ApiOperation({ summary: 'Get all unique age groups used in products' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all unique age groups',
+    schema: {
+      type: 'array',
+      items: { type: 'string' },
+    },
+  })
+  getAllAgeGroups() {
+    return this.productsService.getAllAgeGroups();
   }
 }

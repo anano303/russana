@@ -1,3 +1,5 @@
+// Cookie configuration options for authentication
+
 export interface CookieOptions {
   httpOnly: boolean;
   secure: boolean;

@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsObject,
   ValidateNested,
+  IsMongoId,
 } from 'class-validator';
 import {
   ProductStatus,
@@ -25,6 +26,29 @@ class CategoryStructureDto {
   @IsEnum(AgeGroup)
   @IsOptional()
   ageGroup?: AgeGroup;
+
+  @IsString()
+  @IsOptional()
+  size?: string;
+
+  @IsString()
+  @IsOptional()
+  color?: string;
+}
+
+class ProductVariantDto {
+  @IsString()
+  size: string;
+
+  @IsString()
+  color: string;
+
+  @IsNumber()
+  stock: number;
+
+  @IsString()
+  @IsOptional()
+  sku?: string;
 }
 
 export class ProductDto {
@@ -55,6 +79,26 @@ export class ProductDto {
   @IsString()
   category!: string;
 
+  @IsMongoId()
+  @IsOptional()
+  mainCategory?: string;
+
+  @IsMongoId()
+  @IsOptional()
+  subCategory?: string;
+
+  @IsString()
+  @IsOptional()
+  ageGroup?: string;
+
+  @IsString()
+  @IsOptional()
+  size?: string;
+
+  @IsString()
+  @IsOptional()
+  color?: string;
+
   @IsOptional()
   @IsObject()
   @ValidateNested()
@@ -62,7 +106,13 @@ export class ProductDto {
   categoryStructure?: CategoryStructureDto;
 
   @IsNumber()
-  countInStock!: number;
+  countInStock!: number; // Legacy field
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ProductVariantDto)
+  variants?: ProductVariantDto[];
 
   @IsString()
   @IsOptional()
@@ -113,9 +163,19 @@ export class FindAllProductsDto {
   @IsString()
   limit?: string;
 
+  // Legacy field, keeping for backward compatibility
   @IsOptional()
   @IsString()
   category?: string;
+
+  // New category system fields
+  @IsOptional()
+  @IsMongoId()
+  mainCategory?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  subCategory?: string;
 
   @IsOptional()
   @IsString()
@@ -127,17 +187,29 @@ export class FindAllProductsDto {
 
   @IsOptional()
   @IsString()
-  mainCategory?: string;
-
-  @IsOptional()
-  @IsString()
   sortBy?: string;
 
   @IsOptional()
   @IsString()
   sortOrder?: string;
 
+  // Attribute filters
   @IsOptional()
-  @IsEnum(AgeGroup)
-  ageGroup?: AgeGroup;
+  @IsString()
+  ageGroup?: string;
+
+  @IsOptional()
+  @IsString()
+  size?: string;
+
+  @IsOptional()
+  @IsString()
+  color?: string;
+
+  @IsOptional()
+  @IsString()
+  includeVariants?: string;
 }
+
+// We already have the correct DTO definitions with IsMongoId() decorators for mainCategory and subCategory
+// Just ensure they're properly transformed to ObjectIds in the service

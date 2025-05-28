@@ -28,10 +28,27 @@ import {
 } from '@/utils/subcategories';
 import { ProductDto, FindAllProductsDto } from '../dtos/product.dto';
 
+interface FindManyParams {
+  keyword?: string;
+  page?: string;
+  limit?: string;
+  user?: UserDocument;
+  status?: ProductStatus;
+  brand?: string;
+  mainCategory?: string;
+  subCategory?: string;
+  sortBy?: string;
+  sortDirection?: 'asc' | 'desc';
+  ageGroup?: string;
+  size?: string;
+  color?: string;
+  includeVariants?: boolean;
+}
+
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Order.name) private orderModel: Model<Order>,
   ) {}
 
@@ -45,173 +62,119 @@ export class ProductsService {
   }
 
   async findMany(
-    keyword?: string,
-    page?: string,
-    limit?: string,
-    user?: UserDocument,
-    status?: ProductStatus,
-    brand?: string,
-    mainCategory?: string,
-    subCategory?: string,
-    sortBy: string = 'createdAt',
-    sortDirection: 'asc' | 'desc' = 'desc',
-    ageGroup?: AgeGroup,
-  ): Promise<PaginatedResponse<Product>> {
-    const pageSize = parseInt(limit ?? '10');
-    const currentPage = parseInt(page ?? '1');
+    params: FindManyParams,
+  ): Promise<{ products: Product[]; page: number; pages: number }> {
+    const {
+      keyword,
+      page = '1',
+      limit = '10',
+      user,
+      status,
+      brand,
+      mainCategory,
+      subCategory,
+      sortBy = 'createdAt',
+      sortDirection = 'desc',
+      ageGroup,
+      size,
+      color,
+      includeVariants = false,
+    } = params;
 
-    const decodedKeyword = keyword ? decodeURIComponent(keyword) : '';
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    const skip = (pageNumber - 1) * limitNumber;
 
-    const searchPattern = decodedKeyword
-      ? decodedKeyword
-          .split(' ')
-          .map((term) => `(?=.*${term})`)
-          .join('')
-      : '';
+    const filter: any = {};
 
-    let mainCategoryQuery = {};
+    if (keyword) {
+      filter.$or = [
+        { name: { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } },
+      ];
+    }
+
+    if (user) {
+      filter.user = user._id;
+    }
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (brand) {
+      filter.brand = brand;
+    }
+
+    // Handle category filtering with the new structure
     if (mainCategory) {
-      mainCategoryQuery = {
-        $or: [
-          { 'categoryStructure.main': mainCategory },
-          ...(mainCategory === 'CLOTHING'
-            ? [
-                {
-                  categoryStructure: { $exists: false },
-                  category: {
-                    $in: CLOTHING_CATEGORIES,
-                  },
-                },
-              ]
-            : []),
-          ...(mainCategory === 'ACCESSORIES'
-            ? [
-                {
-                  categoryStructure: { $exists: false },
-                  category: {
-                    $in: ACCESSORIES_CATEGORIES,
-                  },
-                },
-              ]
-            : []),
-          ...(mainCategory === 'FOOTWEAR'
-            ? [
-                {
-                  categoryStructure: { $exists: false },
-                  category: {
-                    $in: FOOTWEAR_CATEGORIES,
-                  },
-                },
-              ]
-            : []),
-          ...(mainCategory === 'SWIMWEAR'
-            ? [
-                {
-                  categoryStructure: { $exists: false },
-                  category: {
-                    $in: SWIMWEAR_CATEGORIES,
-                  },
-                },
-              ]
-            : []),
-        ],
-      };
+      // Try to convert to ObjectId if it's a valid ID
+      try {
+        filter.mainCategory = new Types.ObjectId(mainCategory);
+      } catch (error) {
+        // If it's not a valid ObjectId, use as is
+        filter.mainCategory = mainCategory;
+      }
     }
 
-    let ageGroupQuery = {};
+    if (subCategory) {
+      try {
+        filter.subCategory = new Types.ObjectId(subCategory);
+      } catch (error) {
+        filter.subCategory = subCategory;
+      }
+    }
+
+    // Filter by attributes
     if (ageGroup) {
-      ageGroupQuery = { 'categoryStructure.ageGroup': ageGroup };
+      filter.ageGroup = ageGroup;
     }
 
-    const searchQuery = decodedKeyword
-      ? {
-          $and: [
-            {
-              $or: [
-                { name: { $regex: searchPattern, $options: 'i' } },
-                { description: { $regex: searchPattern, $options: 'i' } },
-                { brand: { $regex: searchPattern, $options: 'i' } },
-                { category: { $regex: searchPattern, $options: 'i' } },
-              ],
-            },
-            user ? { user: user._id } : {},
-            brand ? { brand: brand } : {},
-            mainCategory ? mainCategoryQuery : {},
-            subCategory ? { category: subCategory } : {},
-            ageGroup ? ageGroupQuery : {},
-          ],
-        }
-      : {
-          ...(user ? { user: user._id } : {}),
-          ...(brand ? { brand: brand } : {}),
-          ...(mainCategory ? mainCategoryQuery : {}),
-          ...(subCategory ? { category: subCategory } : {}),
-          ...(ageGroup ? ageGroupQuery : {}),
-        };
-
-    console.log('Search query:', JSON.stringify(searchQuery, null, 2));
-
-    const searchQueryWithStatus = {
-      ...searchQuery,
-      ...(status && { status }),
-    };
-
-    const count = await this.productModel.countDocuments(searchQueryWithStatus);
-    const products = await this.productModel
-      .find(searchQueryWithStatus)
-      .populate({
-        path: 'user',
-        select: 'name email phoneNumber seller',
-      })
-      .sort({ [sortBy]: sortDirection === 'desc' ? -1 : 1 })
-      .limit(pageSize)
-      .skip(pageSize * (currentPage - 1));
-
-    const processedProducts = products.map((product) => {
-      const doc = product.toObject();
-
-      if (!doc.categoryStructure) {
-        let mainCat = MainCategory.CLOTHING; // Default to CLOTHING
-
-        if (CLOTHING_CATEGORIES.includes(doc.category)) {
-          mainCat = MainCategory.CLOTHING;
-        } else if (ACCESSORIES_CATEGORIES.includes(doc.category)) {
-          mainCat = MainCategory.ACCESSORIES;
-        } else if (FOOTWEAR_CATEGORIES.includes(doc.category)) {
-          mainCat = MainCategory.FOOTWEAR;
-        } else if (SWIMWEAR_CATEGORIES.includes(doc.category)) {
-          mainCat = MainCategory.SWIMWEAR;
-        } else {
-          // Handle legacy categories
-          const mappedCategory = CATEGORY_MAPPING[doc.category];
-          if (mappedCategory) {
-            if (CLOTHING_CATEGORIES.includes(mappedCategory)) {
-              mainCat = MainCategory.CLOTHING;
-            } else if (ACCESSORIES_CATEGORIES.includes(mappedCategory)) {
-              mainCat = MainCategory.ACCESSORIES;
-            } else if (FOOTWEAR_CATEGORIES.includes(mappedCategory)) {
-              mainCat = MainCategory.FOOTWEAR;
-            } else if (SWIMWEAR_CATEGORIES.includes(mappedCategory)) {
-              mainCat = MainCategory.SWIMWEAR;
-            }
-            doc.category = mappedCategory;
-          }
-        }
-
-        doc.categoryStructure = {
-          main: mainCat,
-          sub: doc.category,
-        };
+    if (size || color) {
+      // Add filter for size and color in variants if they exist
+      const variantFilter = [];
+      if (size) {
+        variantFilter.push({ 'variants.size': size });
+      }
+      if (color) {
+        variantFilter.push({ 'variants.color': color });
       }
 
-      return doc;
-    });
+      if (variantFilter.length > 0) {
+        filter.$or = [
+          // Check in the direct fields first
+          ...(size ? [{ size }] : []),
+          ...(color ? [{ color }] : []),
+          // Then check in variants
+          { $and: variantFilter },
+        ];
+      }
+    }
+
+    const sort: any = {};
+    sort[sortBy] = sortDirection === 'asc' ? 1 : -1;
+
+    const count = await this.productModel.countDocuments(filter);
+    const productQuery = this.productModel
+      .find(filter)
+      .sort(sort)
+      .populate('user', 'name')
+      .populate('mainCategory', 'name')
+      .populate('subCategory', 'name ageGroups sizes colors')
+      .skip(skip)
+      .limit(limitNumber);
+
+    // Only include variants if explicitly requested to keep response size down
+    if (!includeVariants) {
+      productQuery.select('-variants');
+    }
+
+    const products = await productQuery.exec();
 
     return {
-      items: processedProducts || [], // Ensure we always return an array
-      total: count,
-      page: currentPage,
-      pages: Math.ceil(count / pageSize),
+      products,
+      page: pageNumber,
+      pages: Math.ceil(count / limitNumber),
     };
   }
 
@@ -329,13 +292,13 @@ export class ProductsService {
     return product.save();
   }
 
-  async findByStatus(status: ProductStatus): Promise<ProductDocument[]> {
+  async findByStatus(status: ProductStatus): Promise<Product[]> {
     return this.productModel
       .find({ status })
-      .populate({
-        path: 'user',
-        select: 'name email phoneNumber seller',
-      })
+      .populate('user', 'name')
+      .populate('mainCategory', 'name')
+      .populate('subCategory', 'name ageGroups sizes colors')
+      .sort({ createdAt: -1 })
       .exec();
   }
 
@@ -408,6 +371,27 @@ export class ProductsService {
   }
 
   async create(productData: Partial<Product>): Promise<ProductDocument> {
+    // Convert string IDs to ObjectIds for category references
+    const data = { ...productData };
+
+    // Handle category references properly
+    if (typeof data.mainCategory === 'string' && data.mainCategory) {
+      try {
+        data.mainCategory = new Types.ObjectId(data.mainCategory);
+      } catch (error) {
+        // If conversion fails, use as is
+        console.warn('Invalid mainCategory ID format', data.mainCategory);
+      }
+    }
+
+    if (typeof data.subCategory === 'string' && data.subCategory) {
+      try {
+        data.subCategory = new Types.ObjectId(data.subCategory);
+      } catch (error) {
+        console.warn('Invalid subCategory ID format', data.subCategory);
+      }
+    }
+
     const status =
       productData.user.role === Role.Admin
         ? ProductStatus.APPROVED
@@ -459,5 +443,211 @@ export class ProductsService {
 
     // Additional logic for fetching products based on the query
     return this.productModel.find(query).exec();
+  }
+
+  // Add a method to check stock availability by size and color
+  async checkStockAvailability(
+    productId: string,
+    size: string,
+    color: string,
+    quantity: number = 1,
+  ): Promise<boolean> {
+    const product = await this.productModel.findById(productId).exec();
+
+    if (!product) {
+      return false;
+    }
+
+    // If the product has variants
+    if (product.variants && product.variants.length > 0) {
+      const variant = product.variants.find(
+        (v) => v.size === size && v.color === color,
+      );
+      if (!variant) {
+        return false;
+      }
+      return variant.stock >= quantity;
+    }
+
+    // Fall back to legacy countInStock if no variants
+    return product.countInStock >= quantity;
+  }
+
+  // Update inventory after a purchase
+  async updateInventory(
+    productId: string,
+    size: string,
+    color: string,
+    quantity: number = 1,
+  ): Promise<void> {
+    const product = await this.productModel.findById(productId).exec();
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    // If the product has variants
+    if (product.variants && product.variants.length > 0) {
+      const variantIndex = product.variants.findIndex(
+        (v) => v.size === size && v.color === color,
+      );
+      if (variantIndex === -1) {
+        throw new NotFoundException(
+          `Variant with size ${size} and color ${color} not found`,
+        );
+      }
+
+      if (product.variants[variantIndex].stock < quantity) {
+        throw new BadRequestException(
+          `Not enough stock for size ${size} and color ${color}`,
+        );
+      }
+
+      // Update the specific variant's stock
+      product.variants[variantIndex].stock -= quantity;
+      await product.save();
+    } else {
+      // Fall back to legacy countInStock if no variants
+      if (product.countInStock < quantity) {
+        throw new BadRequestException('Not enough stock');
+      }
+
+      product.countInStock -= quantity;
+      await product.save();
+    }
+  }
+
+  /**
+   * Get available variants (sizes and colors) for a product
+   */
+  async getProductVariants(productId: string) {
+    const product = await this.productModel.findById(productId).exec();
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    // If the product has variants defined
+    if (product.variants && product.variants.length > 0) {
+      // Extract unique sizes and colors
+      const sizes = [...new Set(product.variants.map((v) => v.size))];
+      const colors = [...new Set(product.variants.map((v) => v.color))];
+
+      // Map variants to include stock information
+      const variantsWithStock = product.variants.map((v) => ({
+        size: v.size,
+        color: v.color,
+        stock: v.stock,
+        sku: v.sku,
+      }));
+
+      return {
+        sizes,
+        colors,
+        variants: variantsWithStock,
+        hasVariants: true,
+      };
+    }
+
+    // For products without explicit variants, use the general attributes
+    return {
+      sizes: product.size ? [product.size] : [],
+      colors: product.color ? [product.color] : [],
+      variants: [],
+      hasVariants: false,
+      countInStock: product.countInStock,
+    };
+  }
+
+  /**
+   * Get all unique colors used in products
+   */
+  async getAllColors(): Promise<string[]> {
+    // Find colors from both direct fields and variants
+    const productsWithColors = await this.productModel
+      .find({
+        $or: [
+          { color: { $exists: true, $nin: [null, ''] } },
+          { 'variants.color': { $exists: true } },
+        ],
+      })
+      .exec();
+
+    const colors = new Set<string>();
+
+    // Add colors from direct fields
+    productsWithColors.forEach((product) => {
+      if (product.color) {
+        colors.add(product.color);
+      }
+
+      // Add colors from variants
+      if (product.variants && product.variants.length > 0) {
+        product.variants.forEach((variant) => {
+          if (variant.color) {
+            colors.add(variant.color);
+          }
+        });
+      }
+    });
+
+    return Array.from(colors).sort();
+  }
+
+  /**
+   * Get all unique sizes used in products
+   */
+  async getAllSizes(): Promise<string[]> {
+    // Find sizes from both direct fields and variants
+    const productsWithSizes = await this.productModel
+      .find({
+        $or: [
+          { size: { $exists: true, $nin: [null, ''] } },
+          { 'variants.size': { $exists: true } },
+        ],
+      })
+      .exec();
+
+    const sizes = new Set<string>();
+
+    // Add sizes from direct fields
+    productsWithSizes.forEach((product) => {
+      if (product.size) {
+        sizes.add(product.size);
+      }
+
+      // Add sizes from variants
+      if (product.variants && product.variants.length > 0) {
+        product.variants.forEach((variant) => {
+          if (variant.size) {
+            sizes.add(variant.size);
+          }
+        });
+      }
+    });
+
+    return Array.from(sizes).sort();
+  }
+
+  /**
+   * Get all unique age groups used in products
+   */
+  async getAllAgeGroups(): Promise<string[]> {
+    // Find all products with age groups
+    const productsWithAgeGroups = await this.productModel
+      .find({
+        ageGroup: { $exists: true, $nin: [null, ''] },
+      })
+      .exec();
+
+    const ageGroups = new Set<string>();
+
+    productsWithAgeGroups.forEach((product) => {
+      if (product.ageGroup) {
+        ageGroups.add(product.ageGroup);
+      }
+    });
+
+    return Array.from(ageGroups).sort();
   }
 }

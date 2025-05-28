@@ -85,3 +85,30 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Category System
+
+The project includes a hierarchical category system with the following structure:
+
+- Main Categories (e.g., CLOTHING, ACCESSORIES, FOOTWEAR)
+  - Subcategories (e.g., მაისურები, კაბები, ჰუდები)
+    - Attributes:
+      - Age Groups (e.g., ბავშვები, მოზრდილები)
+      - Sizes (e.g., S, M, L, XL)
+      - Colors (e.g., შავი, თეთრი, წითელი)
+
+### Category Management API
+
+The system provides RESTful endpoints for managing categories:
+
+- `/categories` - CRUD operations for main categories
+- `/categories/sub` - CRUD operations for subcategories
+- `/categories/colors` - Global color management
+- `/categories/sizes` - Global size management
+- `/categories/age-groups` - Global age group management
+
+Each subcategory can have its own set of attributes (sizes, colors, age groups) that can be managed through dedicated endpoints.
+
+### Product Categorization
+
+Products can be assigned to categories and include attributes like size, color, and age group. The inventory system supports product variants based on these attributes.

@@ -17,15 +17,27 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.enableCors({
-    origin: [
-      'https://www.russana.vercel.app',
-      'https://russana.vercel.app',
-      'http://localhost:3000',
-      'https://localhost:3000', // Added HTTPS local frontend
-      'http://localhost:4000', // Added HTTP local backend
-      'https://localhost:4000', // Added HTTPS local backend
-      /localhost/, // Fallback pattern for any localhost
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'https://www.russana.vercel.app',
+        'https://russana.vercel.app',
+        'http://localhost:3000',
+        'https://localhost:3000',
+        'http://localhost:4000',
+        'https://localhost:4000',
+      ];
+
+      // Allow requests with no origin (like mobile apps, curl requests)
+      if (
+        !origin ||
+        allowedOrigins.indexOf(origin) !== -1 ||
+        origin.match(/localhost/)
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'), false);
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
     allowedHeaders: [

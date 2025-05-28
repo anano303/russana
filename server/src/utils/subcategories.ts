@@ -6,6 +6,33 @@ export const FOOTWEAR_CATEGORIES = ['სპორტული', 'ყოველ
 
 export const SWIMWEAR_CATEGORIES = ['საცურაო კოსტუმები', 'სხვა'];
 
+// Age groups for all categories
+export const AGE_GROUPS = ['ბავშვები', 'მოზრდილები'];
+
+// Common sizes
+export const SIZES = {
+  CLOTHING: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+  FOOTWEAR: ['36', '37', '38', '39', '40', '41', '42', '43', '44', '45'],
+  ACCESSORIES: ['უნივერსალური', 'S', 'M', 'L'],
+  SWIMWEAR: ['XS', 'S', 'M', 'L', 'XL'],
+};
+
+// Common colors
+export const COLORS = [
+  'შავი',
+  'თეთრი',
+  'წითელი',
+  'ლურჯი',
+  'მწვანე',
+  'ყვითელი',
+  'ნაცრისფერი',
+  'ვარდისფერი',
+  'იისფერი',
+  'ყავისფერი',
+  'ნარინჯისფერი',
+  'სხვა',
+];
+
 // Legacy categories (keeping for backward compatibility)
 export const HANDMADE_CATEGORIES = [
   'კერამიკა',
