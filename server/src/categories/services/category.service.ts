@@ -64,9 +64,11 @@ export class CategoryService {
       );
     }
 
+    // Create new category without any code field
     const newCategory = new this.categoryModel({
-      ...createCategoryDto,
       name: normalizedName,
+      description: createCategoryDto.description,
+      isActive: createCategoryDto.isActive ?? true,
     });
 
     return newCategory.save();

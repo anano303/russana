@@ -55,3 +55,30 @@ CategorySchema.set('toJSON', {
     return ret;
   },
 });
+
+// IMPORTANT: Remove all indexes and only add the ones we need
+CategorySchema.index({ name: 1 }, { unique: true });
+
+// Add a pre-save hook to remove any unexpected fields
+CategorySchema.pre('save', function (next) {
+  // Ensure only allowed fields are saved
+  const allowedFields = ['name', 'description', 'isActive'];
+
+  // Get all fields in the document
+  const documentFields = Object.keys(this.toObject());
+
+  // Remove any fields that aren't in allowedFields and aren't MongoDB internal fields
+  documentFields.forEach((field) => {
+    if (
+      !allowedFields.includes(field) &&
+      !field.startsWith('_') &&
+      field !== 'createdAt' &&
+      field !== 'updatedAt'
+    ) {
+      // @ts-ignore - dynamically remove unexpected fields
+      this[field] = undefined;
+    }
+  });
+
+  next();
+});

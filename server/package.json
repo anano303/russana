@@ -21,7 +21,9 @@
     "test:watch": "cross-env NODE_ENV=test NODE_ENV=test jest --watch",
     "test:cov": "cross-env NODE_ENV=test jest --coverage",
     "test:debug": "cross-env NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json"
+    "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
+    "drop-code-index": "ts-node -r tsconfig-paths/register src/scripts/drop-code-index.ts",
+    "fix-mongo": "node src/scripts/fix-mongo-indexes.js"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.8",
