@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from '../services/category.service';
-import { SubCategoryService } from '../services/subcategory.service';
+
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto/category.dto';
 import {
   CreateSubCategoryDto,
@@ -31,6 +31,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { CategoryResponseDto } from '../dto/category.dto';
+import { SubCategoryService } from '../services/subCategory.service';
 
 @ApiTags('categories')
 @Controller('categories')
