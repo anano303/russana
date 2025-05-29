@@ -379,8 +379,15 @@ export const useAttributes = () => {
   }>({
     queryKey: ["attributes"],
     queryFn: async () => {
-      const response = await apiClient.get("/categories/attributes");
-      return response.data;
+      try {
+        console.log("Fetching all attributes");
+        const response = await apiClient.get("/categories/attributes/all");
+        console.log("Attributes fetched:", response.data);
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching attributes:", error);
+        throw new Error("Failed to fetch attributes");
+      }
     },
   });
 };

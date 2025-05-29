@@ -199,6 +199,66 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     window.location.reload();
   };
 
+  const renderAttributeSelections = () => {
+    if (!attributes) return null;
+
+    return (
+      <div className="attributes-section">
+        <h5>ატრიბუტები</h5>
+
+        <div className="attribute-group">
+          <h6>ასაკობრივი ჯგუფები</h6>
+          <div className="attribute-options">
+            {attributes.ageGroups.map((ageGroup) => (
+              <label key={ageGroup} className="attribute-option">
+                <input
+                  type="checkbox"
+                  checked={(formData.ageGroups || []).includes(ageGroup)}
+                  onChange={() =>
+                    handleAttributeSelection("ageGroups", ageGroup)
+                  }
+                />
+                {ageGroup}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="attribute-group">
+          <h6>ზომები</h6>
+          <div className="attribute-options">
+            {attributes.sizes.map((size) => (
+              <label key={size} className="attribute-option">
+                <input
+                  type="checkbox"
+                  checked={(formData.sizes || []).includes(size)}
+                  onChange={() => handleAttributeSelection("sizes", size)}
+                />
+                {size}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="attribute-group">
+          <h6>ფერები</h6>
+          <div className="attribute-options">
+            {attributes.colors.map((color) => (
+              <label key={color} className="attribute-option">
+                <input
+                  type="checkbox"
+                  checked={(formData.colors || []).includes(color)}
+                  onChange={() => handleAttributeSelection("colors", color)}
+                />
+                {color}
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (isLoading || isLoadingAttributes) {
     return (
       <div className="loading-container">
@@ -271,69 +331,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
               />
             </div>
 
-            <div className="attributes-section">
-              <h5>ატრიბუტები</h5>
-
-              {attributes && (
-                <>
-                  <div className="attribute-group">
-                    <h6>ასაკობრივი ჯგუფები</h6>
-                    <div className="attribute-options">
-                      {attributes.ageGroups.map((ageGroup) => (
-                        <label key={ageGroup} className="attribute-option">
-                          <input
-                            type="checkbox"
-                            checked={(formData.ageGroups || []).includes(
-                              ageGroup
-                            )}
-                            onChange={() =>
-                              handleAttributeSelection("ageGroups", ageGroup)
-                            }
-                          />
-                          {ageGroup}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="attribute-group">
-                    <h6>ზომები</h6>
-                    <div className="attribute-options">
-                      {attributes.sizes.map((size) => (
-                        <label key={size} className="attribute-option">
-                          <input
-                            type="checkbox"
-                            checked={(formData.sizes || []).includes(size)}
-                            onChange={() =>
-                              handleAttributeSelection("sizes", size)
-                            }
-                          />
-                          {size}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="attribute-group">
-                    <h6>ფერები</h6>
-                    <div className="attribute-options">
-                      {attributes.colors.map((color) => (
-                        <label key={color} className="attribute-option">
-                          <input
-                            type="checkbox"
-                            checked={(formData.colors || []).includes(color)}
-                            onChange={() =>
-                              handleAttributeSelection("colors", color)
-                            }
-                          />
-                          {color}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+            {renderAttributeSelections()}
 
             <div className="form-group checkbox">
               <label>
@@ -423,79 +421,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                     />
                   </div>
 
-                  <div className="attributes-section">
-                    <h5>ატრიბუტები</h5>
-
-                    {attributes && (
-                      <>
-                        <div className="attribute-group">
-                          <h6>ასაკობრივი ჯგუფები</h6>
-                          <div className="attribute-options">
-                            {attributes.ageGroups.map((ageGroup) => (
-                              <label
-                                key={ageGroup}
-                                className="attribute-option"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={(formData.ageGroups || []).includes(
-                                    ageGroup
-                                  )}
-                                  onChange={() =>
-                                    handleAttributeSelection(
-                                      "ageGroups",
-                                      ageGroup
-                                    )
-                                  }
-                                />
-                                {ageGroup}
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="attribute-group">
-                          <h6>ზომები</h6>
-                          <div className="attribute-options">
-                            {attributes.sizes.map((size) => (
-                              <label key={size} className="attribute-option">
-                                <input
-                                  type="checkbox"
-                                  checked={(formData.sizes || []).includes(
-                                    size
-                                  )}
-                                  onChange={() =>
-                                    handleAttributeSelection("sizes", size)
-                                  }
-                                />
-                                {size}
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="attribute-group">
-                          <h6>ფერები</h6>
-                          <div className="attribute-options">
-                            {attributes.colors.map((color) => (
-                              <label key={color} className="attribute-option">
-                                <input
-                                  type="checkbox"
-                                  checked={(formData.colors || []).includes(
-                                    color
-                                  )}
-                                  onChange={() =>
-                                    handleAttributeSelection("colors", color)
-                                  }
-                                />
-                                {color}
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                  {renderAttributeSelections()}
 
                   <div className="form-group checkbox">
                     <label>

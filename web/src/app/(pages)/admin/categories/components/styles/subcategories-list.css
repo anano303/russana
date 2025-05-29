@@ -59,6 +59,7 @@
   padding: 16px;
   border-radius: 8px;
   border: 1px solid #f0f0f0;
+  margin-bottom: 16px;
 }
 
 .attributes-section h5 {
@@ -92,6 +93,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-bottom: 10px;
 }
 
 .attribute-option {
@@ -106,6 +108,7 @@
   border: 1px solid #e5e7eb;
   transition: all 0.2s;
   font-family: "ALK Life", "Georgia", serif;
+  cursor: pointer;
 }
 
 .attribute-option:hover {
@@ -117,6 +120,7 @@
   accent-color: #e50000;
   width: 16px;
   height: 16px;
+  cursor: pointer;
 }
 
 .subcategories-list {
