@@ -5,7 +5,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { ProductGrid } from "@/modules/products/components/product-grid";
 import { ProductFilters } from "@/modules/products/components/product-filters";
 import { getProducts } from "@/modules/products/api/get-products";
-import { Product, MainCategory, AgeGroup } from "@/types";
+import { Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ShopPage.css";
 import "./ShopAnimatedIcons.css";
@@ -16,105 +16,128 @@ const ShopContent = () => {
   const searchParams = useSearchParams();
   const { t } = useLanguage();
 
-  const brand = searchParams ? searchParams.get("brand") : null;
-  const pageParam = searchParams
-    ? parseInt(searchParams.get("page") || "1")
-    : 1;
-  const mainCategoryParam = searchParams
-    ? searchParams.get("mainCategory")
-    : null;
-
   const initializedRef = useRef(false);
-
-  const initialCategory = brand ? "all" : "";
-
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [sortOption, setSortOption] = useState<"asc" | "desc" | "">("");
-  const [selectedMainCategory, setSelectedMainCategory] =
-    useState<MainCategory>(
-      mainCategoryParam === MainCategory.CLOTHING.toString()
-        ? MainCategory.CLOTHING
-        : MainCategory.ACCESSORIES
-    );
-
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<
-    AgeGroup | undefined
-  >();
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const [products, setProducts] = useState<Product[]>([]);
+  // New filter state
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [selectedSubCategoryId, setSelectedSubCategoryId] =
+    useState<string>("");
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [sorting, setSorting] = useState<{
+    field: string;
+    direction: "asc" | "desc";
+  }>({
+    field: "createdAt",
+    direction: "desc",
+  });
 
+  // Parse URL parameters on first load
   useEffect(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
+    const pageParam = searchParams
+      ? parseInt(searchParams.get("page") || "1")
+      : 1;
+    const mainCategoryParam = searchParams
+      ? searchParams.get("mainCategory") || ""
+      : "";
+    const subCategoryParam = searchParams
+      ? searchParams.get("subCategory") || ""
+      : "";
+    const ageGroupParam = searchParams
+      ? searchParams.get("ageGroup") || ""
+      : "";
+    const sizeParam = searchParams ? searchParams.get("size") || "" : "";
+    const colorParam = searchParams ? searchParams.get("color") || "" : "";
+    const brandParam = searchParams ? searchParams.get("brand") || "" : "";
+    const minPriceParam = searchParams
+      ? parseInt(searchParams.get("minPrice") || "0")
+      : 0;
+    const maxPriceParam = searchParams
+      ? parseInt(searchParams.get("maxPrice") || "1000")
+      : 1000;
+    const sortByParam = searchParams
+      ? searchParams.get("sortBy") || "createdAt"
+      : "createdAt";
+    const sortDirectionParam = searchParams
+      ? (searchParams.get("sortDirection") as "asc" | "desc") || "desc"
+      : "desc";
+
+    setCurrentPage(pageParam);
+    setSelectedCategoryId(mainCategoryParam);
+    setSelectedSubCategoryId(subCategoryParam);
+    setSelectedAgeGroup(ageGroupParam);
+    setSelectedSize(sizeParam);
+    setSelectedColor(colorParam);
+    setSelectedBrand(brandParam);
+    setPriceRange([minPriceParam, maxPriceParam]);
+    setSorting({ field: sortByParam, direction: sortDirectionParam });
+
     console.log("Initial setup with URL params:", {
       page: pageParam,
       mainCategory: mainCategoryParam,
+      subCategory: subCategoryParam,
     });
+  }, [searchParams]);
 
-    setCurrentPage(pageParam);
-
-    const mainCat =
-      mainCategoryParam === MainCategory.CLOTHING.toString()
-        ? MainCategory.CLOTHING
-        : MainCategory.ACCESSORIES;
-    setSelectedMainCategory(mainCat);
-  }, [pageParam, mainCategoryParam]);
-
+  // Fetch products based on filters
   const fetchProducts = useCallback(async () => {
     if (!initializedRef.current) return;
 
-    console.log(`Fetching products for page ${currentPage}`);
     setIsLoading(true);
 
     try {
-      const paramsObject = {
-        brand: brand || undefined,
-        mainCategory: selectedMainCategory.toString(),
-        subcategory: selectedCategory !== "all" ? selectedCategory : undefined,
-        sortField: sortOption !== "" ? "price" : "createdAt",
-        sortOrder: sortOption !== "" ? sortOption : undefined,
-        ageGroup: selectedAgeGroup,
+      // Build query parameters
+      const params: Record<string, string> = {
+        page: currentPage.toString(),
+        limit: "20",
+        sortBy: sorting.field,
+        sortDirection: sorting.direction,
       };
 
-      // Filter out undefined values to create a valid Record<string, string>
-      const searchParams: Record<string, string> = {};
-      for (const [key, value] of Object.entries(paramsObject)) {
-        if (value !== undefined) {
-          searchParams[key] = String(value);
-        }
-      }
+      if (selectedCategoryId) params.mainCategory = selectedCategoryId;
+      if (selectedSubCategoryId) params.subCategory = selectedSubCategoryId;
+      if (selectedAgeGroup) params.ageGroup = selectedAgeGroup;
+      if (selectedSize) params.size = selectedSize;
+      if (selectedColor) params.color = selectedColor;
+      if (selectedBrand) params.brand = selectedBrand;
+      if (priceRange[0] > 0) params.minPrice = priceRange[0].toString();
+      if (priceRange[1] < 1000) params.maxPrice = priceRange[1].toString();
 
-      const response = await getProducts(currentPage, 30, searchParams);
+      const response = await getProducts(currentPage, 20, params);
 
-      console.log(
-        `Got ${response.items?.length || 0} products for page ${currentPage}`
-      );
-
-      // Ensure we always set products (even empty array)
       setProducts(response.items || []);
       setTotalPages(response.pages || 1);
     } catch (error) {
       console.error(`Failed to fetch products:`, error);
-      // Set empty products array on error
       setProducts([]);
       setTotalPages(1);
+      // You could add a toast notification here if you have a toast system
     } finally {
       setIsLoading(false);
     }
   }, [
     currentPage,
-    brand,
-    selectedMainCategory,
-    selectedCategory,
-    sortOption,
+    selectedCategoryId,
+    selectedSubCategoryId,
     selectedAgeGroup,
+    selectedSize,
+    selectedColor,
+    selectedBrand,
+    priceRange,
+    sorting,
   ]);
 
+  // Fetch products when filters change
   useEffect(() => {
     let mounted = true;
     if (mounted) {
@@ -125,103 +148,65 @@ const ShopContent = () => {
     };
   }, [fetchProducts]);
 
-  const handlePageChange = (page: number) => {
-    if (page === currentPage || page < 1 || page > totalPages) return;
+  // Update URL when filters change
+  const updateUrl = useCallback(() => {
+    const params = new URLSearchParams();
 
-    console.log(`Changing page to ${page}`);
-    setCurrentPage(page);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", page.toString());
+    // Only add parameters that have values
+    if (selectedCategoryId) params.set("mainCategory", selectedCategoryId);
+    if (selectedSubCategoryId) params.set("subCategory", selectedSubCategoryId);
+    if (selectedAgeGroup) params.set("ageGroup", selectedAgeGroup);
+    if (selectedSize) params.set("size", selectedSize);
+    if (selectedColor) params.set("color", selectedColor);
+    if (selectedBrand) params.set("brand", selectedBrand);
+    if (priceRange[0] > 0) params.set("minPrice", priceRange[0].toString());
+    if (priceRange[1] < 1000) params.set("maxPrice", priceRange[1].toString());
+    if (sorting.field !== "createdAt") params.set("sortBy", sorting.field);
+    if (sorting.direction !== "desc")
+      params.set("sortDirection", sorting.direction);
+    if (currentPage > 1) params.set("page", currentPage.toString());
 
     router.replace(`/shop?${params.toString()}`);
+  }, [
+    router,
+    selectedCategoryId,
+    selectedSubCategoryId,
+    selectedAgeGroup,
+    selectedSize,
+    selectedColor,
+    selectedBrand,
+    priceRange,
+    sorting,
+    currentPage,
+  ]);
 
+  // Update URL when filters change
+  useEffect(() => {
+    // Skip the first render to avoid double navigation
+    if (!initializedRef.current) return;
+    updateUrl();
+  }, [
+    selectedCategoryId,
+    selectedSubCategoryId,
+    selectedAgeGroup,
+    selectedSize,
+    selectedColor,
+    selectedBrand,
+    priceRange,
+    sorting,
+    currentPage,
+    updateUrl,
+  ]);
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    if (page === currentPage || page < 1 || page > totalPages) return;
+    setCurrentPage(page);
     window.scrollTo(0, 0);
   };
 
-  const handleCategoryChange = (category: string) => {
-    if (category === selectedCategory) return;
-
-    console.log(`Changing category to: ${category}`);
-    setSelectedCategory(category);
-
-    if (currentPage !== 1) {
-      setCurrentPage(1);
-
-      const params = new URLSearchParams(searchParams.toString());
-
-      if (category && category !== "all") {
-        params.set("category", category);
-      } else {
-        params.delete("category");
-      }
-
-      params.set("page", "1");
-      router.replace(`/shop?${params.toString()}`);
-    } else {
-      const params = new URLSearchParams(searchParams.toString());
-
-      if (category && category !== "all") {
-        params.set("category", category);
-      } else {
-        params.delete("category");
-      }
-
-      router.replace(`/shop?${params.toString()}`);
-    }
-  };
-
-  const handleMainCategoryChange = (mainCategory: MainCategory) => {
-    if (mainCategory === selectedMainCategory) return;
-
-    console.log(`Changing main category to: ${mainCategory}`);
-    setSelectedMainCategory(mainCategory);
-    setSelectedCategory("all");
-    setCurrentPage(1);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("mainCategory", mainCategory.toString());
-    params.set("page", "1");
-    params.delete("category");
-
-    router.replace(`/shop?${params.toString()}`);
-  };
-
-  const handleSortChange = (option: "asc" | "desc" | "") => {
-    setSortOption(option);
-  };
-
-  const handleArtistChange = (artist: string) => {
-    if (!artist) return;
-
-    console.log(`Changing artist filter to: ${artist}`);
-
-    // Reset to page 1
-    setCurrentPage(1);
-
-    // Update URL with brand parameter and navigate
-    const params = new URLSearchParams();
-    params.set("brand", artist);
-    params.set("page", "1");
-
-    // Use router.push since we're changing to a fundamentally different view
-    router.push(`/shop?${params.toString()}`);
-  };
-
-  const handleAgeGroupChange = (ageGroup: AgeGroup | undefined) => {
-    setSelectedAgeGroup(ageGroup);
-    if (currentPage !== 1) {
-      setCurrentPage(1);
-    }
-  };
-
-  const getTheme = () => {
-    // Always return "default" since we've removed the other theme option
-    return "default";
-  };
-
+  // Decorative elements and UI
   const renderAnimatedIcons = () => {
-    // Updated with clothing-focused icons
     return (
       <div className="shop-animated-icons modern">
         <div className="icon clothing-icon">
@@ -234,8 +219,73 @@ const ShopContent = () => {
     );
   };
 
+  // Handle filter changes in a more robust way
+  const handleCategoryChange = useCallback(
+    (categoryId: string) => {
+      // Reset page when changing filters
+      setCurrentPage(1);
+      setSelectedCategoryId(categoryId);
+      // Clear dependent filters when changing parent filter
+      if (categoryId !== selectedCategoryId) {
+        setSelectedSubCategoryId("");
+        setSelectedAgeGroup("");
+        setSelectedSize("");
+        setSelectedColor("");
+      }
+    },
+    [selectedCategoryId]
+  );
+
+  const handleSubCategoryChange = useCallback(
+    (subcategoryId: string) => {
+      setCurrentPage(1);
+      setSelectedSubCategoryId(subcategoryId);
+      // Clear dependent filters when changing parent filter
+      if (subcategoryId !== selectedSubCategoryId) {
+        setSelectedAgeGroup("");
+        setSelectedSize("");
+        setSelectedColor("");
+      }
+    },
+    [selectedSubCategoryId]
+  );
+
+  // Simple filter handlers
+  const handleAgeGroupChange = useCallback((ageGroup: string) => {
+    setCurrentPage(1);
+    setSelectedAgeGroup(ageGroup);
+  }, []);
+
+  const handleSizeChange = useCallback((size: string) => {
+    setCurrentPage(1);
+    setSelectedSize(size);
+  }, []);
+
+  const handleColorChange = useCallback((color: string) => {
+    setCurrentPage(1);
+    setSelectedColor(color);
+  }, []);
+
+  const handleBrandChange = useCallback((brand: string) => {
+    setCurrentPage(1);
+    setSelectedBrand(brand);
+  }, []);
+
+  const handlePriceRangeChange = useCallback((range: [number, number]) => {
+    setCurrentPage(1);
+    setPriceRange(range);
+  }, []);
+
+  const handleSortChange = useCallback(
+    (sortOption: { field: string; direction: "asc" | "desc" }) => {
+      setCurrentPage(1);
+      setSorting(sortOption);
+    },
+    []
+  );
+
   return (
-    <div className={`shop-container ${getTheme()}`}>
+    <div className="shop-container default">
       {renderAnimatedIcons()}
 
       {/* Add 3D decorative elements */}
@@ -256,37 +306,67 @@ const ShopContent = () => {
           className="title"
           style={{ marginBottom: 40, marginTop: 70, zIndex: 9 }}
         >
-          {brand ? `${brand}${t("shop.artistWorks")}` : t("shop.allArtworks")}
+          {selectedBrand
+            ? `${selectedBrand}${t("shop.artistWorks")}`
+            : t("shop.allArtworks")}
         </h1>
 
-        <ProductFilters
-          products={products}
-          onCategoryChange={handleCategoryChange}
-          onArtistChange={handleArtistChange}
-          onSortChange={handleSortChange}
-          selectedCategory={selectedCategory}
-          selectedMainCategory={selectedMainCategory}
-          onMainCategoryChange={handleMainCategoryChange}
-          selectedAgeGroup={selectedAgeGroup}
-          onAgeGroupChange={handleAgeGroupChange}
-        />
-        {isLoading ? (
-          <div className="loading-state">{t("shop.loading")}</div>
-        ) : products.length > 0 ? (
-          <ProductGrid
-            products={products}
-            theme="default" // Always use default theme
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            isShopPage={true}
-            selectedAgeGroup={selectedAgeGroup}
-          />
-        ) : (
-          <div className="empty-state">
-            <p>{t("shop.emptyDescription")}</p>
+        <div className="shop-layout">
+          <div className="filters-sidebar">
+            <ProductFilters
+              onCategoryChange={handleCategoryChange}
+              onSubCategoryChange={handleSubCategoryChange}
+              onAgeGroupChange={handleAgeGroupChange}
+              onSizeChange={handleSizeChange}
+              onColorChange={handleColorChange}
+              onBrandChange={handleBrandChange}
+              onPriceRangeChange={handlePriceRangeChange}
+              onSortChange={handleSortChange}
+              selectedCategoryId={selectedCategoryId}
+              selectedSubCategoryId={selectedSubCategoryId}
+              selectedAgeGroup={selectedAgeGroup}
+              selectedSize={selectedSize}
+              selectedColor={selectedColor}
+              selectedBrand={selectedBrand}
+              priceRange={priceRange}
+            />
           </div>
-        )}
+
+          <div className="products-area">
+            {isLoading ? (
+              <div className="loading-state">{t("shop.loading")}</div>
+            ) : products.length > 0 ? (
+              <ProductGrid
+                products={products}
+                theme="default"
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                isShopPage={true}
+              />
+            ) : (
+              <div className="empty-state">
+                <p>{t("shop.emptyDescription")}</p>
+                <button
+                  className="reset-filters-btn"
+                  onClick={() => {
+                    setSelectedCategoryId("");
+                    setSelectedSubCategoryId("");
+                    setSelectedAgeGroup("");
+                    setSelectedSize("");
+                    setSelectedColor("");
+                    setSelectedBrand("");
+                    setPriceRange([0, 1000]);
+                    setSorting({ field: "createdAt", direction: "desc" });
+                    setCurrentPage(1);
+                  }}
+                >
+                  {t("shop.resetFilters")}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

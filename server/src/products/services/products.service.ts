@@ -230,38 +230,11 @@ export class ProductsService {
   }
 
   async update(id: string, attrs: Partial<Product>): Promise<ProductDocument> {
-    console.log(
-      '[DEBUG] Update service called with attrs:',
-      JSON.stringify(attrs, null, 2),
-    );
-
     if (!Types.ObjectId.isValid(id))
       throw new BadRequestException('Invalid product ID.');
 
     const product = await this.productModel.findById(id);
     if (!product) throw new NotFoundException('No product with given ID.');
-
-    // Log the original values first for debugging
-    console.log('[DEBUG] BEFORE UPDATE - Original values:', {
-      mainCategory: product.mainCategory,
-      mainCategoryType: typeof product.mainCategory,
-      mainCategoryToString: product.mainCategory
-        ? product.mainCategory.toString()
-        : null,
-      subCategory: product.subCategory,
-      subCategoryType: typeof product.subCategory,
-      subCategoryToString: product.subCategory
-        ? product.subCategory.toString()
-        : null,
-      category: product.category,
-    });
-
-    console.log('[DEBUG] Incoming category data:', {
-      mainCategory: attrs.mainCategory,
-      mainCategoryType: typeof attrs.mainCategory,
-      subCategory: attrs.subCategory,
-      subCategoryType: typeof attrs.subCategory,
-    });
 
     // Convert string IDs to ObjectIds for category references
     const data = { ...attrs };
@@ -275,29 +248,17 @@ export class ProductsService {
       ) {
         try {
           data.mainCategory = new Types.ObjectId(data.mainCategory);
-          console.log(
-            '[DEBUG] Converted mainCategory string to ObjectId:',
-            data.mainCategory,
-          );
         } catch (error) {
-          console.warn(
-            '[DEBUG] Invalid mainCategory ID format',
-            data.mainCategory,
-          );
+          console.warn('Invalid mainCategory ID format', data.mainCategory);
         }
       } else if (data.mainCategory === null) {
         // If explicitly set to null, keep it null
         data.mainCategory = null;
-        console.log('[DEBUG] Setting mainCategory to null');
       } else if (
         typeof data.mainCategory === 'object' &&
         data.mainCategory !== null
       ) {
         // If it's already an object (like from MongoDB), keep it
-        console.log(
-          '[DEBUG] mainCategory is already an object',
-          data.mainCategory,
-        );
       }
     }
 
@@ -310,29 +271,17 @@ export class ProductsService {
       ) {
         try {
           data.subCategory = new Types.ObjectId(data.subCategory);
-          console.log(
-            '[DEBUG] Converted subCategory string to ObjectId:',
-            data.subCategory,
-          );
         } catch (error) {
-          console.warn(
-            '[DEBUG] Invalid subCategory ID format',
-            data.subCategory,
-          );
+          console.warn('Invalid subCategory ID format', data.subCategory);
         }
       } else if (data.subCategory === null) {
         // If explicitly set to null, keep it null
         data.subCategory = null;
-        console.log('[DEBUG] Setting subCategory to null');
       } else if (
         typeof data.subCategory === 'object' &&
         data.subCategory !== null
       ) {
         // If it's already an object (like from MongoDB), keep it
-        console.log(
-          '[DEBUG] subCategory is already an object',
-          data.subCategory,
-        );
       }
     }
 
@@ -366,17 +315,9 @@ export class ProductsService {
     if (data.category) updateFields.category = data.category;
     if (data.mainCategory !== undefined) {
       updateFields.mainCategory = data.mainCategory;
-      console.log(
-        '[DEBUG] Setting updateFields.mainCategory to:',
-        updateFields.mainCategory,
-      );
     }
     if (data.subCategory !== undefined) {
       updateFields.subCategory = data.subCategory;
-      console.log(
-        '[DEBUG] Setting updateFields.subCategory to:',
-        updateFields.subCategory,
-      );
     }
 
     // Handle arrays properly
@@ -389,20 +330,6 @@ export class ProductsService {
     if (data.colors)
       updateFields.colors = Array.isArray(data.colors) ? data.colors : [];
 
-    console.log('[DEBUG] Update fields prepared:', {
-      mainCategory: updateFields.mainCategory,
-      mainCategoryType: typeof updateFields.mainCategory,
-      mainCategoryToString: updateFields.mainCategory
-        ? updateFields.mainCategory.toString()
-        : null,
-      subCategory: updateFields.subCategory,
-      subCategoryType: typeof updateFields.subCategory,
-      subCategoryToString: updateFields.subCategory
-        ? updateFields.subCategory.toString()
-        : null,
-      category: updateFields.category,
-    });
-
     // Make sure we have proper population options
     const populateOptions = [{ path: 'mainCategory' }, { path: 'subCategory' }];
 
@@ -414,26 +341,6 @@ export class ProductsService {
         { new: true, runValidators: true },
       )
       .populate(populateOptions);
-
-    console.log('[DEBUG] AFTER UPDATE - New values:', {
-      mainCategory: updatedProduct.mainCategory,
-      mainCategoryType: typeof updatedProduct.mainCategory,
-      // Fix error by checking if it's an object first
-      mainCategoryId:
-        typeof updatedProduct.mainCategory === 'object' &&
-        updatedProduct.mainCategory
-          ? updatedProduct.mainCategory._id || updatedProduct.mainCategory.id
-          : updatedProduct.mainCategory,
-      subCategory: updatedProduct.subCategory,
-      subCategoryType: typeof updatedProduct.subCategory,
-      // Fix error by checking if it's an object first
-      subCategoryId:
-        typeof updatedProduct.subCategory === 'object' &&
-        updatedProduct.subCategory
-          ? updatedProduct.subCategory._id || updatedProduct.subCategory.id
-          : updatedProduct.subCategory,
-      category: updatedProduct.category,
-    });
 
     return updatedProduct;
   }

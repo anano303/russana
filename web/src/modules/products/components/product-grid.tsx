@@ -1,11 +1,13 @@
 "use client";
 
-import { MainCategory, Product } from "@/types";
+import { Product, Category, SubCategory } from "@/types";
 import { ProductCard } from "./product-card";
 import { ProductCardSkeleton } from "./product-card-skeleton";
 import { useEffect, useState } from "react";
 import { getProducts } from "../api/get-products";
 import { getVisiblePages } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./ProductGrid.css";
 
 const paginationStyles = `
@@ -65,13 +67,49 @@ export function ProductGrid({
   isShopPage = false,
   selectedAgeGroup,
 }: ProductGridProps) {
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts || []);
   const [pages, setPages] = useState(totalPages);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch categories and subcategories for reference
+  useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories?includeInactive=false"
+        );
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+        return [];
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  useQuery<SubCategory[]>({
+    queryKey: ["all-subcategories"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/subcategories?includeInactive=false"
+        );
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch subcategories:", err);
+        return [];
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     if (searchKeyword) {
       setIsLoading(true);
+      setError(null);
+
       const fetchSearchResults = async () => {
         try {
           const { items = [], pages: totalPages } = await getProducts(
@@ -80,74 +118,30 @@ export function ProductGrid({
             searchKeyword ? { keyword: searchKeyword } : undefined
           );
 
-          const processedItems = items.map((item) => {
-            if (!item.categoryStructure) {
-              let mainCategory = MainCategory.SWIMWEAR; // Default
+          if (!items || items.length === 0) {
+            setProducts([]);
+            setPages(1);
+            setIsLoading(false);
+            return;
+          }
 
-              // First determine the main category based on the category name
-              if (["მაისურები", "კაბები", "ჰუდები"].includes(item.category)) {
-                mainCategory = MainCategory.CLOTHING;
-              } else if (["კეპები", "პანამები"].includes(item.category)) {
-                mainCategory = MainCategory.ACCESSORIES;
-              } else if (["სპორტული", "ყოველდღიური"].includes(item.category)) {
-                mainCategory = MainCategory.FOOTWEAR;
-              }
-
-              // Make sure we store the category ID for proper relationship
-              return {
-                ...item,
-                categoryStructure: {
-                  main: mainCategory,
-                  sub: item.category,
-                  categoryId: item.categoryId || null, // Make sure categoryId is passed through
-                },
-              };
-            }
-            return item;
-          });
-
-          setProducts(processedItems);
+          setProducts(items);
           setPages(totalPages);
         } catch (error) {
           console.error("Failed to search products:", error);
+          setError("Failed to load products. Please try again later.");
+          setProducts([]);
+          setPages(1);
         } finally {
           setIsLoading(false);
         }
       };
 
       fetchSearchResults();
-    } else {
-      const processedProducts = initialProducts?.map((item) => {
-        if (!item.categoryStructure) {
-          const handmadeCategories = [
-            "კერამიკა",
-            "ხის ნაკეთობები",
-            "სამკაულები",
-            "ტექსტილი",
-            "მინანქარი",
-            "სკულპტურები",
-            "სხვა",
-          ];
-          const isHandmade = handmadeCategories.includes(item.category);
-
-          // Store category ID for proper relationship
-          return {
-            ...item,
-            categoryStructure: {
-              main: isHandmade ? MainCategory.HANDMADE : MainCategory.PAINTINGS,
-              sub: item.category,
-              categoryId: item.categoryId || null, // Make sure categoryId is passed through
-            },
-          };
-        }
-        return item;
-      });
-
-      setProducts(processedProducts);
-
-      if (totalPages > 1) {
-        setPages(totalPages);
-      }
+    } else if (initialProducts) {
+      // Simply use initial products without any processing
+      setProducts(initialProducts);
+      setPages(totalPages);
     }
   }, [
     searchKeyword,
@@ -197,10 +191,24 @@ export function ProductGrid({
     );
   }
 
+  if (error) {
+    return (
+      <div className="error-state">
+        <p>{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="retry-button"
+        >
+          სცადეთ თავიდან
+        </button>
+      </div>
+    );
+  }
+
   if (!products?.length) {
     return (
       <div className="no-products">
-        <p>No products found</p>
+        <p>პროდუქტები ვერ მოიძებნა</p>
       </div>
     );
   }
@@ -229,7 +237,7 @@ export function ProductGrid({
               }`)
             }
           >
-            Previous
+            წინა
           </button>
 
           {visiblePages.map((pageNum, idx) =>
@@ -261,7 +269,7 @@ export function ProductGrid({
               }`)
             }
           >
-            Next
+            შემდეგი
           </button>
         </div>
       )}

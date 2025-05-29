@@ -299,20 +299,6 @@ export class ProductsController {
       brandLogo?: Express.Multer.File[];
     },
   ) {
-    console.log('[DEBUG] Update request received for product:', id);
-    console.log(
-      '[DEBUG] Update request mainCategory:',
-      productData.mainCategory,
-    );
-    console.log('[DEBUG] Update request subCategory:', productData.subCategory);
-    console.log('[DEBUG] Update request body:', {
-      ...productData,
-      // Don't log large text fields or arrays
-      description: productData.description ? '(text)' : undefined,
-      descriptionEn: productData.descriptionEn ? '(text)' : undefined,
-      existingImages: productData.existingImages ? '(array)' : undefined,
-    });
-
     const product = await this.productsService.findById(id);
     if (
       user.role !== Role.Admin &&
@@ -406,13 +392,6 @@ export class ProductsController {
           ? productData.subCategory
           : product.subCategory;
 
-      console.log('[DEBUG] Using final category values:', {
-        mainCategory,
-        mainCategoryType: typeof mainCategory,
-        subCategory,
-        subCategoryType: typeof subCategory,
-      });
-
       // Create update data object
       const updateData = {
         ...productDataWithoutUser,
@@ -425,26 +404,11 @@ export class ProductsController {
         colors,
       };
 
-      console.log(
-        '[DEBUG] Updating product with mainCategory:',
-        updateData.mainCategory,
-      );
-      console.log(
-        '[DEBUG] Updating product with subCategory:',
-        updateData.subCategory,
-      );
-
       const updatedProduct = await this.productsService.update(id, updateData);
-
-      console.log('[DEBUG] Product updated successfully:', {
-        id: updatedProduct._id,
-        mainCategory: updatedProduct.mainCategory,
-        subCategory: updatedProduct.subCategory,
-      });
 
       return updatedProduct;
     } catch (error) {
-      console.error('[DEBUG] Update error:', error);
+      console.error('Update error:', error);
       throw new InternalServerErrorException(
         'Failed to update product',
         error.message,

@@ -15,6 +15,28 @@ export enum AgeGroup {
   KIDS = "KIDS",
 }
 
+// Standardized category interfaces
+export interface Category {
+  id: string;
+  _id?: string;
+  name: string;
+  nameEn?: string;
+  description?: string;
+  isActive: boolean;
+}
+
+export interface SubCategory {
+  id: string;
+  _id?: string;
+  name: string;
+  nameEn?: string;
+  categoryId: string;
+  ageGroups: string[];
+  sizes: string[];
+  colors: string[];
+  isActive: boolean;
+}
+
 export interface CategoryStructure {
   main: MainCategory;
   sub: string;
@@ -31,12 +53,13 @@ export interface Product {
   descriptionEn?: string;
   brand: string;
   brandLogo: string;
-  category: string | { name: string };
-  subCategory?: string | { name: string };
+  category: string | { name: string; _id?: string; id?: string };
+  subCategory?: string | { name: string; _id?: string; id?: string };
+  mainCategory?: string | { name: string; _id?: string; id?: string };
   ageGroups?: string[];
   sizes?: string[];
   colors?: string[];
-  categoryStructure?: CategoryStructure; // New structured category
+  categoryStructure?: CategoryStructure;
   price: number;
   countInStock: number;
   rating: number;
@@ -46,7 +69,7 @@ export interface Product {
   updatedAt: string;
   status: ProductStatus;
   rejectionReason?: string;
-  deliveryType?: "SELLER" | "SoulArt"; // Corrected from 'SOULART' to 'SoulArt'
+  deliveryType?: "SELLER" | "SoulArt";
   minDeliveryDays?: number;
   maxDeliveryDays?: number;
   dimensions?: {
@@ -84,6 +107,8 @@ export interface User {
   profileImage?: string;
   phoneNumber: string;
   role: Role;
+  storeName?: string;
+  storeLogo?: string;
   seller?: {
     storeName: string;
     storeLogo?: string;

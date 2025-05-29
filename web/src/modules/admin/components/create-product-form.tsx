@@ -13,6 +13,7 @@ import "./CreateProductForm.css";
 import Image from "next/image";
 import { getAccessToken } from "@/lib/auth";
 import { useUser } from "@/modules/auth/hooks/use-user";
+import { Category, SubCategory } from "@/types";
 
 // Extended ProductFormData to include all needed properties
 interface ProductFormData extends BaseProductFormData {
@@ -42,23 +43,7 @@ interface CreateProductFormProps {
   isEdit?: boolean;
 }
 
-// Interface for Category and SubCategory
-interface Category {
-  id: string;
-  name: string;
-  description?: string;
-  isActive: boolean;
-}
 
-interface SubCategory {
-  id: string;
-  name: string;
-  categoryId: string;
-  ageGroups: string[];
-  sizes: string[];
-  colors: string[];
-  isActive: boolean;
-}
 
 export function CreateProductForm({
   initialData,
@@ -165,11 +150,6 @@ export function CreateProductForm({
 
   useEffect(() => {
     if (initialData) {
-      console.log(
-        "[DEBUG] Initial Data in Form:",
-        JSON.stringify(initialData, null, 2)
-      );
-
       // Basic form data setup
       setFormData((prev) => ({
         ...prev,
@@ -202,16 +182,6 @@ export function CreateProductForm({
         setMaxDeliveryDays(initialData.maxDeliveryDays.toString());
       }
 
-      // Improved category handling - Debug the values
-      console.log("[DEBUG] Category data from initialData:", {
-        mainCategory: initialData.mainCategory,
-        mainCategoryType: typeof initialData.mainCategory,
-        subCategory: initialData.subCategory,
-        subCategoryType: typeof initialData.subCategory,
-        categoryId: initialData.categoryId,
-        subcategory: initialData.subcategory,
-      });
-
       // Extract category ID correctly, handling both object and string formats
       if (initialData.mainCategory) {
         const categoryId =
@@ -219,13 +189,8 @@ export function CreateProductForm({
             ? initialData.mainCategory._id || initialData.mainCategory.id
             : initialData.mainCategory;
 
-        console.log("[DEBUG] Setting selectedCategory to:", categoryId);
         setSelectedCategory(String(categoryId || ""));
       } else if (initialData.categoryId) {
-        console.log(
-          "[DEBUG] Setting selectedCategory to categoryId:",
-          initialData.categoryId
-        );
         setSelectedCategory(String(initialData.categoryId || ""));
       }
     }
@@ -240,19 +205,6 @@ export function CreateProductForm({
       subcategories &&
       subcategories.length > 0
     ) {
-      console.log(
-        "[DEBUG] Trying to set subcategory. Current selectedCategory:",
-        selectedCategory
-      );
-      console.log(
-        "[DEBUG] Available subcategories:",
-        subcategories.map((s) => ({
-          id: s.id,
-          name: s.name,
-          categoryId: s.categoryId,
-        }))
-      );
-
       // Extract subcategory ID correctly, handling both object and string formats
       if (initialData.subCategory) {
         const subcategoryId =
@@ -260,16 +212,8 @@ export function CreateProductForm({
             ? initialData.subCategory._id || initialData.subCategory.id
             : initialData.subCategory;
 
-        console.log(
-          "[DEBUG] Setting selectedSubcategory from subCategory:",
-          subcategoryId
-        );
         setSelectedSubcategory(String(subcategoryId || ""));
       } else if (initialData.subcategory) {
-        console.log(
-          "[DEBUG] Setting selectedSubcategory from subcategory:",
-          initialData.subcategory
-        );
         setSelectedSubcategory(String(initialData.subcategory || ""));
       }
     }
@@ -401,17 +345,6 @@ export function CreateProductForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(
-      "[DEBUG] Form data on submit",
-      JSON.stringify(formData, null, 2)
-    );
-    console.log("[DEBUG] Selected category/subcategory on submit:", {
-      selectedCategory,
-      selectedSubcategory,
-      selectedAgeGroups,
-      selectedSizes,
-      selectedColors,
-    });
 
     setPending(true);
     setServerError(null);
@@ -500,12 +433,6 @@ export function CreateProductForm({
       formDataToSend.append("mainCategory", selectedCategory);
       formDataToSend.append("subCategory", selectedSubcategory);
 
-      // For debugging purposes
-      console.log("[DEBUG] Sending category data:", {
-        mainCategory: selectedCategory,
-        subCategory: selectedSubcategory,
-      });
-
       // Add selected attributes
       if (selectedAgeGroups.length > 0) {
         formDataToSend.append("ageGroups", JSON.stringify(selectedAgeGroups));
@@ -532,17 +459,14 @@ export function CreateProductForm({
       // SIMPLIFIED logo handling - THIS IS THE FIX
       // For new uploads (File objects)
       if (formData.brandLogo instanceof File) {
-        console.log("Sending brand logo file", formData.brandLogo.name);
         formDataToSend.append("brandLogo", formData.brandLogo);
       }
       // For existing logo URLs - just pass the URL as a string
       else if (typeof formData.brandLogo === "string" && formData.brandLogo) {
-        console.log("Sending brand logo URL", formData.brandLogo);
         formDataToSend.append("brandLogoUrl", formData.brandLogo);
       }
       // For sellers with profiles - use their store logo
       else if (isSeller && user?.storeLogo) {
-        console.log("Using seller store logo from profile", user.storeLogo);
         formDataToSend.append("brandLogoUrl", user.storeLogo);
       }
 
@@ -603,32 +527,8 @@ export function CreateProductForm({
         return;
       }
 
-      console.log("===== Form Data Contents =====");
-      for (const [key, value] of formDataToSend.entries()) {
-        if (key === "images") {
-          console.log(`${key}: [File object]`);
-        } else {
-          console.log(`${key}: ${value}`);
-        }
-      }
-      console.log("=============================");
-
       const method = isEdit ? "PUT" : "POST";
       const endpoint = isEdit ? `/products/${formData._id}` : "/products";
-
-      console.log("Sending request:", {
-        method,
-        endpoint,
-      });
-
-      // Log the complete payload for debugging
-      if (isEdit) {
-        console.log(
-          "[DEBUG] Edit payload keys:",
-          Array.from(formDataToSend.keys())
-        );
-        console.log("[DEBUG] Edit request - Product ID:", formData._id);
-      }
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
@@ -645,7 +545,6 @@ export function CreateProductForm({
         let errorMessage = "ნამუშევრის დამატება/განახლება ვერ მოხერხდა";
         try {
           const errorData = await response.json();
-          console.error("[DEBUG] API Error Response:", errorData);
           errorMessage = errorData.message || errorMessage;
         } catch {
           errorMessage = `Error: ${response.status} ${response.statusText}`;
@@ -654,7 +553,6 @@ export function CreateProductForm({
       }
 
       const data = await response.json();
-      console.log("[DEBUG] Server response after successful save:", data);
       const successMessage = isEdit
         ? "პროდუქტი წარმატებით განახლდა!"
         : "პროდუქტი წარმატებით დაემატა!";
@@ -693,19 +591,11 @@ export function CreateProductForm({
   // Also add a useEffect to fetch subcategory details when selectedSubcategory changes
   useEffect(() => {
     if (selectedSubcategory && subcategories) {
-      console.log(`Looking for subcategory with ID: ${selectedSubcategory}`);
-      console.log(
-        "Available subcategories:",
-        subcategories.map((s) => ({ id: s.id, name: s.name }))
-      );
-
       const subcategory = subcategories.find(
         (sub) => String(sub.id) === String(selectedSubcategory)
       );
 
       if (subcategory) {
-        console.log("Found matching subcategory:", subcategory.name);
-
         // Set available options based on subcategory
         setAvailableAgeGroups(subcategory.ageGroups || []);
         setAvailableSizes(subcategory.sizes || []);
@@ -854,14 +744,8 @@ export function CreateProductForm({
             </option>
             {categories?.map((category) => (
               <option key={category.id} value={category.id}>
-                {language === "en" && category.name === "ნახატები"
-                  ? "Paintings"
-                  : language === "en" && category.name === "ხელნაკეთი ნივთები"
-                  ? "Handmade"
-                  : language === "en" && category.name === "ტანსაცმელი"
-                  ? "Clothing"
-                  : language === "en" && category.name === "აქსესუარები"
-                  ? "Accessories"
+                {language === "en" && category.nameEn
+                  ? category.nameEn
                   : category.name}
               </option>
             ))}
@@ -882,12 +766,8 @@ export function CreateProductForm({
             <option value="">აირჩიეთ ქვეკატეგორია</option>
             {subcategories?.map((subcategory) => (
               <option key={subcategory.id} value={subcategory.id}>
-                {language === "en" && subcategory.name === "პეიზაჟი"
-                  ? "Landscape"
-                  : language === "en" && subcategory.name === "პორტრეტი"
-                  ? "Portrait"
-                  : language === "en" && subcategory.name === "კერამიკა"
-                  ? "Pottery"
+                {language === "en" && subcategory.nameEn
+                  ? subcategory.nameEn
                   : subcategory.name}
               </option>
             ))}
@@ -911,10 +791,16 @@ export function CreateProductForm({
                         }
                       />
                       <span>
-                        {language === "en" && ageGroup === "ADULTS"
-                          ? "Adults"
-                          : language === "en" && ageGroup === "KIDS"
-                          ? "Kids"
+                        {language === "en"
+                          ? ageGroup === "ADULTS"
+                            ? "Adults"
+                            : ageGroup === "KIDS"
+                            ? "Kids"
+                            : ageGroup
+                          : ageGroup === "ADULTS"
+                          ? "უფროსები"
+                          : ageGroup === "KIDS"
+                          ? "ბავშვები"
                           : ageGroup}
                       </span>
                     </label>

@@ -169,11 +169,11 @@
 
 /* Loading state */
 .loading-state {
-  min-height: 300px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  align-items: center;
+  height: 300px;
+  font-size: 18px;
   color: #666;
 }
 
@@ -190,13 +190,11 @@
 
 /* Empty state */
 .empty-state {
+  padding: 40px;
   text-align: center;
-  padding: 4rem 2rem;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(233, 30, 99, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(233, 30, 99, 0.05);
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
 }
 
 .empty-state p {
@@ -368,6 +366,46 @@
   }
 }
 
+/* Add new layout styles */
+.shop-layout {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.filters-sidebar {
+  flex: 0 0 300px;
+}
+
+.products-area {
+  flex: 1;
+}
+
+.empty-state {
+  padding: 40px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.reset-filters-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #4a6eb5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.reset-filters-btn:hover {
+  background-color: #3a5da0;
+}
+
 /* Responsive styling for h1 */
 @media (max-width: 768px) {
   .shop-container {
@@ -392,6 +430,15 @@
   .title-heart-icon {
     width: 24px;
     height: 24px;
+  }
+
+  .shop-layout {
+    flex-direction: column;
+  }
+
+  .filters-sidebar {
+    flex: 0 0 auto;
+    width: 100%;
   }
 }
 

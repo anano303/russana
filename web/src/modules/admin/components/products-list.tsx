@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Product as BaseProduct, User } from "@/types";
+import { Product, User, Category, SubCategory } from "@/types";
 import { ProductsActions } from "./products-actions";
 import { Plus } from "lucide-react";
 import "./productList.css";
@@ -15,7 +15,7 @@ import { Role } from "@/types/role";
 import { useLanguage } from "@/hooks/LanguageContext";
 
 // Extended Product type to include mainCategory and subCategory properties
-interface Product extends BaseProduct {
+interface ProductWithCategories extends Product {
   mainCategory?: { name: string; id?: string; _id?: string } | string;
   subCategory?: { name: string; id?: string; _id?: string } | string;
 }
@@ -114,7 +114,7 @@ export function ProductsList() {
   }
 
   // Add a new query to fetch all categories and subcategories for reference
-  const { data: categoriesData } = useQuery({
+  const { data: categoriesData } = useQuery<Category[]>({
     queryKey: ["all-categories", refreshKey], // Add refreshKey to force re-fetch
     queryFn: async () => {
       const response = await fetchWithAuth(`/categories?includeInactive=false`);
@@ -122,7 +122,7 @@ export function ProductsList() {
     },
   });
 
-  const { data: subcategoriesData } = useQuery({
+  const { data: subcategoriesData } = useQuery<SubCategory[]>({
     queryKey: ["all-subcategories", refreshKey], // Add refreshKey to force re-fetch
     queryFn: async () => {
       const response = await fetchWithAuth(
@@ -303,7 +303,7 @@ export function ProductsList() {
           </tr>
         </thead>
         <tbody>
-          {products.map((product: Product & { user?: User }) => (
+          {products.map((product: ProductWithCategories & { user?: User }) => (
             <tr key={product._id} className="prd-tr">
               <td className="prd-td prd-td-bold">
                 {" "}

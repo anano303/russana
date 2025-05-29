@@ -1,237 +1,544 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./product-filters.css";
-import { Product, MainCategory, AgeGroup } from "@/types";
-
 import { useLanguage } from "@/hooks/LanguageContext";
+import { Category, SubCategory } from "@/types";
 
 interface FilterProps {
-  products: Product[];
-  onCategoryChange: (category: string) => void;
-  onArtistChange: (artist: string) => void;
-  onSortChange?: (sortOption: "asc" | "desc" | "") => void;
-  selectedCategory?: string;
-  selectedMainCategory?: MainCategory;
-  onMainCategoryChange?: (mainCategory: MainCategory) => void;
-  onAgeGroupChange?: (ageGroup: AgeGroup | undefined) => void;
-  selectedAgeGroup?: AgeGroup;
+  onCategoryChange: (categoryId: string) => void;
+  onSubCategoryChange: (subcategoryId: string) => void;
+  onAgeGroupChange: (ageGroup: string) => void;
+  onSizeChange: (size: string) => void;
+  onColorChange: (color: string) => void;
+  onSortChange: (sortOption: {
+    field: string;
+    direction: "asc" | "desc";
+  }) => void;
+  onBrandChange: (brand: string) => void;
+  selectedCategoryId?: string;
+  selectedSubCategoryId?: string;
+  selectedAgeGroup?: string;
+  selectedSize?: string;
+  selectedColor?: string;
+  selectedBrand?: string;
+  priceRange?: [number, number]; // min, max
+  onPriceRangeChange: (range: [number, number]) => void;
 }
 
 export function ProductFilters({
   onCategoryChange,
-  onArtistChange,
-  onSortChange,
-  selectedCategory: initialCategory = "all",
-  selectedMainCategory: initialMainCategory = MainCategory.CLOTHING,
-  onMainCategoryChange,
+  onSubCategoryChange,
   onAgeGroupChange,
+  onSizeChange,
+  onColorChange,
+  onSortChange,
+  onBrandChange,
+  onPriceRangeChange,
+  selectedCategoryId,
+  selectedSubCategoryId,
   selectedAgeGroup,
+  selectedSize,
+  selectedColor,
+  selectedBrand,
+  priceRange = [0, 1000],
 }: FilterProps) {
-  const { t } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [selectedArtist, setSelectedArtist] = useState("all");
+  const { language } = useLanguage();
+  const [minPrice, setMinPrice] = useState(priceRange[0]);
+  const [maxPrice, setMaxPrice] = useState(priceRange[1]);
+  const [error, setError] = useState<string | null>(null);
 
-  const [sortOption, setSortOption] = useState<"asc" | "desc" | "">("");
-  const [selectedMainCategory, setSelectedMainCategory] =
-    useState(initialMainCategory);
-
-  const categoriesByType: Record<MainCategory, string[]> = {
-    [MainCategory.CLOTHING]: ["მაისურები", "კაბები", "ჰუდები", "სხვა"],
-    [MainCategory.ACCESSORIES]: ["კეპები", "პანამები", "სხვა"],
-    [MainCategory.FOOTWEAR]: ["სპორტული", "ყოველდღიური", "სხვა"],
-    [MainCategory.SWIMWEAR]: ["საცურაო კოსტუმები", "სხვა"],
-    [MainCategory.PAINTINGS]: ["ნახატები", "სხვა"],
-    [MainCategory.HANDMADE]: ["ხელნაკეთი", "სხვა"],
-  };
-
-  // Helper function to translate category names
-  const translateCategory = (category: string) => {
-    if (category === "all") return t("shop.allArtworks");
-    return t(`productCategories.${category}`);
-  };
-
-  // Main category translation mapping
-  const mainCategoryLabels: Record<MainCategory, string> = {
-    [MainCategory.CLOTHING]: t("categories.clothing"),
-    [MainCategory.ACCESSORIES]: t("categories.accessories"),
-    [MainCategory.FOOTWEAR]: t("categories.footwear"),
-    [MainCategory.SWIMWEAR]: t("categories.swimwear"),
-    [MainCategory.PAINTINGS]: t("categories.paintings"),
-    [MainCategory.HANDMADE]: t("categories.handmade"),
-  };
-
-  const categories = ["all", ...(categoriesByType[selectedMainCategory] || [])];
-
-  const handleArtistChange = useCallback(
-    (artist: string) => {
-      const newArtist = artist === "all" ? "" : artist;
-      setSelectedArtist(artist);
-      onArtistChange(newArtist);
-
-      if (selectedCategory !== "all") {
-        setSelectedCategory("all");
-        onCategoryChange("");
-      }
-    },
-    [selectedCategory, onArtistChange, onCategoryChange]
-  );
-
-  const handleCategoryChange = useCallback(
-    (category: string) => {
-      const newCategory = category === "all" ? "" : category;
-      setSelectedCategory(category);
-      onCategoryChange(newCategory);
-
-      if (selectedArtist !== "all") {
-        handleArtistChange("all");
-      }
-    },
-    [selectedArtist, onCategoryChange, handleArtistChange]
-  );
-
-  const handleMainCategoryChange = (mainCategory: MainCategory) => {
-    setSelectedMainCategory(mainCategory);
-    setSelectedCategory("all");
-    onCategoryChange("");
-
-    if (onMainCategoryChange) {
-      onMainCategoryChange(mainCategory);
-    }
-  };
-
-  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const option = event.target.value as "asc" | "desc" | "";
-    setSortOption(option);
-    if (onSortChange) {
-      onSortChange(option);
-    }
-  };
-
+  // Update local state when props change
   useEffect(() => {
-    if (initialCategory !== "all") {
-      handleCategoryChange(initialCategory);
-    }
-  }, [initialCategory, handleCategoryChange]);
+    setMinPrice(priceRange[0]);
+    setMaxPrice(priceRange[1]);
+  }, [priceRange]);
 
-  // Determine the theme class based on the selected main category
-  const themeClass = `${selectedMainCategory.toString().toLowerCase()}-theme`;
+  // Fetch all categories with error handling
+  const {
+    data: categories = [],
+    isLoading: isCategoriesLoading,
+    // Removing unused error variable
+  } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories?includeInactive=false"
+        );
+        if (!response.ok) {
+          throw new Error(`Error fetching categories: ${response.status}`);
+        }
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+        setError("კატეგორიების ჩატვირთვა ვერ მოხერხდა");
+        return [];
+      }
+    },
+    retry: 2,
+    refetchOnWindowFocus: false,
+  });
+
+  // Fetch subcategories based on selected category with error handling
+  const {
+    data: subcategories = [],
+    isLoading: isSubcategoriesLoading,
+    // Removing unused error variable
+  } = useQuery<SubCategory[]>({
+    queryKey: ["subcategories", selectedCategoryId],
+    queryFn: async () => {
+      try {
+        if (!selectedCategoryId) return [];
+        const response = await fetchWithAuth(
+          `/subcategories?categoryId=${selectedCategoryId}&includeInactive=false`
+        );
+        if (!response.ok) {
+          throw new Error(`Error fetching subcategories: ${response.status}`);
+        }
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch subcategories:", err);
+        setError("ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა");
+        return [];
+      }
+    },
+    enabled: !!selectedCategoryId,
+    retry: 2,
+    refetchOnWindowFocus: false,
+  });
+
+  // Fetch all available brands for filtering with error handling
+  const {
+    data: availableBrands = [],
+    isLoading: isBrandsLoading,
+    // Removing unused error variable
+  } = useQuery<string[]>({
+    queryKey: ["brands"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/products/brands");
+        if (!response.ok) {
+          return []; // Silently fail if brands endpoint doesn't exist
+        }
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch brands:", err);
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Get available attributes based on selected subcategory
+  const getAvailableAttributes = (
+    attributeType: "ageGroups" | "sizes" | "colors"
+  ): string[] => {
+    if (!selectedSubCategoryId || !subcategories || subcategories.length === 0)
+      return [];
+
+    const selectedSubCategory = subcategories.find(
+      (sub) =>
+        sub.id === selectedSubCategoryId || sub._id === selectedSubCategoryId
+    );
+
+    if (!selectedSubCategory) return [];
+
+    return selectedSubCategory[attributeType] || [];
+  };
+
+  // Handle price range changes with validation
+  const handlePriceChange = () => {
+    // Validation
+    if (minPrice < 0) {
+      setMinPrice(0);
+      return;
+    }
+
+    if (maxPrice < minPrice) {
+      setMaxPrice(minPrice);
+      return;
+    }
+
+    onPriceRangeChange([minPrice, maxPrice]);
+  };
+
+  // Translate category/subcategory names based on language
+  const getLocalizedName = (name: string, originalItem?: { nameEn?: string }): string => {
+    if (language === "en") {
+      // First check if the item has an English name field
+      if (originalItem && originalItem.nameEn) {
+        return originalItem.nameEn;
+      }
+      return name;
+    }
+    return name;
+  };
+
+  // Handle clearing specific filters
+  const clearCategoryFilter = () => {
+    onCategoryChange("");
+    onSubCategoryChange("");
+    onAgeGroupChange("");
+    onSizeChange("");
+    onColorChange("");
+  };
+
+  const clearSubcategoryFilter = () => {
+    onSubCategoryChange("");
+    onAgeGroupChange("");
+    onSizeChange("");
+    onColorChange("");
+  };
+
+  // Reset all filters to default values
+  const resetAllFilters = () => {
+    onCategoryChange("");
+    onSubCategoryChange("");
+    onAgeGroupChange("");
+    onSizeChange("");
+    onColorChange("");
+    onBrandChange("");
+    setMinPrice(0);
+    setMaxPrice(1000);
+    onPriceRangeChange([0, 1000]);
+  };
 
   return (
-    <div className={`filters-container ${themeClass}`}>
+    <div className="product-filters">
+      <h2 className="filter-heading">ფილტრები</h2>
+
+      {error && (
+        <div className="filter-error">
+          <p>{error}</p>
+          <button onClick={() => setError(null)}>დახურვა</button>
+        </div>
+      )}
+
+      {/* Category Filter */}
       <div className="filter-section">
-        <h3 className="filter-title">{t("shop.mainCategory")}</h3>
+        <div className="filter-header">
+          <h3 className="filter-title">კატეგორიები</h3>
+          {selectedCategoryId && (
+            <button
+              className="filter-clear-btn"
+              onClick={clearCategoryFilter}
+              aria-label="Clear category filter"
+            >
+              გასუფთავება
+            </button>
+          )}
+        </div>
         <div className="filter-options">
-          <div
-            className={`filter-option ${
-              selectedMainCategory === MainCategory.CLOTHING ? "active" : ""
-            }`}
-            onClick={() => handleMainCategoryChange(MainCategory.CLOTHING)}
-          >
-            {mainCategoryLabels[MainCategory.CLOTHING]}
-          </div>
-          <div
-            className={`filter-option ${
-              selectedMainCategory === MainCategory.ACCESSORIES ? "active" : ""
-            }`}
-            onClick={() => handleMainCategoryChange(MainCategory.ACCESSORIES)}
-          >
-            {mainCategoryLabels[MainCategory.ACCESSORIES]}
-          </div>
-          <div
-            className={`filter-option ${
-              selectedMainCategory === MainCategory.FOOTWEAR ? "active" : ""
-            }`}
-            onClick={() => handleMainCategoryChange(MainCategory.FOOTWEAR)}
-          >
-            {mainCategoryLabels[MainCategory.FOOTWEAR]}
-          </div>
-          <div
-            className={`filter-option ${
-              selectedMainCategory === MainCategory.SWIMWEAR ? "active" : ""
-            }`}
-            onClick={() => handleMainCategoryChange(MainCategory.SWIMWEAR)}
-          >
-            {mainCategoryLabels[MainCategory.SWIMWEAR]}
+          <div className="filter-group">
+            {isCategoriesLoading ? (
+              <div className="loading">იტვირთება...</div>
+            ) : categories.length > 0 ? (
+              categories.map((category) => (
+                <div
+                  key={category.id || category._id}
+                  className={`filter-option ${
+                    selectedCategoryId === category.id ||
+                    selectedCategoryId === category._id
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    onCategoryChange(category.id || category._id || "")
+                  }
+                >
+                  {getLocalizedName(category.name, category)}
+                </div>
+              ))
+            ) : (
+              <div className="no-data">კატეგორიები არ მოიძებნა</div>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="filter-section">
-        <h3 className="filter-title">{t("shop.categories")}</h3>
-        <div className="filter-options">
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={`filter-btn ${
-                selectedCategory === category ? "active" : ""
-              }`}
-              onClick={() => handleCategoryChange(category)}
-            >
-              {translateCategory(category)}
-            </button>
-          ))}
-        </div>
-        {selectedCategory !== "all" && (
-          <div className="selected-filter">
-            <button
-              className="clear-filter"
-              onClick={() => handleCategoryChange("all")}
-            >
-              × {translateCategory(selectedCategory)}
-            </button>
+      {/* Subcategory Filter */}
+      {selectedCategoryId && (
+        <div className="filter-section">
+          <div className="filter-header">
+            <h3 className="filter-title">ქვეკატეგორიები</h3>
+            {selectedSubCategoryId && (
+              <button
+                className="filter-clear-btn"
+                onClick={clearSubcategoryFilter}
+                aria-label="Clear subcategory filter"
+              >
+                გასუფთავება
+              </button>
+            )}
           </div>
-        )}
-      </div>
+          <div className="filter-options">
+            <div className="filter-group">
+              {isSubcategoriesLoading ? (
+                <div className="loading">იტვირთება...</div>
+              ) : subcategories.length > 0 ? (
+                subcategories.map((subcategory) => (
+                  <div
+                    key={subcategory.id || subcategory._id}
+                    className={`filter-option ${
+                      selectedSubCategoryId === subcategory.id ||
+                      selectedSubCategoryId === subcategory._id
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      onSubCategoryChange(
+                        subcategory.id || subcategory._id || ""
+                      )
+                    }
+                  >
+                    {getLocalizedName(subcategory.name, subcategory)}
+                  </div>
+                ))
+              ) : (
+                <div className="no-data">ქვეკატეგორიები არ მოიძებნა</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Age Group Filter */}
+      {selectedSubCategoryId &&
+        getAvailableAttributes("ageGroups").length > 0 && (
+          <div className="filter-section">
+            <div className="filter-header">
+              <h3 className="filter-title">ასაკობრივი ჯგუფი</h3>
+              {selectedAgeGroup && (
+                <button
+                  className="filter-clear-btn"
+                  onClick={() => onAgeGroupChange("")}
+                  aria-label="Clear age group filter"
+                >
+                  გასუფთავება
+                </button>
+              )}
+            </div>
+            <div className="filter-options">
+              <div className="filter-group">
+                {getAvailableAttributes("ageGroups").map((ageGroup) => (
+                  <div
+                    key={ageGroup}
+                    className={`filter-option ${
+                      selectedAgeGroup === ageGroup ? "selected" : ""
+                    }`}
+                    onClick={() =>
+                      onAgeGroupChange(
+                        ageGroup === selectedAgeGroup ? "" : ageGroup
+                      )
+                    }
+                  >
+                    {language === "en"
+                      ? ageGroup === "ADULTS"
+                        ? "Adults"
+                        : ageGroup === "KIDS"
+                        ? "Kids"
+                        : ageGroup
+                      : ageGroup === "ADULTS"
+                      ? "უფროსები"
+                      : ageGroup === "KIDS"
+                      ? "ბავშვები"
+                      : ageGroup}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+      {/* Size Filter */}
+      {selectedSubCategoryId && getAvailableAttributes("sizes").length > 0 && (
+        <div className="filter-section">
+          <div className="filter-header">
+            <h3 className="filter-title">ზომები</h3>
+            {selectedSize && (
+              <button
+                className="filter-clear-btn"
+                onClick={() => onSizeChange("")}
+                aria-label="Clear size filter"
+              >
+                გასუფთავება
+              </button>
+            )}
+          </div>
+          <div className="filter-options">
+            <div className="filter-group size-group">
+              {getAvailableAttributes("sizes").map((size) => (
+                <div
+                  key={size}
+                  className={`filter-option size ${
+                    selectedSize === size ? "selected" : ""
+                  }`}
+                  onClick={() =>
+                    onSizeChange(size === selectedSize ? "" : size)
+                  }
+                >
+                  {size}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Color Filter */}
+      {selectedSubCategoryId && getAvailableAttributes("colors").length > 0 && (
+        <div className="filter-section">
+          <div className="filter-header">
+            <h3 className="filter-title">ფერები</h3>
+            {selectedColor && (
+              <button
+                className="filter-clear-btn"
+                onClick={() => onColorChange("")}
+                aria-label="Clear color filter"
+              >
+                გასუფთავება
+              </button>
+            )}
+          </div>
+          <div className="filter-options">
+            <div className="filter-group color-group">
+              {getAvailableAttributes("colors").map((color) => (
+                <div
+                  key={color}
+                  className={`filter-option color ${
+                    selectedColor === color ? "selected" : ""
+                  }`}
+                  onClick={() =>
+                    onColorChange(color === selectedColor ? "" : color)
+                  }
+                >
+                  {color}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Brand Filter */}
+      {!isBrandsLoading && availableBrands && availableBrands.length > 0 && (
+        <div className="filter-section">
+          <div className="filter-header">
+            <h3 className="filter-title">ბრენდები</h3>
+            {selectedBrand && (
+              <button
+                className="filter-clear-btn"
+                onClick={() => onBrandChange("")}
+                aria-label="Clear brand filter"
+              >
+                გასუფთავება
+              </button>
+            )}
+          </div>
+          <div className="filter-options">
+            <div className="filter-group">
+              {availableBrands.slice(0, 10).map((brand) => (
+                <div
+                  key={brand}
+                  className={`filter-option ${
+                    selectedBrand === brand ? "selected" : ""
+                  }`}
+                  onClick={() =>
+                    onBrandChange(brand === selectedBrand ? "" : brand)
+                  }
+                >
+                  {brand}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Price Range Filter */}
       <div className="filter-section">
-        <h3 className="filter-title">{t("shop.ageGroup")}</h3>
-        <div className="filter-options">
-          <div
-            className={`filter-option ${!selectedAgeGroup ? "active" : ""}`}
-            onClick={() => onAgeGroupChange && onAgeGroupChange(undefined)}
-          >
-            {t("shop.allAges")}
-          </div>
-          <div
-            className={`filter-option ${
-              selectedAgeGroup === AgeGroup.ADULTS ? "active" : ""
-            }`}
-            onClick={() =>
-              onAgeGroupChange && onAgeGroupChange(AgeGroup.ADULTS)
-            }
-          >
-            {t("shop.adults")}
-          </div>
-          <div
-            className={`filter-option ${
-              selectedAgeGroup === AgeGroup.KIDS ? "active" : ""
-            }`}
-            onClick={() => onAgeGroupChange && onAgeGroupChange(AgeGroup.KIDS)}
-          >
-            {t("shop.kids")}
+        <h3 className="filter-title">ფასის დიაპაზონი</h3>
+        <div className="price-range">
+          <div className="price-inputs">
+            <input
+              type="number"
+              value={minPrice}
+              min={0}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setMinPrice(value >= 0 ? value : 0);
+              }}
+              placeholder="მინ"
+              className="price-input"
+            />
+            <span className="price-separator">-</span>
+            <input
+              type="number"
+              value={maxPrice}
+              min={minPrice}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setMaxPrice(value >= minPrice ? value : minPrice);
+              }}
+              placeholder="მაქს"
+              className="price-input"
+            />
+            <button
+              className="price-apply-btn"
+              onClick={handlePriceChange}
+              aria-label="Apply price filter"
+            >
+              დადასტურება
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Sort dropdown as normal flow element with inline layout */}
-      <div className="filter-section sort-section">
-        <h3 className="filter-title sort-title">{t("shop.sort")}</h3>
-        <div className="sort-dropdown inline">
+      {/* Sort Options */}
+      <div className="filter-section">
+        <h3 className="filter-title">სორტირება</h3>
+        <div className="sort-options">
           <select
-            className="sort-dropdown-select inline"
-            value={sortOption}
-            onChange={handleSortChange}
-            title={t("shop.sort")}
+            className="sort-select"
+            onChange={(e) => {
+              const value = e.target.value;
+              const [field, direction] = value.split("-");
+              onSortChange({ field, direction: direction as "asc" | "desc" });
+            }}
           >
-            <option value={undefined}>{t("shop.defaultSort")}</option>
-            <option value="asc">{t("shop.priceLowToHigh")}</option>
-            <option value="desc">{t("shop.priceHighToLow")}</option>
+            <option value="createdAt-desc">უახლესი</option>
+            <option value="price-asc">ფასი: დაბლიდან მაღლა</option>
+            <option value="price-desc">ფასი: მაღლიდან დაბლა</option>
+            <option value="name-asc">სახელი: ა-ჰ</option>
+            <option value="name-desc">სახელი: ჰ-ა</option>
+            <option value="rating-desc">რეიტინგი: მაღალი</option>
           </select>
         </div>
       </div>
+
+      {/* Clear All Filters Button */}
+      {(selectedCategoryId ||
+        selectedSubCategoryId ||
+        selectedAgeGroup ||
+        selectedSize ||
+        selectedColor ||
+        selectedBrand ||
+        minPrice > 0 ||
+        maxPrice < 1000) && (
+        <div className="filter-section">
+          <button
+            className="clear-filters-btn"
+            onClick={resetAllFilters}
+            aria-label="Clear all filters"
+          >
+            ფილტრების გასუფთავება
+          </button>
+        </div>
+      )}
     </div>
   );
 }

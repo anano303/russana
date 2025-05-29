@@ -19,12 +19,23 @@ export class Category {
   })
   name: string;
 
+  @ApiProperty({ description: 'Category name in English', example: 'Clothing' })
+  @Prop()
+  nameEn?: string;
+
   @ApiProperty({
     description: 'Category description',
     example: 'სხვადასხვა ტიპის ტანსაცმელი',
   })
   @Prop()
   description?: string;
+
+  @ApiProperty({
+    description: 'Category description in English',
+    example: 'Various types of clothing',
+  })
+  @Prop()
+  descriptionEn?: string;
 
   @ApiProperty({ description: 'Is category active', default: true })
   @Prop({ default: true })
@@ -62,7 +73,13 @@ CategorySchema.index({ name: 1 }, { unique: true });
 // Add a pre-save hook to remove any unexpected fields
 CategorySchema.pre('save', function (next) {
   // Ensure only allowed fields are saved
-  const allowedFields = ['name', 'description', 'isActive'];
+  const allowedFields = [
+    'name',
+    'nameEn',
+    'description',
+    'descriptionEn',
+    'isActive',
+  ];
 
   // Get all fields in the document
   const documentFields = Object.keys(this.toObject());

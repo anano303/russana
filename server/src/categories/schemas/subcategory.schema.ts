@@ -4,9 +4,9 @@ import { Document, HydratedDocument } from 'mongoose';
 import { Category } from './category.schema';
 import { ApiProperty } from '@nestjs/swagger';
 
-export type SubCategoryDocument = SubCategory & Document;
+export type SubCategoryDocument = HydratedDocument<SubCategory>;
 
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true })
 export class SubCategory {
   @ApiProperty({
     description: 'Subcategory ID (auto-generated)',
@@ -19,6 +19,13 @@ export class SubCategory {
     required: true,
   })
   name: string;
+
+  @ApiProperty({
+    description: 'Subcategory name in English',
+    example: 'T-shirts',
+  })
+  @Prop({ required: false })
+  nameEn?: string;
 
   @ApiProperty({
     description: 'Parent category',
@@ -56,8 +63,15 @@ export class SubCategory {
     description: 'Subcategory description',
     example: 'მაისურები ყველა სეზონისთვის',
   })
-  @Prop()
+  @Prop({ required: false })
   description?: string;
+
+  @ApiProperty({
+    description: 'Subcategory description in English',
+    example: 'T-shirts for all seasons',
+  })
+  @Prop({ required: false })
+  descriptionEn?: string;
 
   @ApiProperty({ description: 'Is subcategory active', default: true })
   @Prop({ default: true })
