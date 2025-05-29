@@ -19,6 +19,13 @@ interface CartContextType {
   removeItem: (productId: string) => Promise<void>;
   updateQuantity: (productId: string, qty: number) => Promise<void>;
   clearCart: () => Promise<void>;
+  addToCart: (
+    productId: string,
+    quantity?: number,
+    size?: string,
+    color?: string
+  ) => Promise<void>;
+  totalItems: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -30,6 +37,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
   const { toast } = useToast();
+
+  const totalItems = items.reduce((total, item) => total + item.qty, 0);
 
   const addItem = useCallback(
     async (productId: string, qty: number) => {
@@ -77,6 +86,76 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           variant: "destructive",
         });
         console.error("Error adding item to cart:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [user, toast]
+  );
+
+  const addToCart = useCallback(
+    async (productId: string, quantity = 1, size = "", color = "") => {
+      setLoading(true);
+      try {
+        if (user) {
+          const { data } = await apiClient.post("/cart/items", {
+            productId,
+            qty: quantity,
+            size,
+            color,
+          });
+          setItems(data.items);
+        } else {
+          const response = await apiClient.get(`/products/${productId}`);
+          const product = response.data;
+
+          setItems((prevItems) => {
+            const itemKey = `${productId}${size ? `-${size}` : ""}${
+              color ? `-${color}` : ""
+            }`;
+
+            const existingItemIndex = prevItems.findIndex(
+              (item) =>
+                item.productId === productId &&
+                item.size === size &&
+                item.color === color
+            );
+
+            if (existingItemIndex >= 0) {
+              const updatedItems = [...prevItems];
+              updatedItems[existingItemIndex] = {
+                ...updatedItems[existingItemIndex],
+                qty: updatedItems[existingItemIndex].qty + quantity,
+              };
+              return updatedItems;
+            } else {
+              return [
+                ...prevItems,
+                {
+                  ...product,
+                  productId: product._id,
+                  qty: quantity,
+                  size,
+                  color,
+                  itemKey,
+                },
+              ];
+            }
+          });
+        }
+
+        toast({
+          title: "პროდუქტი დაემატა",
+          description: "პროდუქტი წარმატებით დაემატა კალათაში",
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "პროდუქტის დამატება ვერ მოხერხდა",
+          variant: "destructive",
+        });
+        console.error("Error adding item to cart:", error);
+        throw error;
       } finally {
         setLoading(false);
       }
@@ -231,7 +310,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items, loading, addItem, removeItem, updateQuantity, clearCart }}
+      value={{
+        items,
+        loading,
+        addItem,
+        removeItem,
+        updateQuantity,
+        clearCart,
+        addToCart,
+        totalItems,
+      }}
     >
       {children}
     </CartContext.Provider>

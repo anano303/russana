@@ -1,19 +1,88 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { X } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
-// import { ReviewForm } from "./review-form";
-// import { ProductReviews } from "./product-reviews";
-// import { useRouter } from "next/navigation";
 import "./productDetails.css";
 import { Product } from "@/types";
-import { AddToCartButton } from "./AddToCartButton";
-
 import { ShareButtons } from "@/components/share-buttons/share-buttons";
-
 import { useLanguage } from "@/hooks/LanguageContext";
+
+import { toast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
+import { useCart } from "@/modules/cart/context/cart-context";
+
+// Custom AddToCartButton component that uses the cart context
+function AddToCartButton({
+  productId,
+  countInStock = 0,
+  className = "",
+  selectedSize = "",
+  selectedColor = "",
+  quantity = 1,
+  disabled = false,
+}: {
+  productId: string;
+  countInStock?: number;
+  className?: string;
+  selectedSize?: string;
+  selectedColor?: string;
+  quantity?: number;
+  disabled?: boolean;
+}) {
+  const [pending, setPending] = useState(false);
+  const { addToCart } = useCart();
+  const { t } = useLanguage();
+
+  const handleClick = async () => {
+    setPending(true);
+    try {
+      // Add variant info if available
+      await addToCart(productId, quantity, selectedSize, selectedColor);
+      toast({
+        title: "პროდუქტი დაემატა",
+        description: "პროდუქტი წარმატებით დაემატა კალათაში",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to add product to cart",
+        variant: "destructive",
+      });
+    } finally {
+      setPending(false);
+    }
+  };
+
+  if (countInStock === 0 || disabled) {
+    return (
+      <button
+        className={`add-to-cart-button out-of-stock ${className}`}
+        disabled
+      >
+        {t("shop.outOfStock") || "არ არის მარაგში"}
+      </button>
+    );
+  }
+
+  return (
+    <button
+      className={`add-to-cart-button ${className}`}
+      onClick={handleClick}
+      disabled={pending}
+    >
+      {pending ? (
+        <Loader2 className="animate-spin" />
+      ) : (
+        t("cart.addToCart") || "კალათაში დამატება"
+      )}
+    </button>
+  );
+}
 
 interface ProductDetailsProps {
   product: Product;
@@ -22,11 +91,13 @@ interface ProductDetailsProps {
 export function ProductDetails({ product }: ProductDetailsProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  // const [activeTab, setActiveTab] = useState("details");
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [availableQuantity, setAvailableQuantity] = useState<number>(
+    product.countInStock || 0
+  );
 
-  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false); // New state for fullscreen modal
-
-  // const router = useRouter();
   const { t, language } = useLanguage();
 
   // Display name and description based on selected language
@@ -39,6 +110,22 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       : product.description;
 
   const isOutOfStock = product.countInStock === 0;
+
+  // Initialize default selections based on product data
+  useEffect(() => {
+    // Set default size if sizes array exists
+    if (product.sizes && product.sizes.length > 0) {
+      setSelectedSize(product.sizes[0]);
+    }
+
+    // Set default color if colors array exists
+    if (product.colors && product.colors.length > 0) {
+      setSelectedColor(product.colors[0]);
+    }
+
+    // Set available quantity based on product's countInStock
+    setAvailableQuantity(product.countInStock);
+  }, [product]);
 
   // Function to open fullscreen image
   const openFullscreen = () => {
@@ -103,42 +190,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
         {/* Right Column - Product Info */}
         <div className="product-info-details">
-          {/* <div className="brand-container">
-            <span className="text-muted">
-              {t("product.ref")} {product._id}
-            </span>
-          </div> */}
-
           <h1 className="product-title">{displayName}</h1>
-
-          {/* <div className="rating-container">
-            <div className="rating-stars">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <StarIcon
-                  key={i}
-                  className={`h-5 w-5 ${
-                    i < Math.floor(product.rating)
-                      ? "text-rose-500 fill-rose-500"
-                      : "text-gray-300"
-                  }`}
-                />
-              ))}
-            </div> */}
-          {/* <span className="review-count">
-              {product.numReviews} {t("product.reviews")}
-            </span>
-          </div> */}
 
           <div className="price-section">
             <span className="price">{product.price} ლარი </span>
-            {/* {product.discount > 0 && (
-              <>
-                <span className="original-price">
-                  ₾{(product.price / (1 - product.discount / 100)).toFixed(2)}
-                </span>
-                <span className="discount-badge">-{product.discount}%</span>
-              </>
-            )} */}
           </div>
 
           <ShareButtons
@@ -148,40 +203,95 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           {!isOutOfStock && (
             <div className="product-options-container">
-              <div className="select-container">
-                {/* <label>{t("product.size") || "ზომა"}:</label> */}
-                <select className="option-select">
-                  <option value="S">S</option>
-                  <option value="M">M</option>
-                  <option value="L">L</option>
-                </select>
-              </div>
+              {/* Size Selector - only show if product has sizes */}
+              {product.sizes && product.sizes.length > 0 && (
+                <div className="select-container">
+                  <select
+                    className="option-select"
+                    value={selectedSize}
+                    onChange={(e) => setSelectedSize(e.target.value)}
+                    disabled={isOutOfStock || product.sizes.length === 0}
+                  >
+                    <option value=""></option>
+                    {product.sizes.map((size) => (
+                      <option key={size} value={size}>
+                        {size}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
-              {/* Color selector */}
-              <div className="select-container">
-                <select className="option-select2">
-                  <option value="red">წითელი</option>
-                  <option value="black">შავი</option>
-                  <option value="white">თეთრი</option>
-                </select>
-              </div>
-              <div className="select-container">
-                {/* <label>{t("product.quantity")}:</label> */}
-                <select
-                  className="option-select"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-                >
-                  {Array.from(
-                    { length: product.countInStock },
-                    (_, i) => i + 1
-                  ).map((num) => (
-                    <option key={num} value={num}>
-                      {num}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* Color selector - only show if product has colors */}
+              {product.colors && product.colors.length > 0 && (
+                <div className="select-container">
+                  <select
+                    className="option-select2"
+                    value={selectedColor}
+                    onChange={(e) => setSelectedColor(e.target.value)}
+                    disabled={isOutOfStock || product.colors.length === 0}
+                  >
+                    <option value="">აირჩიეთ ფერი</option>
+                    {product.colors.map((color) => (
+                      <option key={color} value={color}>
+                        {color}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Quantity Selector */}
+              {availableQuantity > 0 && (
+                <div className="select-container">
+                  <select
+                    className="option-select"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    disabled={availableQuantity <= 0}
+                  >
+                    {Array.from(
+                      { length: availableQuantity },
+                      (_, i) => i + 1
+                    ).map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Age Group Display - if product has age groups */}
+              {/* {product.ageGroups && product.ageGroups.length > 0 && (
+                <div className="age-group-info">
+             
+                  <div className="age-group-tags">
+                    {product.ageGroups.map((ageGroup) => (
+                      <span key={ageGroup} className="age-group-tag">
+                        {language === "en"
+                          ? ageGroup === "ADULTS"
+                            ? "Adults"
+                            : ageGroup === "KIDS"
+                            ? "Kids"
+                            : ageGroup
+                          : ageGroup === "ADULTS"
+                          ? "უფროსები"
+                          : ageGroup === "KIDS"
+                          ? "ბავშვები"
+                          : ageGroup}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )} */}
+
+              {/* Stock Status */}
+              {availableQuantity <= 0 && (
+                <div className="out-of-stock-message">
+                  {t("shop.outOfStock") || "არ არის მარაგში"}
+                </div>
+              )}
             </div>
           )}
 
@@ -189,50 +299,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <h3>{t("product.details") || "აღწერა"} : </h3>
             <p>{displayDescription}</p>
 
-            {/* <div className="tabs">
-            <div className="tabs-list">
-              <button
-                className={`tabs-trigger ${
-                  activeTab === "details" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("details")}
-              >
-                {t("product.details")}
-              </button>
-              <button
-                className={`tabs-trigger ${
-                  activeTab === "reviews" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("reviews")}
-              >
-                {t("product.reviews")} ({product.numReviews})
-              </button>
-            </div>
-
-            <div
-              className={`tab-content ${
-                activeTab === "details" ? "active" : ""
-              }`}
-            >
-              <div className="prose">
-                <p>{displayDescription}</p>
-              </div>
-            </div> */}
-            {/* <div className="stock-info">
-              {isOutOfStock ? (
-                <span className="stock-badge out-of-stock">
-                  {t("shop.outOfStock")}
-                </span>
-              ) : (
-                <span className="stock-badge in-stock">
-                  {t("shop.inStock")}
-                </span>
-              )}
-            </div> */}
             <AddToCartButton
               productId={product._id}
-              countInStock={product.countInStock}
+              countInStock={availableQuantity}
               className="custom-style-2"
+              selectedSize={selectedSize}
+              selectedColor={selectedColor}
+              quantity={quantity}
+              disabled={
+                availableQuantity <= 0 ||
+                (product.sizes && product.sizes.length > 0 && !selectedSize) ||
+                (product.colors && product.colors.length > 0 && !selectedColor)
+              }
             />
           </div>
 
@@ -263,17 +341,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </div>
             </div>
           )}
-
-          {/* 
-          <div
-            className={`tab-content ${activeTab === "reviews" ? "active" : ""}`}
-          >
-            <ReviewForm
-              productId={product._id}
-              onSuccess={() => router.refresh()}
-            />
-            <ProductReviews product={product} />
-          </div> */}
         </div>
       </div>
     </div>

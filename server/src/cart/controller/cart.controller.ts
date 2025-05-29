@@ -29,30 +29,38 @@ export class CartController {
 
   @Post('items')
   addToCart(
-    @Body() { productId, qty }: AddToCartDto,
+    @Body() { productId, qty, size, color }: AddToCartDto,
     @CurrentUser() user: UserDocument,
   ) {
     if (!productId) {
       throw new BadRequestException('Product ID is required');
     }
-    return this.cartService.addCartItem(productId, qty, user);
+    return this.cartService.addCartItem(productId, qty, user, size, color);
   }
 
   @Put('items/:productId')
   updateCartItem(
     @Param('productId') productId: string,
-    @Body('qty') qty: number,
+    @Body()
+    { qty, size, color }: { qty: number; size?: string; color?: string },
     @CurrentUser() user: UserDocument,
   ) {
-    return this.cartService.updateCartItemQty(productId, qty, user);
+    return this.cartService.updateCartItemQty(
+      productId,
+      qty,
+      user,
+      size,
+      color,
+    );
   }
 
   @Delete('items/:productId')
   removeFromCart(
     @Param('productId') productId: string,
+    @Body() { size, color }: { size?: string; color?: string },
     @CurrentUser() user: UserDocument,
   ) {
-    return this.cartService.removeCartItem(productId, user);
+    return this.cartService.removeCartItem(productId, user, size, color);
   }
 
   @Post('shipping')

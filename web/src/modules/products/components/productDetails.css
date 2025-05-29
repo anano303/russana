@@ -524,6 +524,35 @@ select:focus {
   z-index: 1001;
 }
 
+/* Add new styles for age group tags */
+.age-group-info {
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.age-group-info label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.age-group-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.age-group-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: rgba(207, 10, 10, 0.1);
+  color: rgba(207, 10, 10, 0.9);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .grid {

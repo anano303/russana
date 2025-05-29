@@ -6,4 +6,6 @@ export interface CartItem {
   price: number;
   countInStock: number;
   qty: number;
+  size?: string; // Add size field
+  color?: string; // Add color field
 }
