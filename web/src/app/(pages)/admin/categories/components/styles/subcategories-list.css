@@ -1,0 +1,258 @@
+.subcategories-list-container {
+  margin-top: 0;
+  font-family: "ALK Life", "Georgia", serif;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.subcategories-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.subcategories-title {
+  font-size: 1.3rem;
+  color: #e50000;
+  margin: 0;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.subcategories-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.subcategory-form-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.subcategory-form-container h4 {
+  color: #e50000;
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.subcategory-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.attributes-section {
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+}
+
+.attributes-section h5 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #e50000;
+  font-size: 1.1rem;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.attribute-group {
+  margin-bottom: 20px;
+}
+
+.attribute-group:last-child {
+  margin-bottom: 0;
+}
+
+.attribute-group h6 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: #666;
+  font-weight: normal;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.attribute-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.attribute-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+  background-color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.attribute-option:hover {
+  background-color: #ffeef2;
+  border-color: #ffcdd2;
+}
+
+.attribute-option input[type="checkbox"] {
+  accent-color: #e50000;
+  width: 16px;
+  height: 16px;
+}
+
+.subcategories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.subcategory-item {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.subcategory-item:hover {
+  border-color: #ffcdd2;
+  box-shadow: 0 2px 6px rgba(233, 30, 99, 0.07);
+}
+
+.subcategory-item.inactive {
+  opacity: 0.75;
+}
+
+.subcategory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.subcategory-name {
+  font-size: 1.1rem;
+  color: #e50000;
+  margin: 0;
+  font-weight: normal;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.subcategory-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.subcategory-description {
+  margin-top: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.subcategory-attributes {
+  margin-top: 12px;
+  font-size: 14px;
+  background-color: #fafafa;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #f0f0f0;
+}
+
+.attribute-list {
+  margin-bottom: 8px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.attribute-list:last-child {
+  margin-bottom: 0;
+}
+
+.attribute-list strong {
+  color: #333;
+  font-weight: bold;
+}
+
+.no-subcategories {
+  text-align: center;
+  padding: 30px 0;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+  color: #e50000;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .subcategories-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .subcategories-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .subcategory-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .subcategory-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .subcategory-item {
+    padding: 12px;
+  }
+
+  .attribute-options {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .subcategories-title {
+    font-size: 1.2rem;
+  }
+
+  .attribute-option {
+    padding: 4px 8px;
+    font-size: 13px;
+  }
+
+  .subcategory-form-container {
+    padding: 12px;
+  }
+}

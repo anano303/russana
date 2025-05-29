@@ -7,15 +7,16 @@ import {
   Category,
   CategoryCreateInput,
   CategoryUpdateInput,
-} from "../hooks/use-categories";
+} from "../hook/use-categories";
 import { SubcategoriesList } from "./subcategories-list";
 import { Loader } from "lucide-react";
+import "./styles/categories-list.css";
 
 export const CategoriesList = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [showInactive, setShowInactive] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [formData, setFormData] = useState<
     CategoryCreateInput | CategoryUpdateInput
   >({
@@ -95,10 +96,6 @@ export const CategoriesList = () => {
         console.error("Delete category error:", error);
       }
     }
-  };
-
-  const handleCategorySelect = (id: string) => {
-    setSelectedCategory(id === selectedCategory ? null : id);
   };
 
   return (
@@ -199,7 +196,7 @@ export const CategoriesList = () => {
                 key={category.id}
                 className={`category-item ${
                   !category.isActive ? "inactive" : ""
-                } ${selectedCategory === category.id ? "selected" : ""}`}
+                }`}
               >
                 {isEditing === category.id ? (
                   <form onSubmit={handleUpdateSubmit} className="category-form">
@@ -275,10 +272,7 @@ export const CategoriesList = () => {
                   </form>
                 ) : (
                   <>
-                    <div
-                      className="category-header"
-                      onClick={() => handleCategorySelect(category.id)}
-                    >
+                    <div className="category-header">
                       <h3 className="category-name">
                         {category.name}
                         {!category.isActive && (
@@ -312,11 +306,10 @@ export const CategoriesList = () => {
                       </p>
                     )}
 
-                    {selectedCategory === category.id && (
-                      <div className="subcategories-container">
-                        <SubcategoriesList categoryId={category.id} />
-                      </div>
-                    )}
+                    {/* Always show subcategories */}
+                    <div className="subcategories-container">
+                      <SubcategoriesList categoryId={category.id} />
+                    </div>
                   </>
                 )}
               </div>
@@ -328,233 +321,6 @@ export const CategoriesList = () => {
           )}
         </div>
       )}
-
-      <style jsx>{`
-        .categories-container {
-          padding: 20px 0;
-        }
-
-        .categories-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-
-        .categories-title {
-          font-size: 20px;
-          color: #333;
-          margin: 0;
-        }
-
-        .categories-actions {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-        }
-
-        .btn-add {
-          background-color: #cf0a0a;
-          color: #fff;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-add:hover {
-          background-color: #b80a0a;
-        }
-
-        .show-inactive {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 14px;
-          color: #666;
-        }
-
-        .category-form-container {
-          background-color: #f8f8f8;
-          padding: 20px;
-          border-radius: 6px;
-          margin-bottom: 20px;
-          border: 1px solid #ddd;
-        }
-
-        .category-form {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-        }
-
-        .form-group label {
-          font-size: 14px;
-          color: #555;
-        }
-
-        .form-group input[type="text"],
-        .form-group textarea {
-          padding: 8px 12px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          font-size: 14px;
-          width: 100%;
-        }
-
-        .form-group textarea {
-          min-height: 80px;
-          resize: vertical;
-        }
-
-        .form-group.checkbox {
-          flex-direction: row;
-          align-items: center;
-        }
-
-        .form-actions {
-          display: flex;
-          gap: 10px;
-          margin-top: 10px;
-        }
-
-        .btn-submit {
-          background-color: #cf0a0a;
-          color: #fff;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-submit:hover {
-          background-color: #b80a0a;
-        }
-
-        .btn-submit:disabled {
-          background-color: #f0a0a0;
-          cursor: not-allowed;
-        }
-
-        .btn-cancel {
-          background-color: #f0f0f0;
-          color: #666;
-          border: 1px solid #ccc;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-cancel:hover {
-          background-color: #e6e6e6;
-        }
-
-        .loading-container {
-          display: flex;
-          justify-content: center;
-          padding: 40px 0;
-        }
-
-        .categories-list {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-
-        .category-item {
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          padding: 16px;
-          background-color: #fff;
-        }
-
-        .category-item.inactive {
-          background-color: #f9f9f9;
-        }
-
-        .category-item.selected {
-          border-color: #cf0a0a;
-        }
-
-        .category-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          cursor: pointer;
-        }
-
-        .category-name {
-          font-size: 18px;
-          color: #333;
-          margin: 0;
-        }
-
-        .inactive-label {
-          color: #999;
-          font-weight: normal;
-          font-size: 14px;
-        }
-
-        .category-actions {
-          display: flex;
-          gap: 10px;
-        }
-
-        .btn-edit {
-          background-color: #f0f0f0;
-          color: #666;
-          border: 1px solid #ccc;
-          padding: 6px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-edit:hover {
-          background-color: #e6e6e6;
-        }
-
-        .btn-delete {
-          background-color: #fff;
-          color: #cf0a0a;
-          border: 1px solid #cf0a0a;
-          padding: 6px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-delete:hover {
-          background-color: #fff0f0;
-        }
-
-        .category-description {
-          margin-top: 10px;
-          font-size: 14px;
-          color: #666;
-        }
-
-        .no-categories {
-          text-align: center;
-          padding: 40px 0;
-          color: #999;
-        }
-
-        .subcategories-container {
-          margin-top: 20px;
-          padding-top: 20px;
-          border-top: 1px dashed #ccc;
-        }
-      `}</style>
     </div>
   );
 };

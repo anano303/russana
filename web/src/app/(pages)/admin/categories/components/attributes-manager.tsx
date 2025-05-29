@@ -13,8 +13,9 @@ import {
   useUpdateAgeGroup,
   useDeleteAgeGroup,
   AttributeInput,
-} from "../hooks/use-categories";
+} from "../hook/use-categories";
 import { Loader } from "lucide-react";
+import "./styles/attributes-manager.css";
 
 type AttributeType = "color" | "size" | "ageGroup";
 
@@ -221,7 +222,7 @@ export const AttributesManager = () => {
 
         {isLoading ? (
           <div className="loading-container">
-            <Loader />
+            <Loader className="animate-spin text-amber-600" />
           </div>
         ) : (
           <div className="attributes-list">
@@ -255,215 +256,6 @@ export const AttributesManager = () => {
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .attributes-manager {
-          padding: 20px 0;
-        }
-
-        .attributes-tabs {
-          display: flex;
-          margin-bottom: 20px;
-          border-bottom: 1px solid #ddd;
-        }
-
-        .tab-button {
-          padding: 10px 20px;
-          border: none;
-          background: none;
-          cursor: pointer;
-          font-size: 16px;
-          color: #666;
-          position: relative;
-        }
-
-        .tab-button.active {
-          color: #cf0a0a;
-          font-weight: bold;
-        }
-
-        .tab-button.active::after {
-          content: "";
-          position: absolute;
-          bottom: -1px;
-          left: 0;
-          width: 100%;
-          height: 2px;
-          background-color: #cf0a0a;
-        }
-
-        .tab-button:hover {
-          color: #cf0a0a;
-        }
-
-        .attributes-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-
-        .attributes-title {
-          font-size: 20px;
-          color: #333;
-          margin: 0;
-        }
-
-        .btn-add {
-          background-color: #cf0a0a;
-          color: #fff;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-add:hover {
-          background-color: #b80a0a;
-        }
-
-        .attribute-form {
-          background-color: #f8f8f8;
-          padding: 20px;
-          border-radius: 6px;
-          margin-bottom: 20px;
-          border: 1px solid #ddd;
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          margin-bottom: 15px;
-        }
-
-        .form-group label {
-          font-size: 14px;
-          color: #555;
-        }
-
-        .form-group input[type="text"] {
-          padding: 8px 12px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          font-size: 14px;
-        }
-
-        .form-actions {
-          display: flex;
-          gap: 10px;
-        }
-
-        .btn-submit {
-          background-color: #cf0a0a;
-          color: #fff;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-submit:hover {
-          background-color: #b80a0a;
-        }
-
-        .btn-submit:disabled {
-          background-color: #f0a0a0;
-          cursor: not-allowed;
-        }
-
-        .btn-cancel {
-          background-color: #f0f0f0;
-          color: #666;
-          border: 1px solid #ccc;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-cancel:hover {
-          background-color: #e6e6e6;
-        }
-
-        .loading-container {
-          display: flex;
-          justify-content: center;
-          padding: 40px 0;
-        }
-
-        .attributes-list {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .attribute-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 12px 16px;
-          background-color: #f9f9f9;
-          border: 1px solid #eee;
-          border-radius: 4px;
-        }
-
-        .attribute-value {
-          font-size: 16px;
-          color: #333;
-        }
-
-        .attribute-actions {
-          display: flex;
-          gap: 8px;
-        }
-
-        .btn-edit {
-          background-color: #f0f0f0;
-          color: #666;
-          border: 1px solid #ccc;
-          padding: 6px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-edit:hover {
-          background-color: #e6e6e6;
-        }
-
-        .btn-edit:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .btn-delete {
-          background-color: #fff;
-          color: #cf0a0a;
-          border: 1px solid #cf0a0a;
-          padding: 6px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .btn-delete:hover {
-          background-color: #fff0f0;
-        }
-
-        .btn-delete:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .no-attributes {
-          text-align: center;
-          padding: 40px 0;
-          color: #999;
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,0 +1,394 @@
+.categories-container {
+  padding: 20px 0;
+  font-family: "ALK Life", "Georgia", serif;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.categories-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.categories-title {
+  font-size: 1.75rem;
+  color: #e50000;
+  margin: 0;
+  font-weight: normal;
+  letter-spacing: 1px;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.categories-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.btn-add {
+  background: linear-gradient(90deg, #e50000, #e91e63);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: "ALK Katerina", sans-serif;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(233, 30, 99, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-add::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.6s ease;
+}
+
+.btn-add:hover::before {
+  left: 100%;
+}
+
+.btn-add:hover {
+  background: linear-gradient(90deg, #e91e63, #e50000);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
+}
+
+.show-inactive {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #666;
+}
+
+.show-inactive input[type="checkbox"] {
+  accent-color: #e50000;
+  width: 18px;
+  height: 18px;
+}
+
+.category-form-container {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 10px;
+  margin-bottom: 28px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.category-form-container h3 {
+  color: #e50000;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.category-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 15px;
+  color: #666;
+  font-weight: normal;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 15px;
+  width: 100%;
+  background-color: white;
+  transition: all 0.2s;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+  border-color: #e91e63;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-group.checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+
+.form-group.checkbox input[type="checkbox"] {
+  accent-color: #e50000;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.btn-submit {
+  background: linear-gradient(90deg, #e50000, #e91e63);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  flex: 1;
+  font-family: "ALK Katerina", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-submit::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.6s ease;
+}
+
+.btn-submit:hover::before {
+  left: 100%;
+}
+
+.btn-submit:hover {
+  background: linear-gradient(90deg, #e91e63, #e50000);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
+}
+
+.btn-submit:disabled {
+  background: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-cancel {
+  background-color: white;
+  color: #666;
+  border: 1px solid #e5e7eb;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s;
+  font-family: "ALK Katerina", sans-serif;
+}
+
+.btn-cancel:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+  color: #e50000;
+}
+
+.categories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.category-item {
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  padding: 24px;
+  background-color: white;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.category-item:hover {
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.1);
+  border-color: #ffcdd2;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.category-name {
+  font-size: 1.25rem;
+  color: #e50000;
+  margin: 0;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  font-family: "ALK Life", "Georgia", serif;
+}
+
+.inactive-label {
+  color: #9ca3af;
+  font-style: italic;
+  font-weight: normal;
+}
+
+.category-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-edit {
+  background-color: white;
+  color: #666;
+  border: 1px solid #e5e7eb;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  font-family: "ALK Katerina", sans-serif;
+}
+
+.btn-edit:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.btn-delete {
+  background-color: white;
+  color: #e50000;
+  border: 1px solid #ffcdd2;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  font-family: "ALK Katerina", sans-serif;
+}
+
+.btn-delete:hover {
+  background-color: #ffeef2;
+  border-color: #ffcdd2;
+}
+
+.category-description {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.no-categories {
+  text-align: center;
+  padding: 60px 0;
+  color: #9ca3af;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.subcategories-container {
+  margin-top: 20px;
+  padding-top: 0;
+}
+
+.category-item.inactive {
+  opacity: 0.75;
+}
+
+.category-item.selected {
+  border-color: #e91e63;
+  box-shadow: 0 0 0 1px #e91e63;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .categories-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .categories-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .category-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .category-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .category-item {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-title {
+    font-size: 1.5rem;
+  }
+
+  .btn-add {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .category-form-container {
+    padding: 16px;
+  }
+
+  .category-item {
+    padding: 12px;
+  }
+}

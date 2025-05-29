@@ -1,11 +1,11 @@
 "use client";
 
-import { CategoriesManager } from "@/modules/admin/components/categories-manager";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
 import "@/styles/admin-categories.css"; // Import the new CSS file
+import { CategoriesManager } from "./components/categories-manager";
 
 export default function AdminCategoriesPage() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function AdminCategoriesPage() {
   if (isLoading) {
     return (
       <div className="loading-container">
-        <Loader />
+        <Loader className="animate-spin" />
       </div>
     );
   }

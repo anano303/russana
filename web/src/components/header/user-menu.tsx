@@ -50,7 +50,13 @@ export default function UserMenu() {
   if (!user) {
     return (
       <Link href="/login" className="button">
-        <Image src={iconAuth} width={20} height={20} alt={t("navigation.login")} style={{ marginRight: '5px' }} />
+        <Image
+          src={iconAuth}
+          width={20}
+          height={20}
+          alt={t("navigation.login")}
+          style={{ marginRight: "5px" }}
+        />
         <span className="icon"> {t("navigation.login")}</span>
       </Link>
     );
@@ -110,6 +116,13 @@ export default function UserMenu() {
 
           {user.role === Role.Admin && (
             <>
+              <Link
+                href="/admin/categories"
+                className="dropdown-item"
+                onClick={() => setIsOpen(false)}
+              >
+                კატეგორიები
+              </Link>
               <Link
                 href="/admin/users"
                 className="dropdown-item"

@@ -9,9 +9,9 @@ import {
   SubCategoryCreateInput,
   SubCategoryUpdateInput,
   Category,
-} from "../hooks/use-categories";
+} from "../hook/use-categories";
 import { Loader } from "lucide-react";
-
+import "./styles/subcategories-list.css";
 
 interface SubcategoriesListProps {
   categoryId: string;
