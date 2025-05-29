@@ -7,87 +7,114 @@ import "../../app/(pages)/shop/ShopPage.css";
 import "../../app/(pages)/shop/ShopAnimatedIcons.css";
 import { ProductGrid } from "@/modules/products/components/product-grid";
 import { getProducts } from "@/modules/products/api/get-products";
-import { Product, MainCategory } from "@/types";
+import { Category, Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Shirt, ShoppingBag, Footprints } from "lucide-react";
 
+interface CategoryProducts {
+  category: string;
+  categoryId: string;
+  products: Product[];
+}
+
 export default function HomePageShop() {
-  const { t } = useLanguage();
-  const [clothingProducts, setClothingProducts] = useState<Product[]>([]);
-  const [accessoriesProducts, setAccessoriesProducts] = useState<Product[]>([]);
+  const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
+  const [categoryProducts, setCategoryProducts] = useState<CategoryProducts[]>(
+    []
+  );
+
+  // Fetch all categories first
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ["home-categories"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories?includeInactive=false"
+        );
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+        return [];
+      }
+    },
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     async function fetchProducts() {
       try {
         setIsLoading(true);
-        const response = await getProducts(1, 18);
-        // Handle both response formats
-        const items = response.items || response.products || [];
-        console.log("Fetched products:", items);
 
-        const processedItems = items.map((item) => {
-          if (!item.categoryStructure) {
-            const clothingCategories = [
-              "მაისურები",
-              "კაბები",
-              "ჰუდები",
-              "სხვა",
-            ];
-            const accessoriesCategories = ["კეპები", "პანამები", "სხვა"];
-            const footwearCategories = ["სპორტული", "ყოველდღიური", "სხვა"];
+        // First fetch all products
+        const response = await getProducts(1, 50); // Fetch more to have enough for each category
+        const allProducts = response.items || response.products || [];
 
-            let mainCategory = MainCategory.SWIMWEAR; // Default
+        if (!categories || categories.length === 0) {
+          setIsLoading(false);
+          return;
+        }
 
-            if (clothingCategories.includes(item.category)) {
-              mainCategory = MainCategory.CLOTHING;
-            } else if (accessoriesCategories.includes(item.category)) {
-              mainCategory = MainCategory.ACCESSORIES;
-            } else if (footwearCategories.includes(item.category)) {
-              mainCategory = MainCategory.FOOTWEAR;
+        // Group products by category
+        const productsByCategory: CategoryProducts[] = [];
+
+        // Process each category
+        for (const category of categories) {
+          // If category has an ID, use it to filter products
+          if (category.id || category._id) {
+            const categoryId = category.id || category._id || "";
+
+            // Filter products that belong to this category
+            const categoryProds = allProducts
+              .filter((product) => {
+                // Check mainCategory field
+                if (
+                  typeof product.mainCategory === "object" &&
+                  product.mainCategory
+                ) {
+                  return (
+                    product.mainCategory.id === categoryId ||
+                    product.mainCategory._id === categoryId
+                  );
+                }
+
+                // If mainCategory is a string, compare directly
+                if (typeof product.mainCategory === "string") {
+                  return product.mainCategory === categoryId;
+                }
+
+                return false;
+              })
+              .slice(0, 6); // Take only 6 products per category
+
+            // Only add categories that have products
+            if (categoryProds.length > 0) {
+              productsByCategory.push({
+                category:
+                  language === "en" && category.nameEn
+                    ? category.nameEn
+                    : category.name,
+                categoryId: categoryId,
+                products: categoryProds,
+              });
             }
-
-            return {
-              ...item,
-              categoryStructure: {
-                main: mainCategory,
-                sub: item.category,
-              },
-            };
           }
-          return item;
-        });
+        }
 
-        // Split products by main category
-        const clothing = processedItems
-          .filter((product) => {
-            const productMain = product.categoryStructure?.main
-              ?.toString()
-              ?.toLowerCase();
-            return productMain === MainCategory.CLOTHING.toLowerCase();
-          })
-          .slice(0, 6);
-
-        const accessories = processedItems
-          .filter((product) => {
-            const productMain = product.categoryStructure?.main
-              ?.toString()
-              ?.toLowerCase();
-            return productMain === MainCategory.ACCESSORIES.toLowerCase();
-          })
-          .slice(0, 6);
-
-        // Update state with the filtered products
-        setClothingProducts(clothing);
-        setAccessoriesProducts(accessories);
+        setCategoryProducts(productsByCategory);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
         setIsLoading(false);
       }
     }
-    fetchProducts();
-  }, []);
+
+    if (categories && categories.length > 0) {
+      fetchProducts();
+    }
+  }, [categories, language]);
 
   const renderAnimatedIcons = () => {
     return (
@@ -113,12 +140,6 @@ export default function HomePageShop() {
 
       <div className="content">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {/* <Heart
-            className="title-heart-icon"
-            fill="#e91e63"
-            color="#e91e63"
-            display="inline"
-          /> */}
           <h1
             className="title"
             style={{
@@ -130,64 +151,41 @@ export default function HomePageShop() {
           >
             {t("shop.allArtworks")}
           </h1>
-          {/* <Heart
-            className="title-heart-icon"
-            fill="#e91e63"
-            color="#e91e63"
-            display="inline"
-          /> */}
         </div>
+
         {isLoading ? (
           <div className="loading-container">
             <p>{t("shop.loading")}</p>
           </div>
         ) : (
           <div className="product-sections">
-            {/* Clothing Section */}
-            {clothingProducts && clothingProducts.length > 0 && (
-              <div className="product-section">
-                <h2 className="section-title">
-                  ყველაზე ახალი {t("categories.clothing")}
-                </h2>
-                <ProductGrid
-                  products={clothingProducts}
-                  theme="default"
-                  isShopPage={false}
-                />
-                <div className="see-more">
-                  <Link href={`/shop?page=1&mainCategory=CLOTHING`}>
-                    <button className="see-more-btn">{t("shop.seeAll")}</button>
-                  </Link>
+            {categoryProducts.length > 0 ? (
+              categoryProducts.map((categoryData, index) => (
+                <div key={index} className="product-section">
+                  <h2 className="section-title">
+                    {t("shop.newest")} {categoryData.category}
+                  </h2>
+                  <ProductGrid
+                    products={categoryData.products}
+                    theme="default"
+                    isShopPage={false}
+                  />
+                  <div className="see-more">
+                    <Link
+                      href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
+                    >
+                      <button className="see-more-btn">
+                        {t("shop.seeAll")}
+                      </button>
+                    </Link>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="empty-state">
+                <p>{t("shop.emptyDescription")}</p>
               </div>
             )}
-
-            {/* Accessories Section */}
-            {accessoriesProducts && accessoriesProducts.length > 0 && (
-              <div className="product-section">
-                <h2 className="section-title">
-                  ყველაზე ახალი {t("categories.accessories")}
-                </h2>
-                <ProductGrid
-                  products={accessoriesProducts}
-                  theme="default"
-                  isShopPage={false}
-                />
-                <div className="see-more">
-                  <Link href={`/shop?page=1&mainCategory=ACCESSORIES`}>
-                    <button className="see-more-btn">{t("shop.seeAll")}</button>
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            {/* Show empty state if no products in any category */}
-            {(!clothingProducts || clothingProducts.length === 0) &&
-              (!accessoriesProducts || accessoriesProducts.length === 0) && (
-                <div className="empty-state">
-                  <p>{t("shop.emptyDescription")}</p>
-                </div>
-              )}
           </div>
         )}
       </div>

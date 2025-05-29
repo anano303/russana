@@ -53,6 +53,7 @@ export const TRANSLATIONS: Translations = {
       adults: "მოზრდილები",
       kids: "ბავშვები",
       ageGroup: "ასაკობრივი ჯგუფი",
+      newest: "უახლესი",
     },
 
     // Product Details
@@ -490,6 +491,7 @@ export const TRANSLATIONS: Translations = {
       adults: "Adults",
       kids: "Kids",
       ageGroup: "Age Group",
+      newest: "Latest",
     },
 
     // Product Details
