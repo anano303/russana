@@ -23,7 +23,7 @@ export default async function SearchPage({
   const { items: products, pages: totalPages } = await getProducts(
     currentPage,
     12,
-    keyword
+    keyword ? { keyword } : undefined
   );
 
   return (
@@ -39,7 +39,7 @@ export default async function SearchPage({
           <h1 className="text-2xl font-bold">Search Results: {keyword}</h1>
         </div>
         <ProductGrid
-          products={products}
+          products={products || []}
           searchKeyword={keyword}
           currentPage={currentPage}
           totalPages={totalPages}

@@ -9,7 +9,7 @@ import { Product, MainCategory, AgeGroup } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ShopPage.css";
 import "./ShopAnimatedIcons.css";
-import {  Shirt, ShoppingBag } from "lucide-react";
+import { Shirt, ShoppingBag } from "lucide-react";
 
 const ShopContent = () => {
   const router = useRouter();
@@ -72,20 +72,27 @@ const ShopContent = () => {
     setIsLoading(true);
 
     try {
-      const response = await getProducts(
-        currentPage,
-        30,
-        undefined,
-        brand || undefined,
-        selectedMainCategory.toString(),
-        selectedCategory !== "all" ? selectedCategory : undefined,
-        sortOption !== "" ? "price" : "createdAt",
-        sortOption !== "" ? sortOption : undefined,
-        selectedAgeGroup
-      );
+      const paramsObject = {
+        brand: brand || undefined,
+        mainCategory: selectedMainCategory.toString(),
+        subcategory: selectedCategory !== "all" ? selectedCategory : undefined,
+        sortField: sortOption !== "" ? "price" : "createdAt",
+        sortOrder: sortOption !== "" ? sortOption : undefined,
+        ageGroup: selectedAgeGroup,
+      };
+
+      // Filter out undefined values to create a valid Record<string, string>
+      const searchParams: Record<string, string> = {};
+      for (const [key, value] of Object.entries(paramsObject)) {
+        if (value !== undefined) {
+          searchParams[key] = String(value);
+        }
+      }
+
+      const response = await getProducts(currentPage, 30, searchParams);
 
       console.log(
-        `Got ${response.items.length} products for page ${currentPage}`
+        `Got ${response.items?.length || 0} products for page ${currentPage}`
       );
 
       // Ensure we always set products (even empty array)
@@ -245,7 +252,6 @@ const ShopContent = () => {
       <div className="shop-3d-pyramid"></div>
 
       <div className="content">
-       
         <h1
           className="title"
           style={{ marginBottom: 40, marginTop: 70, zIndex: 9 }}

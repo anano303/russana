@@ -74,10 +74,10 @@ export function ProductGrid({
       setIsLoading(true);
       const fetchSearchResults = async () => {
         try {
-          const { items, pages: totalPages } = await getProducts(
+          const { items = [], pages: totalPages } = await getProducts(
             currentPage,
             10,
-            searchKeyword
+            searchKeyword ? { keyword: searchKeyword } : undefined
           );
 
           const processedItems = items.map((item) => {
