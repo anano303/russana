@@ -31,8 +31,11 @@ export interface Product {
   descriptionEn?: string;
   brand: string;
   brandLogo: string;
-  category: string; // For backward compatibility
-  categoryId:string;
+  category: string | { name: string };
+  subCategory?: string | { name: string };
+  ageGroups?: string[];
+  sizes?: string[];
+  colors?: string[];
   categoryStructure?: CategoryStructure; // New structured category
   price: number;
   countInStock: number;

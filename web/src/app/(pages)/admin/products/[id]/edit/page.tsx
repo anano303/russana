@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { CreateProductForm } from "@/modules/admin/components/create-product-form";
-
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function EditProductPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const id = searchParams ? searchParams.get("id") : null;
   const [product, setProduct] = useState(null);
 
@@ -22,12 +24,28 @@ export default function EditProductPage() {
       .catch((error) => console.error("Failed to fetch product", error));
   }, [id]);
 
+  const handleUpdateSuccess = () => {
+    // Invalidate the queries to force a refresh when returning to products list
+    queryClient.invalidateQueries({ queryKey: ["products"] });
+    queryClient.invalidateQueries({ queryKey: ["pendingProducts"] });
+
+    // Set a flag in sessionStorage to indicate we're returning from edit
+    sessionStorage.setItem("returnFromEdit", "true");
+
+    // Navigate back to products list
+    router.push("/admin/products");
+  };
+
   if (!product || Object.keys(product).length === 0) return <p>Loading...</p>;
 
   return (
     <div className="editProduct">
       <h1 style={{ textAlign: "center" }}> Update Product </h1>
-      <CreateProductForm initialData={product} />
+      <CreateProductForm
+        initialData={product}
+        onSuccess={handleUpdateSuccess}
+        isEdit={true}
+      />
     </div>
   );
 }

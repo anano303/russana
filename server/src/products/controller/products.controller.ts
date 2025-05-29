@@ -92,6 +92,8 @@ export class ProductsController {
       page,
       limit,
       user: user.role === Role.Admin ? undefined : user,
+      // Add this to ensure we get populated category data
+      includeVariants: true,
     });
   }
 
@@ -221,31 +223,49 @@ export class ProductsController {
         brandLogoUrl = productData.brandLogoUrl;
       }
 
+      // Parse JSON arrays for attributes if they're strings
+      let ageGroups = productData.ageGroups;
+      let sizes = productData.sizes;
+      let colors = productData.colors;
+
+      if (typeof ageGroups === 'string') {
+        try {
+          ageGroups = JSON.parse(ageGroups);
+        } catch (e) {
+          ageGroups = [];
+        }
+      }
+
+      if (typeof sizes === 'string') {
+        try {
+          sizes = JSON.parse(sizes);
+        } catch (e) {
+          sizes = [];
+        }
+      }
+
+      if (typeof colors === 'string') {
+        try {
+          colors = JSON.parse(colors);
+        } catch (e) {
+          colors = [];
+        }
+      }
+
       // Extract the main category data
-      const {
-        mainCategory,
-        subCategory,
-        ageGroup,
-        size,
-        color,
-        ...otherProductData
-      } = productData;
+      const { mainCategory, subCategory, ...otherProductData } = productData;
 
       // Create the product with proper category references
       return this.productsService.create({
         ...otherProductData,
         // Keep legacy fields for backward compatibility
         category: otherProductData.category || 'Other',
-        categoryStructure:
-          typeof productData.categoryStructure === 'string'
-            ? JSON.parse(productData.categoryStructure)
-            : productData.categoryStructure,
         // New category system
         mainCategory,
         subCategory,
-        ageGroup,
-        size,
-        color,
+        ageGroups,
+        sizes,
+        colors,
         user,
         images: imageUrls,
         brandLogo: brandLogoUrl,
@@ -271,14 +291,27 @@ export class ProductsController {
   async updateProduct(
     @Param('id') id: string,
     @CurrentUser() user: UserDocument,
-    @Body() productData: Omit<ProductDto, 'images'>,
+    @Body()
+    productData: Omit<ProductDto, 'images'> & { existingImages?: string }, // Modified type to include existingImages
     @UploadedFiles()
     files: {
       images?: Express.Multer.File[];
       brandLogo?: Express.Multer.File[];
     },
   ) {
-    console.log('Update request received:', { id, productData, files });
+    console.log('[DEBUG] Update request received for product:', id);
+    console.log(
+      '[DEBUG] Update request mainCategory:',
+      productData.mainCategory,
+    );
+    console.log('[DEBUG] Update request subCategory:', productData.subCategory);
+    console.log('[DEBUG] Update request body:', {
+      ...productData,
+      // Don't log large text fields or arrays
+      description: productData.description ? '(text)' : undefined,
+      descriptionEn: productData.descriptionEn ? '(text)' : undefined,
+      existingImages: productData.existingImages ? '(array)' : undefined,
+    });
 
     const product = await this.productsService.findById(id);
     if (
@@ -308,41 +341,110 @@ export class ProductsController {
         brandLogoUrl = productData.brandLogoUrl;
       }
 
-      // Handle category structure if it exists in the request
-      let categoryStructure;
-      if (productData.categoryStructure) {
+      // Parse JSON arrays for attributes if they're strings
+      let ageGroups = productData.ageGroups;
+      let sizes = productData.sizes;
+      let colors = productData.colors;
+
+      if (typeof ageGroups === 'string') {
         try {
-          // If it's a string (from form data), parse it
-          if (typeof productData.categoryStructure === 'string') {
-            categoryStructure = JSON.parse(productData.categoryStructure);
-          } else {
-            categoryStructure = productData.categoryStructure;
-          }
-        } catch (error) {
-          console.error('Error parsing category structure:', error);
+          ageGroups = JSON.parse(ageGroups);
+        } catch (e) {
+          ageGroups = [];
         }
       }
 
+      if (typeof sizes === 'string') {
+        try {
+          sizes = JSON.parse(sizes);
+        } catch (e) {
+          sizes = [];
+        }
+      }
+
+      if (typeof colors === 'string') {
+        try {
+          colors = JSON.parse(colors);
+        } catch (e) {
+          colors = [];
+        }
+      }
+
+      // Handle existing images
+      let existingImages = [];
+      if (productData.existingImages) {
+        try {
+          existingImages = JSON.parse(productData.existingImages as string);
+        } catch (e) {
+          console.error('Error parsing existingImages:', e);
+        }
+      }
+
+      // Combine existing images with new uploads if any
+      const finalImages = imageUrls
+        ? [...existingImages, ...imageUrls]
+        : existingImages.length > 0
+          ? existingImages
+          : product.images; // Keep original images if no new ones provided
+
       // Remove user property if it exists in productData to avoid schema conflicts
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { user: userFromData, ...productDataWithoutUser } =
-        productData as any;
+      const {
+        user: userFromData,
+        existingImages: _,
+        ...productDataWithoutUser
+      } = productData as any;
+
+      // Explicitly handle mainCategory and subCategory to ensure they are updated properly
+      const mainCategory =
+        productData.mainCategory !== undefined
+          ? productData.mainCategory
+          : product.mainCategory;
+
+      const subCategory =
+        productData.subCategory !== undefined
+          ? productData.subCategory
+          : product.subCategory;
+
+      console.log('[DEBUG] Using final category values:', {
+        mainCategory,
+        mainCategoryType: typeof mainCategory,
+        subCategory,
+        subCategoryType: typeof subCategory,
+      });
 
       // Create update data object
       const updateData = {
         ...productDataWithoutUser,
-        ...(imageUrls && { images: imageUrls }),
+        mainCategory,
+        subCategory,
+        images: finalImages,
         ...(brandLogoUrl && { brandLogo: brandLogoUrl }),
-        ...(categoryStructure && { categoryStructure }),
+        ageGroups,
+        sizes,
+        colors,
       };
 
-      console.log('Updating product with data:', updateData);
+      console.log(
+        '[DEBUG] Updating product with mainCategory:',
+        updateData.mainCategory,
+      );
+      console.log(
+        '[DEBUG] Updating product with subCategory:',
+        updateData.subCategory,
+      );
+
       const updatedProduct = await this.productsService.update(id, updateData);
 
-      console.log('Product updated successfully:', updatedProduct);
+      console.log('[DEBUG] Product updated successfully:', {
+        id: updatedProduct._id,
+        mainCategory: updatedProduct.mainCategory,
+        subCategory: updatedProduct.subCategory,
+      });
+
       return updatedProduct;
     } catch (error) {
-      console.error('Update error:', error);
+      console.error('[DEBUG] Update error:', error);
       throw new InternalServerErrorException(
         'Failed to update product',
         error.message,

@@ -76,9 +76,12 @@ export class ProductDto {
   @IsString()
   brand!: string;
 
+  // Legacy category field - kept for backward compatibility
   @IsString()
-  category!: string;
+  @IsOptional()
+  category?: string;
 
+  // New category fields
   @IsMongoId()
   @IsOptional()
   mainCategory?: string;
@@ -87,17 +90,18 @@ export class ProductDto {
   @IsOptional()
   subCategory?: string;
 
-  @IsString()
+  // Product attributes
+  @IsArray()
   @IsOptional()
-  ageGroup?: string;
+  ageGroups?: string[];
 
-  @IsString()
+  @IsArray()
   @IsOptional()
-  size?: string;
+  sizes?: string[];
 
-  @IsString()
+  @IsArray()
   @IsOptional()
-  color?: string;
+  colors?: string[];
 
   @IsOptional()
   @IsObject()
@@ -148,6 +152,11 @@ export class ProductDto {
   @IsString()
   @IsOptional()
   brandLogoUrl?: string;
+
+  // Add the missing property for existing images
+  @IsString()
+  @IsOptional()
+  existingImages?: string;
 }
 
 export class FindAllProductsDto {

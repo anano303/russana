@@ -103,7 +103,7 @@ export class Product {
   @Prop({ required: true })
   category!: string;
 
-  // New category relationships - ensure these are properly defined as references
+  // New category relationships
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
@@ -116,16 +116,17 @@ export class Product {
   })
   subCategory?: mongoose.Types.ObjectId | string;
 
-  @Prop({ type: String })
-  ageGroup?: string;
+  // Product attributes based on subcategory
+  @Prop({ type: [String], default: [] })
+  ageGroups?: string[];
 
-  @Prop({ type: String })
-  size?: string;
+  @Prop({ type: [String], default: [] })
+  sizes?: string[];
 
-  @Prop({ type: String })
-  color?: string;
+  @Prop({ type: [String], default: [] })
+  colors?: string[];
 
-  // Legacy category structure (keeping for backward compatibility)
+  // Add categoryStructure field
   @Prop({ type: Object })
   categoryStructure?: CategoryStructure;
 
@@ -183,5 +184,15 @@ export class Product {
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
 
-// Create an index for efficient category-based queries
-ProductSchema.index({ mainCategory: 1, subCategory: 1 });
+// IMPORTANT: Do NOT create compound indexes on multiple array fields!
+// Only create simple single-field indexes
+
+// Safe indexes (non-array fields)
+ProductSchema.index({ mainCategory: 1 });
+ProductSchema.index({ subCategory: 1 });
+ProductSchema.index({ brand: 1 });
+ProductSchema.index({ status: 1 });
+ProductSchema.index({ createdAt: -1 });
+
+// DO NOT create any indexes on the array fields to avoid parallel array indexing error
+// MongoDB cannot index multiple array fields in the same document

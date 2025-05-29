@@ -6,6 +6,8 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./productActions.css";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { Role } from "@/types/role";
+import Link from "next/link";
+
 
 interface ProductsActionsProps {
   product: Product;
@@ -105,13 +107,15 @@ export function ProductsActions({
 
   return (
     <div className="space-x-2">
-      <button
-        onClick={() =>
-          router.push(`/admin/products/${product._id}/edit?id=${product._id}`)
-        }
+      <Link
+        href={{
+          pathname: `/admin/products/${product._id}/edit`,
+          query: { id: product._id, refresh: Date.now() }, // Add a timestamp to force refresh
+        }}
+        className="prd-action-link prd-action-edit"
       >
         <Pencil className="actions edit" />
-      </button>
+      </Link>
 
       {/* Showing status buttons? {isAdmin && product.status === ProductStatus.PENDING} */}
       {isAdmin && product.status === ProductStatus.PENDING && (

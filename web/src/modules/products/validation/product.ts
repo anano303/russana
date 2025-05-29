@@ -4,6 +4,27 @@ const fileSchema = z.custom<File>((file) => {
   return file instanceof File;
 }, "Must be a file");
 
+export interface ProductFormData {
+  name: string;
+  nameEn?: string;
+  description: string;
+  descriptionEn?: string;
+  brand: string;
+  category: string;
+  subcategory: string;
+  categoryId?: string;
+  ageGroups?: string[];
+  sizes?: string[];
+  colors?: string[];
+  price: number;
+  countInStock: number;
+  images: Array<File | string>;
+  brandLogo?: File | string;
+  deliveryType?: "SELLER" | "SoulArt";
+  minDeliveryDays?: number | string;
+  maxDeliveryDays?: number | string;
+}
+
 export const productSchema = z.object({
   name: z.string().min(1, "პროდუქტის სახელი სავალდებულოა"),
   nameEn: z.string().optional(),
@@ -19,8 +40,10 @@ export const productSchema = z.object({
         message: "გთხოვთ აირჩიოთ ქვეკატეგორია",
       }
     ),
-  categoryId: z.string().optional(), // Add categoryId field for proper relationship
-  ageGroup: z.enum(["ADULTS", "KIDS"]).optional(),
+  categoryId: z.string().optional(),
+  ageGroups: z.array(z.string()).optional(),
+  sizes: z.array(z.string()).optional(),
+  colors: z.array(z.string()).optional(),
   price: z.coerce.number().positive("ფასი უნდა იყოს დადებითი რიცხვი"),
   countInStock: z.coerce
     .number()
@@ -35,18 +58,7 @@ export const productSchema = z.object({
     .nullable(),
   minDeliveryDays: z.number().optional().nullable(),
   maxDeliveryDays: z.number().optional().nullable(),
-  dimensions: z
-    .object({
-      width: z.number().optional().nullable(),
-      height: z.number().optional().nullable(),
-      depth: z.number().optional().nullable(),
-    })
-    .optional(),
-  size: z.string().optional(),
-  color: z.string().optional(),
 });
-
-export type ProductFormData = z.infer<typeof productSchema>;
 
 // Helper function to validate the form before submission
 export const validateProductForm = (data: unknown) => {

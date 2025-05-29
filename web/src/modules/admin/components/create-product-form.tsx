@@ -8,45 +8,32 @@ import { productSchema } from "@/modules/products/validation/product";
 import { ZodError } from "zod";
 import { ProductFormData as BaseProductFormData } from "@/modules/products/validation/product";
 import { useLanguage } from "@/hooks/LanguageContext";
-
-// Extended ProductFormData to include categoryStructure
-interface ProductFormData extends BaseProductFormData {
-  categoryStructure?: {
-    main: MainCategory;
-    sub: string;
-    ageGroup?: AgeGroup;
-  };
-  nameEn?: string;
-  descriptionEn?: string;
-}
+import { useQuery } from "@tanstack/react-query";
 import "./CreateProductForm.css";
 import Image from "next/image";
 import { getAccessToken } from "@/lib/auth";
 import { useUser } from "@/modules/auth/hooks/use-user";
 
-// Ensure enum values are the same as what we expect from the database
-enum MainCategory {
-  CLOTHING = "CLOTHING",
-  ACCESSORIES = "ACCESSORIES",
-  FOOTWEAR = "FOOTWEAR",
-  SWIMWEAR = "SWIMWEAR",
+// Extended ProductFormData to include all needed properties
+interface ProductFormData extends BaseProductFormData {
+  _id?: string;
+  nameEn?: string;
+  descriptionEn?: string;
+  mainCategory?: string | { name: string; id?: string; _id?: string };
+  subCategory?: string | { name: string; id?: string; _id?: string };
+  ageGroups?: string[];
+  sizes?: string[];
+  colors?: string[];
+  categoryId?: string;
+  categoryStructure?: {
+    main: string;
+    sub: string;
+    ageGroup?: string;
+  };
 }
-
-enum AgeGroup {
-  ADULTS = "ADULTS",
-  KIDS = "KIDS",
-}
-
-// Make sure this object uses the same keys as in the MainCategory enum
-const categoryStructure = {
-  [MainCategory.CLOTHING]: ["მაისურები", "კაბები", "ჰუდები", "სხვა"],
-  [MainCategory.ACCESSORIES]: ["კეპები", "პანამები", "სხვა"],
-  [MainCategory.FOOTWEAR]: ["სპორტული", "ყოველდღიური", "სხვა"],
-  [MainCategory.SWIMWEAR]: ["საცურაო კოსტუმები", "სხვა"],
-};
 
 interface CreateProductFormProps {
-  initialData?: ProductFormData & { _id?: string };
+  initialData?: ProductFormData;
   onSuccess?: (data: {
     id: string;
     name: string;
@@ -54,12 +41,31 @@ interface CreateProductFormProps {
   }) => void;
   isEdit?: boolean;
 }
+
+// Interface for Category and SubCategory
+interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  isActive: boolean;
+}
+
+interface SubCategory {
+  id: string;
+  name: string;
+  categoryId: string;
+  ageGroups: string[];
+  sizes: string[];
+  colors: string[];
+  isActive: boolean;
+}
+
 export function CreateProductForm({
   initialData,
   onSuccess,
   isEdit = !!initialData?._id,
 }: CreateProductFormProps) {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   const router = useRouter();
   const { user } = useUser();
   const isSeller = user?.role?.toLowerCase() === "seller";
@@ -77,31 +83,74 @@ export function CreateProductForm({
       images: [],
       brand: "",
       category: "",
-      subcategory: "", // Add the required subcategory field
+      subcategory: "",
       countInStock: 0,
       brandLogo: undefined,
     }
   );
 
-  const [selectedMainCategory, setSelectedMainCategory] =
-    useState<MainCategory>(
-      initialData?.categoryStructure?.main || MainCategory.CLOTHING
-    );
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<
-    AgeGroup | undefined
-  >(initialData?.categoryStructure?.ageGroup || undefined);
+  // State for new category structure
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>("");
+  const [selectedAgeGroups, setSelectedAgeGroups] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+
+  const [availableAgeGroups, setAvailableAgeGroups] = useState<string[]>([]);
+  const [availableSizes, setAvailableSizes] = useState<string[]>([]);
+  const [availableColors, setAvailableColors] = useState<string[]>([]);
+
   const [deliveryType, setDeliveryType] = useState<"SELLER" | "SoulArt">(
     "SoulArt"
   );
   const [minDeliveryDays, setMinDeliveryDays] = useState("");
   const [maxDeliveryDays, setMaxDeliveryDays] = useState("");
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
-  const [depth, setDepth] = useState("");
 
   const [pending, setPending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Fetch categories
+  const { data: categories, isLoading: isCategoriesLoading } = useQuery<
+    Category[]
+  >({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/categories?includeInactive=false`
+      );
+      return response.json();
+    },
+  });
+
+  // Fetch subcategories based on selected category
+  const { data: subcategories, isLoading: isSubcategoriesLoading } = useQuery<
+    SubCategory[]
+  >({
+    queryKey: ["subcategories", selectedCategory],
+    queryFn: async () => {
+      if (!selectedCategory) return [];
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/subcategories?categoryId=${selectedCategory}&includeInactive=false`
+      );
+      return response.json();
+    },
+    enabled: !!selectedCategory,
+  });
+
+  // Update available attributes when subcategory changes
+  useEffect(() => {
+    if (subcategories && selectedSubcategory) {
+      const subcategory = subcategories.find(
+        (sub) => sub.id === selectedSubcategory
+      );
+      if (subcategory) {
+        setAvailableAgeGroups(subcategory.ageGroups || []);
+        setAvailableSizes(subcategory.sizes || []);
+        setAvailableColors(subcategory.colors || []);
+      }
+    }
+  }, [subcategories, selectedSubcategory]);
 
   // Auto-fill seller info when user data loads
   useEffect(() => {
@@ -116,8 +165,12 @@ export function CreateProductForm({
 
   useEffect(() => {
     if (initialData) {
-      console.log("Initial Data in Form:", initialData);
+      console.log(
+        "[DEBUG] Initial Data in Form:",
+        JSON.stringify(initialData, null, 2)
+      );
 
+      // Basic form data setup
       setFormData((prev) => ({
         ...prev,
         _id: initialData._id,
@@ -134,6 +187,9 @@ export function CreateProductForm({
         descriptionEn: initialData.descriptionEn || "",
         price: initialData.price || 0,
         countInStock: initialData.countInStock || 0,
+        ageGroups: initialData.ageGroups || [],
+        sizes: initialData.sizes || [],
+        colors: initialData.colors || [],
       }));
 
       if (initialData.deliveryType) {
@@ -146,80 +202,80 @@ export function CreateProductForm({
         setMaxDeliveryDays(initialData.maxDeliveryDays.toString());
       }
 
-      // Fix dimensions parsing - handle both object and string formats
-      if (initialData.dimensions) {
-        let dimensionsObj;
+      // Improved category handling - Debug the values
+      console.log("[DEBUG] Category data from initialData:", {
+        mainCategory: initialData.mainCategory,
+        mainCategoryType: typeof initialData.mainCategory,
+        subCategory: initialData.subCategory,
+        subCategoryType: typeof initialData.subCategory,
+        categoryId: initialData.categoryId,
+        subcategory: initialData.subcategory,
+      });
 
-        // If dimensions is a string, parse it
-        if (typeof initialData.dimensions === "string") {
-          try {
-            dimensionsObj = JSON.parse(initialData.dimensions);
-            console.log("Parsed dimensions from string:", dimensionsObj);
-          } catch (error) {
-            console.error("Error parsing dimensions:", error);
-            dimensionsObj = {};
-          }
-        } else {
-          // If it's already an object
-          dimensionsObj = initialData.dimensions;
-          console.log("Using dimensions as object:", dimensionsObj);
-        }
+      // Extract category ID correctly, handling both object and string formats
+      if (initialData.mainCategory) {
+        const categoryId =
+          typeof initialData.mainCategory === "object"
+            ? initialData.mainCategory._id || initialData.mainCategory.id
+            : initialData.mainCategory;
 
-        // Set dimensions values
-        if (dimensionsObj) {
-          if (dimensionsObj.width) {
-            setWidth(dimensionsObj.width.toString());
-          }
-          if (dimensionsObj.height) {
-            setHeight(dimensionsObj.height.toString());
-          }
-          if (dimensionsObj.depth) {
-            setDepth(dimensionsObj.depth.toString());
-          }
-        }
-      }
-
-      // Handle category structure if available
-      if (initialData.categoryStructure) {
-        // Check if the value from the API matches our enum values
-        const mainCat = initialData.categoryStructure.main;
-        // Make sure we use a valid value that exists in our enum
-        if (
-          mainCat &&
-          Object.values(MainCategory).includes(mainCat as MainCategory)
-        ) {
-          setSelectedMainCategory(mainCat as MainCategory);
-        } else {
-          // Default to CLOTHING if the value doesn't match
-          setSelectedMainCategory(MainCategory.CLOTHING);
-        }
-
-        // Handle age group
-        const ageGroup = initialData.categoryStructure.ageGroup;
-        if (
-          ageGroup &&
-          Object.values(AgeGroup).includes(ageGroup as AgeGroup)
-        ) {
-          setSelectedAgeGroup(ageGroup as AgeGroup);
-        }
-      } else {
-        // Default for legacy products without category structure
-        setSelectedMainCategory(MainCategory.CLOTHING);
+        console.log("[DEBUG] Setting selectedCategory to:", categoryId);
+        setSelectedCategory(String(categoryId || ""));
+      } else if (initialData.categoryId) {
+        console.log(
+          "[DEBUG] Setting selectedCategory to categoryId:",
+          initialData.categoryId
+        );
+        setSelectedCategory(String(initialData.categoryId || ""));
       }
     }
   }, [initialData]);
 
+  // Add a separate effect for handling subcategory after category is set and subcategories are loaded
   useEffect(() => {
+    // Only run this effect when editing and we have both initialData and subcategories loaded
     if (
-      !formData.category &&
-      categoryStructure[selectedMainCategory]?.length > 0
+      initialData &&
+      selectedCategory &&
+      subcategories &&
+      subcategories.length > 0
     ) {
-      setFormData((prev) => ({
-        ...prev,
-        category: categoryStructure[selectedMainCategory][0],
-      }));
+      console.log(
+        "[DEBUG] Trying to set subcategory. Current selectedCategory:",
+        selectedCategory
+      );
+      console.log(
+        "[DEBUG] Available subcategories:",
+        subcategories.map((s) => ({
+          id: s.id,
+          name: s.name,
+          categoryId: s.categoryId,
+        }))
+      );
+
+      // Extract subcategory ID correctly, handling both object and string formats
+      if (initialData.subCategory) {
+        const subcategoryId =
+          typeof initialData.subCategory === "object"
+            ? initialData.subCategory._id || initialData.subCategory.id
+            : initialData.subCategory;
+
+        console.log(
+          "[DEBUG] Setting selectedSubcategory from subCategory:",
+          subcategoryId
+        );
+        setSelectedSubcategory(String(subcategoryId || ""));
+      } else if (initialData.subcategory) {
+        console.log(
+          "[DEBUG] Setting selectedSubcategory from subcategory:",
+          initialData.subcategory
+        );
+        setSelectedSubcategory(String(initialData.subcategory || ""));
+      }
     }
-  }, [selectedMainCategory, formData.category]);
+  }, [initialData, selectedCategory, subcategories]);
+
+  // Reset form to initial state
   const resetForm = () => {
     setFormData({
       name: "",
@@ -230,7 +286,7 @@ export function CreateProductForm({
       images: [],
       brand: "",
       category: "",
-      subcategory: "", // Add the required subcategory field
+      subcategory: "",
       countInStock: 0,
       brandLogo: undefined,
     });
@@ -238,14 +294,15 @@ export function CreateProductForm({
     setServerError(null);
     setSuccess(null);
 
-    setDeliveryType("SoulArt");
+    setSelectedCategory("");
+    setSelectedSubcategory("");
+    setSelectedAgeGroups([]);
+    setSelectedSizes([]);
+    setSelectedColors([]);
+
     setDeliveryType("SoulArt");
     setMinDeliveryDays("");
     setMaxDeliveryDays("");
-    setWidth("");
-    setHeight("");
-    setDepth("");
-    setSelectedAgeGroup(undefined);
   };
 
   const validateField = (field: keyof ProductFormData, value: unknown) => {
@@ -279,26 +336,49 @@ export function CreateProductForm({
     }));
   };
 
-  const handleMainCategoryChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const newMainCategory = e.target.value as MainCategory;
-    setSelectedMainCategory(newMainCategory);
-
-    // Automatically select the first subcategory when changing the main category
-    const firstSubcategory = categoryStructure[newMainCategory]?.[0] || "";
-    setFormData((prev) => ({
-      ...prev,
-      category: firstSubcategory,
-    }));
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const categoryId = e.target.value;
+    setSelectedCategory(categoryId);
+    setSelectedSubcategory("");
+    setSelectedAgeGroups([]);
+    setSelectedSizes([]);
+    setSelectedColors([]);
+    setAvailableAgeGroups([]);
+    setAvailableSizes([]);
+    setAvailableColors([]);
   };
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      category: e.target.value,
-    }));
-    validateField("category", e.target.value);
+  const handleSubcategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const subcategoryId = e.target.value;
+    setSelectedSubcategory(subcategoryId);
+    setSelectedAgeGroups([]);
+    setSelectedSizes([]);
+    setSelectedColors([]);
+  };
+
+  const handleAttributeChange = (
+    type: "ageGroups" | "sizes" | "colors",
+    value: string
+  ) => {
+    if (type === "ageGroups") {
+      setSelectedAgeGroups((prev) =>
+        prev.includes(value)
+          ? prev.filter((item) => item !== value)
+          : [...prev, value]
+      );
+    } else if (type === "sizes") {
+      setSelectedSizes((prev) =>
+        prev.includes(value)
+          ? prev.filter((item) => item !== value)
+          : [...prev, value]
+      );
+    } else if (type === "colors") {
+      setSelectedColors((prev) =>
+        prev.includes(value)
+          ? prev.filter((item) => item !== value)
+          : [...prev, value]
+      );
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -321,13 +401,49 @@ export function CreateProductForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form data on submit", formData);
-    console.log("Initial Data:", initialData);
+    console.log(
+      "[DEBUG] Form data on submit",
+      JSON.stringify(formData, null, 2)
+    );
+    console.log("[DEBUG] Selected category/subcategory on submit:", {
+      selectedCategory,
+      selectedSubcategory,
+      selectedAgeGroups,
+      selectedSizes,
+      selectedColors,
+    });
+
     setPending(true);
     setServerError(null);
     setSuccess(null);
 
     try {
+      // Use validateField for validating form fields
+      const isNameValid = validateField("name", formData.name);
+      const isPriceValid = validateField("price", formData.price);
+      const isDescriptionValid = validateField(
+        "description",
+        formData.description
+      );
+
+      if (!isNameValid || !isPriceValid || !isDescriptionValid) {
+        setPending(false);
+        return;
+      }
+
+      // Validate required fields
+      if (!selectedCategory) {
+        setServerError("გთხოვთ აირჩიოთ კატეგორია");
+        setPending(false);
+        return;
+      }
+
+      if (!selectedSubcategory) {
+        setServerError("გთხოვთ აირჩიოთ ქვეკატეგორია");
+        setPending(false);
+        return;
+      }
+
       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
       if (
         formData.images.some(
@@ -378,8 +494,30 @@ export function CreateProductForm({
       formDataToSend.append("price", String(formData.price));
       formDataToSend.append("description", formData.description);
       formDataToSend.append("descriptionEn", formData.descriptionEn || "");
-      formDataToSend.append("category", formData.category);
       formDataToSend.append("countInStock", String(formData.countInStock));
+
+      // Add new category structure - ensure we're sending strings, not objects
+      formDataToSend.append("mainCategory", selectedCategory);
+      formDataToSend.append("subCategory", selectedSubcategory);
+
+      // For debugging purposes
+      console.log("[DEBUG] Sending category data:", {
+        mainCategory: selectedCategory,
+        subCategory: selectedSubcategory,
+      });
+
+      // Add selected attributes
+      if (selectedAgeGroups.length > 0) {
+        formDataToSend.append("ageGroups", JSON.stringify(selectedAgeGroups));
+      }
+
+      if (selectedSizes.length > 0) {
+        formDataToSend.append("sizes", JSON.stringify(selectedSizes));
+      }
+
+      if (selectedColors.length > 0) {
+        formDataToSend.append("colors", JSON.stringify(selectedColors));
+      }
 
       // Handle brand name
       if (isSeller) {
@@ -416,25 +554,6 @@ export function CreateProductForm({
         formDataToSend.append("minDeliveryDays", minDeliveryDays);
         formDataToSend.append("maxDeliveryDays", maxDeliveryDays);
       }
-
-      // Add dimensions if provided
-      if (width || height || depth) {
-        const dimensionsObj: Record<string, string> = {};
-        if (width) dimensionsObj["width"] = width;
-        if (height) dimensionsObj["height"] = height;
-        if (depth) dimensionsObj["depth"] = depth;
-        formDataToSend.append("dimensions", JSON.stringify(dimensionsObj));
-      }
-
-      // Add category structure to form data
-      formDataToSend.append(
-        "categoryStructure",
-        JSON.stringify({
-          main: selectedMainCategory,
-          sub: formData.category,
-          ageGroup: selectedAgeGroup,
-        })
-      );
 
       // Handle images - separate existing images from new ones
       const existingImages: string[] = [];
@@ -502,6 +621,15 @@ export function CreateProductForm({
         endpoint,
       });
 
+      // Log the complete payload for debugging
+      if (isEdit) {
+        console.log(
+          "[DEBUG] Edit payload keys:",
+          Array.from(formDataToSend.keys())
+        );
+        console.log("[DEBUG] Edit request - Product ID:", formData._id);
+      }
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
         {
@@ -517,6 +645,7 @@ export function CreateProductForm({
         let errorMessage = "ნამუშევრის დამატება/განახლება ვერ მოხერხდა";
         try {
           const errorData = await response.json();
+          console.error("[DEBUG] API Error Response:", errorData);
           errorMessage = errorData.message || errorMessage;
         } catch {
           errorMessage = `Error: ${response.status} ${response.statusText}`;
@@ -525,7 +654,7 @@ export function CreateProductForm({
       }
 
       const data = await response.json();
-      console.log("Server response:", data);
+      console.log("[DEBUG] Server response after successful save:", data);
       const successMessage = isEdit
         ? "პროდუქტი წარმატებით განახლდა!"
         : "პროდუქტი წარმატებით დაემატა!";
@@ -541,8 +670,12 @@ export function CreateProductForm({
       }
 
       if (onSuccess) {
+        // Set a flag to force refresh when we return to the products list
+        sessionStorage.setItem("returnFromEdit", "true");
         onSuccess(data);
       } else {
+        // Also set the flag for direct navigation
+        sessionStorage.setItem("returnFromEdit", "true");
         setTimeout(() => {
           router.push("/admin/products");
         }, 1500);
@@ -557,18 +690,65 @@ export function CreateProductForm({
     }
   };
 
-  // Helper function to translate category names for display
-  const translateCategory = (category: string) => {
-    return t(`productCategories.${category}`);
-  };
+  // Also add a useEffect to fetch subcategory details when selectedSubcategory changes
+  useEffect(() => {
+    if (selectedSubcategory && subcategories) {
+      console.log(`Looking for subcategory with ID: ${selectedSubcategory}`);
+      console.log(
+        "Available subcategories:",
+        subcategories.map((s) => ({ id: s.id, name: s.name }))
+      );
 
-  // Add main category translations
-  const mainCategoryLabels = {
-    [MainCategory.CLOTHING]: t("categories.clothing"),
-    [MainCategory.ACCESSORIES]: t("categories.accessories"),
-    [MainCategory.FOOTWEAR]: t("categories.footwear"),
-    [MainCategory.SWIMWEAR]: t("categories.swimwear"),
-  };
+      const subcategory = subcategories.find(
+        (sub) => String(sub.id) === String(selectedSubcategory)
+      );
+
+      if (subcategory) {
+        console.log("Found matching subcategory:", subcategory.name);
+
+        // Set available options based on subcategory
+        setAvailableAgeGroups(subcategory.ageGroups || []);
+        setAvailableSizes(subcategory.sizes || []);
+        setAvailableColors(subcategory.colors || []);
+
+        // If we have initial data with attribute selections, make sure they're valid
+        // for this subcategory before applying them
+        if (initialData) {
+          if (initialData.ageGroups && Array.isArray(initialData.ageGroups)) {
+            const validAgeGroups = initialData.ageGroups.filter((ag) =>
+              subcategory.ageGroups.includes(ag)
+            );
+            setSelectedAgeGroups(validAgeGroups);
+          }
+
+          if (initialData.sizes && Array.isArray(initialData.sizes)) {
+            const validSizes = initialData.sizes.filter((size) =>
+              subcategory.sizes.includes(size)
+            );
+            setSelectedSizes(validSizes);
+          }
+
+          if (initialData.colors && Array.isArray(initialData.colors)) {
+            const validColors = initialData.colors.filter((color) =>
+              subcategory.colors.includes(color)
+            );
+            setSelectedColors(validColors);
+          }
+        }
+      }
+    }
+  }, [selectedSubcategory, subcategories, initialData]);
+
+  // Add a cleanup effect when the form unmounts
+  useEffect(() => {
+    return () => {
+      // Clean up any lingering edit flags
+      const returnFromEdit = sessionStorage.getItem("returnFromEdit");
+      if (returnFromEdit) {
+        sessionStorage.removeItem("returnFromEdit");
+      }
+    };
+  }, []);
 
   return (
     <div className="create-product-form">
@@ -642,7 +822,7 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="price">Price</label>
+          <label htmlFor="price">ფასი</label>
           <input
             id="price"
             name="price"
@@ -657,100 +837,218 @@ export function CreateProductForm({
           )}
         </div>
 
+        {/* New Category Structure */}
         <div>
-          <label htmlFor="mainCategory">მთავარი კატეგორია</label>
+          <label htmlFor="category">კატეგორია</label>
           <select
-            name="mainCategory"
-            value={selectedMainCategory}
-            onChange={handleMainCategoryChange}
+            id="category"
+            name="category"
+            value={selectedCategory}
+            onChange={handleCategoryChange}
             className="create-product-select"
+            required
+            disabled={isCategoriesLoading}
           >
-            {Object.entries(mainCategoryLabels).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
+            <option value="">
+              {isCategoriesLoading ? "იტვირთება..." : "აირჩიეთ კატეგორია"}
+            </option>
+            {categories?.map((category) => (
+              <option key={category.id} value={category.id}>
+                {language === "en" && category.name === "ნახატები"
+                  ? "Paintings"
+                  : language === "en" && category.name === "ხელნაკეთი ნივთები"
+                  ? "Handmade"
+                  : language === "en" && category.name === "ტანსაცმელი"
+                  ? "Clothing"
+                  : language === "en" && category.name === "აქსესუარები"
+                  ? "Accessories"
+                  : category.name}
               </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label htmlFor="category">ქვეკატეგორია</label>
+          <label htmlFor="subcategory">ქვეკატეგორია</label>
           <select
-            name="category"
-            value={formData.category}
-            onChange={handleCategoryChange}
+            id="subcategory"
+            name="subcategory"
+            value={selectedSubcategory}
+            onChange={handleSubcategoryChange}
             className="create-product-select"
+            required
+            disabled={!selectedCategory || isSubcategoriesLoading}
           >
-            {categoryStructure[selectedMainCategory] &&
-              categoryStructure[selectedMainCategory].map((category) => (
-                <option key={category} value={category}>
-                  {translateCategory(category)}
-                </option>
-              ))}
+            <option value="">აირჩიეთ ქვეკატეგორია</option>
+            {subcategories?.map((subcategory) => (
+              <option key={subcategory.id} value={subcategory.id}>
+                {language === "en" && subcategory.name === "პეიზაჟი"
+                  ? "Landscape"
+                  : language === "en" && subcategory.name === "პორტრეტი"
+                  ? "Portrait"
+                  : language === "en" && subcategory.name === "კერამიკა"
+                  ? "Pottery"
+                  : subcategory.name}
+              </option>
+            ))}
           </select>
-          {errors.category && (
-            <p className="create-product-error">{errors.category}</p>
+        </div>
+
+        {/* Attributes Section */}
+        {selectedSubcategory && (
+          <div className="attributes-section">
+            {availableAgeGroups.length > 0 && (
+              <div className="attribute-group">
+                <h3>ასაკობრივი ჯგუფები</h3>
+                <div className="attribute-options">
+                  {availableAgeGroups.map((ageGroup) => (
+                    <label key={ageGroup} className="attribute-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedAgeGroups.includes(ageGroup)}
+                        onChange={() =>
+                          handleAttributeChange("ageGroups", ageGroup)
+                        }
+                      />
+                      <span>
+                        {language === "en" && ageGroup === "ADULTS"
+                          ? "Adults"
+                          : language === "en" && ageGroup === "KIDS"
+                          ? "Kids"
+                          : ageGroup}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {availableSizes.length > 0 && (
+              <div className="attribute-group">
+                <h3>ზომები</h3>
+                <div className="attribute-options">
+                  {availableSizes.map((size) => (
+                    <label key={size} className="attribute-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedSizes.includes(size)}
+                        onChange={() => handleAttributeChange("sizes", size)}
+                      />
+                      <span>{size}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {availableColors.length > 0 && (
+              <div className="attribute-group">
+                <h3>ფერები</h3>
+                <div className="attribute-options">
+                  {availableColors.map((color) => (
+                    <label key={color} className="attribute-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedColors.includes(color)}
+                        onChange={() => handleAttributeChange("colors", color)}
+                      />
+                      <span>{color}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div>
+          <label htmlFor="countInStock">რაოდენობა მარაგში</label>
+          <input
+            id="countInStock"
+            name="countInStock"
+            type="number"
+            value={formData.countInStock}
+            onChange={handleChange}
+            min={0}
+            required
+          />
+          {errors.countInStock && (
+            <p className="create-product-error">{errors.countInStock}</p>
+          )}
+        </div>
+
+        {/* Delivery Section */}
+        <div className="delivery-section">
+          <h3>მიწოდების ტიპი</h3>
+          <div className="delivery-type-options">
+            <label>
+              <input
+                type="radio"
+                name="deliveryType"
+                value="SoulArt"
+                checked={deliveryType === "SoulArt"}
+                onChange={() => setDeliveryType("SoulArt")}
+              />
+              <span>SoulArt მიწოდება</span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="deliveryType"
+                value="SELLER"
+                checked={deliveryType === "SELLER"}
+                onChange={() => setDeliveryType("SELLER")}
+              />
+              <span>გამყიდველის მიწოდება</span>
+            </label>
+          </div>
+
+          {deliveryType === "SELLER" && (
+            <div className="delivery-days">
+              <div>
+                <label htmlFor="minDeliveryDays">მინიმუმ დღეები</label>
+                <input
+                  id="minDeliveryDays"
+                  type="number"
+                  value={minDeliveryDays}
+                  onChange={(e) => setMinDeliveryDays(e.target.value)}
+                  min={1}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="maxDeliveryDays">მაქსიმუმ დღეები</label>
+                <input
+                  id="maxDeliveryDays"
+                  type="number"
+                  value={maxDeliveryDays}
+                  onChange={(e) => setMaxDeliveryDays(e.target.value)}
+                  min={1}
+                  required
+                />
+              </div>
+            </div>
           )}
         </div>
 
         <div>
-          <label htmlFor="ageGroup">ასაკობრივი ჯგუფი</label>
-          <select
-            name="ageGroup"
-            value={selectedAgeGroup}
-            onChange={(e) => setSelectedAgeGroup(e.target.value as AgeGroup)}
-            className="create-product-select"
-          >
-            <option value="">აირჩიეთ ასაკობრივი ჯგუფი</option>
-            <option value={AgeGroup.ADULTS}>{t("shop.adults")}</option>
-            <option value={AgeGroup.KIDS}>{t("shop.kids")}</option>
-          </select>
+          <label htmlFor="brand">ბრენდი</label>
+          <input
+            id="brand"
+            name="brand"
+            value={formData.brand}
+            onChange={handleChange}
+            placeholder="Enter brand name"
+            className={"create-product-input"}
+            required
+          />
+          {errors.brand && (
+            <p className="create-product-error">{errors.brand}</p>
+          )}
         </div>
 
         <div>
-          <label>მიუთითეთ ზომები (არასავალდებულოა)</label>
-          <div className="dimensions-inputs">
-            <div className="dimension-input">
-              <label htmlFor="width">სიგანე (სმ)</label>
-              <input
-                id="width"
-                type="number"
-                min="0"
-                step="0.1"
-                value={width}
-                onChange={(e) => setWidth(e.target.value)}
-                className="create-product-input"
-              />
-            </div>
-            <div className="dimension-input">
-              <label htmlFor="height">სიმაღლე (სმ)</label>
-              <input
-                id="height"
-                type="number"
-                min="0"
-                step="0.1"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-                className="create-product-input"
-              />
-            </div>
-            <div className="dimension-input">
-              <label htmlFor="depth">სიღრმე (სმ)</label>
-              <input
-                id="depth"
-                type="number"
-                min="0"
-                step="0.1"
-                value={depth}
-                onChange={(e) => setDepth(e.target.value)}
-                className="create-product-input"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="images">Product Images</label>
+          <label htmlFor="images">პროდუქტის სურათები</label>
           <input
             id="images"
             name="images"
@@ -795,36 +1093,6 @@ export function CreateProductForm({
             <p className="create-product-error">{errors.images}</p>
           )}
         </div>
-        <div>
-          <label htmlFor="brand">ბრენდი</label>
-          <input
-            id="brand"
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
-            placeholder="Enter brand name"
-            className={"create-product-input"}
-            required
-          />
-          {errors.brand && (
-            <p className="create-product-error">{errors.brand}</p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="countInStock">რაოდენობა მარაგში</label>
-          <input
-            id="countInStock"
-            name="countInStock"
-            type="number"
-            value={formData.countInStock}
-            onChange={handleChange}
-            min={0}
-            required
-          />
-          {errors.countInStock && (
-            <p className="create-product-error">{errors.countInStock}</p>
-          )}
-        </div>
 
         <div>
           <label htmlFor="brandLogo">
@@ -832,24 +1100,40 @@ export function CreateProductForm({
           </label>
 
           <div className="brand-logo-container">
-            <div className="image-preview">
-              <Image
-                loader={({ src }) => src}
-                src={
-                  user?.storeLogo ||
-                  (typeof formData.brandLogo === "string"
-                    ? formData.brandLogo
-                    : "")
+            {(user?.storeLogo || typeof formData.brandLogo === "string") && (
+              <div className="image-preview">
+                <Image
+                  loader={({ src }) => src}
+                  alt="Brand logo"
+                  src={
+                    user?.storeLogo ||
+                    (typeof formData.brandLogo === "string"
+                      ? formData.brandLogo
+                      : "")
+                  }
+                  width={100}
+                  height={100}
+                  unoptimized
+                  className="preview-image"
+                />
+              </div>
+            )}
+            <input
+              id="brandLogo"
+              name="brandLogo"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    brandLogo: e.target.files?.[0],
+                  }));
                 }
-                alt="Brand logo preview"
-                width={100}
-                height={100}
-                unoptimized
-                className="preview-image"
-              />
-            </div>
+              }}
+              className="create-product-file"
+            />
           </div>
-
           {errors.brandLogo && (
             <p className="create-product-error">{errors.brandLogo}</p>
           )}

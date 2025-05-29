@@ -13,7 +13,10 @@ import { AwsS3Module } from '@/aws-s3/aws-s3.module';
 
 import { GoogleStrategy } from '@/strategies/google.strategy';
 import { connectDB } from '@/utils/config';
-import { ProductsModule } from '@/products/products.module';
+import {
+  IndexCleanupService,
+  ProductsModule,
+} from '@/products/products.module';
 import { CategoriesModule } from '@/categories/categories.module';
 
 @Module({
@@ -33,12 +36,11 @@ import { CategoriesModule } from '@/categories/categories.module';
     OrderModule,
     CloudinaryModule,
     CategoriesModule,
-    
+
     // SeedsModule,
     AwsS3Module,
-    
   ],
   controllers: [AppController],
-  providers: [AppService, GoogleStrategy],
+  providers: [AppService, GoogleStrategy, IndexCleanupService],
 })
 export class AppModule {}
