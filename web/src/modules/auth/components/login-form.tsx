@@ -15,7 +15,6 @@ import { useLanguage } from "@/hooks/LanguageContext";
 const schema = z.object({
   email: z.string().email({ message: "არასწორი ელ-ფოსტის ფორმატი" }),
   password: z.string().min(6, { message: "მინიმუმ 6 სიმბოლო" }),
-  rememberPassword: z.boolean().optional(),
 });
 
 type LoginFormValues = z.infer<typeof schema>;
@@ -36,9 +35,6 @@ export function LoginForm() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      rememberPassword: false,
-    },
   });
 
   const onSubmit = async (data: LoginFormValues) => {
@@ -97,14 +93,7 @@ export function LoginForm() {
         </div>
 
         <div className="checkbox-container">
-          <div className="remember-password">
-            <input
-              id="rememberPassword"
-              type="checkbox"
-              {...register("rememberPassword")}
-            />
-            <label htmlFor="rememberPassword">დაიმახსოვრე პაროლი</label>
-          </div>
+          <div></div>
           <Link href="/forgot-password" className="forgot-password">
             დაგავიწყდა პაროლი?
           </Link>
@@ -136,7 +125,6 @@ export function LoginForm() {
               <span className="google-green">l</span>
               <span className="google-red">e</span>
             </span>
-           
           </span>
         </button>
       </div>
