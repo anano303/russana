@@ -209,6 +209,40 @@
   color: #e50000;
 }
 
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  background-color: #fff0f0;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-message {
+  color: #e50000;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.btn-retry {
+  background-color: #e50000;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn-retry:hover {
+  background-color: #c50000;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .subcategories-header {

@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
+  InternalServerErrorException, // Added for robust error handling
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
@@ -34,22 +35,98 @@ export class SubCategoryService {
     categoryId?: string,
     includeInactive = false,
   ): Promise<SubCategory[]> {
+    console.log(
+      `[SubCategoryService] findAll called. categoryId: "${categoryId}", includeInactive: ${includeInactive}`,
+    );
+
     const filter: any = includeInactive ? {} : { isActive: true };
 
     if (categoryId) {
+      console.log(
+        `[SubCategoryService] Processing with categoryId: "${categoryId}"`,
+      );
       if (!isValidObjectId(categoryId)) {
+        console.error(
+          `[SubCategoryService] Invalid category ID format provided: "${categoryId}"`,
+        );
         throw new BadRequestException(
           `Invalid category ID format: ${categoryId}`,
         );
       }
-      filter.categoryId = categoryId;
+
+      try {
+        const categoryExists = await this.categoryModel
+          .findById(categoryId)
+          .exec();
+        if (!categoryExists) {
+          console.warn(
+            `[SubCategoryService] Category with ID "${categoryId}" not found in database.`,
+          );
+          throw new NotFoundException(
+            `Category with ID ${categoryId} not found`,
+          );
+        }
+        console.log(
+          `[SubCategoryService] Category "${categoryId}" confirmed to exist.`,
+        );
+        filter.categoryId = categoryId;
+      } catch (error) {
+        console.error(
+          `[SubCategoryService] Error during category existence check for ID "${categoryId}":`,
+          error.message,
+        );
+        if (
+          error instanceof NotFoundException ||
+          error instanceof BadRequestException
+        ) {
+          throw error;
+        }
+        // For other errors, throw a generic server error
+        throw new InternalServerErrorException(
+          `An error occurred while verifying category ID ${categoryId}`,
+        );
+      }
+    } else {
+      console.log(
+        '[SubCategoryService] No categoryId provided. Fetching subcategories based on isActive status only.',
+      );
     }
 
-    return this.subCategoryModel
-      .find(filter)
-      .populate('categoryId', 'name')
-      .sort({ name: 1 })
-      .exec();
+    try {
+      console.log(
+        '[SubCategoryService] Executing find query with filter:',
+        JSON.stringify(filter),
+      );
+      const subcategories = await this.subCategoryModel
+        .find(filter)
+        .populate('categoryId', 'name') // Ensure category name is populated
+        .sort({ name: 1 })
+        .exec();
+
+      console.log(
+        `[SubCategoryService] Database query returned ${subcategories.length} subcategories.`,
+      );
+      if (subcategories.length > 0) {
+        console.log(
+          '[SubCategoryService] Example of first subcategory found:',
+          JSON.stringify(subcategories[0]),
+        );
+      } else if (categoryId) {
+        console.log(
+          `[SubCategoryService] No subcategories found for categoryId: "${categoryId}" with current filters.`,
+        );
+      }
+      return subcategories;
+    } catch (error) {
+      console.error(
+        `[SubCategoryService] Database error while finding subcategories:`,
+        error.message,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'A database error occurred while retrieving subcategories',
+      );
+    }
   }
 
   async findById(id: string): Promise<SubCategory> {

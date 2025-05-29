@@ -32,6 +32,7 @@ export interface Product {
   brand: string;
   brandLogo: string;
   category: string; // For backward compatibility
+  categoryId:string;
   categoryStructure?: CategoryStructure; // New structured category
   price: number;
   countInStock: number;

@@ -65,7 +65,15 @@ interface ApiError {
     data?: {
       message?: string;
     };
+    status?: number;
   };
+}
+
+// Extended Error interface for query errors
+interface ExtendedError extends Error {
+  status?: number;
+  backendData?: unknown;
+  requestUrl?: string;
 }
 
 // Fetch categories
@@ -171,16 +179,84 @@ export const useSubCategories = (
   categoryId?: string,
   includeInactive = false
 ) => {
-  return useQuery<SubCategory[]>({
+  console.log(
+    `[useSubCategories] Hook called. categoryId: "${categoryId}", includeInactive: ${includeInactive}`
+  );
+
+  return useQuery<SubCategory[], Error>({
+    // Specify Error type for queryError
     queryKey: ["subcategories", { categoryId, includeInactive }],
     queryFn: async () => {
-      const url = categoryId
-        ? `/categories/sub?categoryId=${categoryId}&includeInactive=${includeInactive}`
-        : `/categories/sub?includeInactive=${includeInactive}`;
+      if (!categoryId) {
+        console.warn(
+          "[useSubCategories] categoryId is missing. API call will be skipped by 'enabled' flag or return empty if forced."
+        );
+        // 'enabled' flag should prevent this, but as a safeguard:
+        return [];
+      } // Validate category ID format - should be a MongoDB ObjectId (24 hex characters)
+      if (
+        typeof categoryId !== "string" ||
+        !categoryId.match(/^[0-9a-fA-F]{24}$/)
+      ) {
+        throw new Error(`Invalid category ID format: ${categoryId}`);
+      }
 
-      const response = await apiClient.get(url);
-      return response.data;
+      const params = new URLSearchParams();
+      params.append("categoryId", categoryId);
+      if (includeInactive) {
+        params.append("includeInactive", "true");
+      }
+      const url = `/subcategories?${params.toString()}`;
+      console.log(`[useSubCategories] Attempting to fetch from URL: ${url}`);
+
+      try {
+        const response = await apiClient.get<SubCategory[]>(url);
+        console.log(
+          `[useSubCategories] Successfully fetched subcategories. Status: ${response.status}, Count: ${response.data.length}`
+        );
+        if (response.data.length > 0) {
+          console.log(
+            "[useSubCategories] First subcategory data:",
+            JSON.stringify(response.data[0])
+          );
+        }
+        return response.data;
+      } catch (error: unknown) {
+        const err = error as ApiError; // Type assertion
+        const errorStatus = err.response?.status;
+        const backendMessage = err.response?.data?.message;
+
+        let displayMessage = "Failed to fetch subcategories."; // Default message
+        if (backendMessage) {
+          displayMessage = backendMessage; // Use message from backend if available
+        } else if (error instanceof Error && error.message) {
+          // Fallback to original error message if backend message is not present
+          displayMessage = error.message;
+        }
+
+        console.error(
+          `[useSubCategories] Error fetching subcategories. URL: ${url}, Status: ${
+            errorStatus || "N/A"
+          }, Message: "${displayMessage}"`
+        );
+
+        // Create a new error object that will be thrown for React Query
+        // This error object will be available in query.error in the component
+        const queryError = new Error(displayMessage) as ExtendedError;
+
+        // Attach more context as custom properties to the error object
+        // This can be useful for debugging in the component using the hook
+        queryError.status = errorStatus;
+        queryError.backendData = err.response?.data;
+        queryError.requestUrl = url;
+
+        throw queryError; // Rethrow the augmented error for React Query to handle
+      }
     },
+    enabled: !!categoryId, // Query will only run if categoryId is truthy
+    retry: 1, // Retry once on failure
+    // staleTime: 5 * 60 * 1000, // Optional: Data is fresh for 5 minutes
+    // cacheTime: 10 * 60 * 1000, // Optional: Cache data for 10 minutes
   });
 };
 
@@ -189,7 +265,7 @@ export const useSubCategory = (id: string) => {
   return useQuery<SubCategory>({
     queryKey: ["subcategories", id],
     queryFn: async () => {
-      const response = await apiClient.get(`/categories/sub/${id}`);
+      const response = await apiClient.get(`/subcategories/${id}`);
       return response.data;
     },
     enabled: !!id,
@@ -202,11 +278,28 @@ export const useCreateSubCategory = () => {
 
   return useMutation({
     mutationFn: async (data: SubCategoryCreateInput) => {
-      const response = await apiClient.post("/categories/sub", data);
+      // Ensure categoryId is included and valid
+      if (!data.categoryId) {
+        console.error("Missing categoryId when creating subcategory");
+        throw new Error("categoryId is required when creating a subcategory");
+      }
+
+      console.log("Creating subcategory with data:", {
+        name: data.name,
+        categoryId: data.categoryId,
+        description: data.description,
+        ageGroups: data.ageGroups,
+        sizes: data.sizes,
+        colors: data.colors,
+        isActive: data.isActive,
+      });
+
+      const response = await apiClient.post("/subcategories", data);
       return response.data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["subcategories"] });
+      // Invalidate the specific category's subcategories
       if (variables.categoryId) {
         queryClient.invalidateQueries({
           queryKey: ["subcategories", { categoryId: variables.categoryId }],
@@ -216,6 +309,7 @@ export const useCreateSubCategory = () => {
     },
     onError: (error: unknown) => {
       const err = error as ApiError;
+      console.error("Error creating subcategory:", err);
       toast.error(
         err.response?.data?.message || "ქვეკატეგორიის დამატება ვერ მოხერხდა"
       );
@@ -235,7 +329,7 @@ export const useUpdateSubCategory = () => {
       id: string;
       data: SubCategoryUpdateInput;
     }) => {
-      const response = await apiClient.put(`/categories/sub/${id}`, data);
+      const response = await apiClient.put(`/subcategories/${id}`, data);
       return response.data;
     },
     onSuccess: (_, variables) => {
@@ -260,7 +354,7 @@ export const useDeleteSubCategory = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await apiClient.delete(`/categories/sub/${id}`);
+      const response = await apiClient.delete(`/subcategories/${id}`);
       return response.data;
     },
     onSuccess: () => {

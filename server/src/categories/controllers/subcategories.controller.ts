@@ -29,7 +29,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('subcategories')
-@Controller('categories/sub')
+@Controller('subcategories')
 export class SubCategoriesController {
   constructor(private readonly subCategoryService: SubCategoryService) {}
 
@@ -51,10 +51,27 @@ export class SubCategoriesController {
     @Query('categoryId') categoryId?: string,
     @Query('includeInactive') includeInactive?: string,
   ) {
-    return this.subCategoryService.findAll(
-      categoryId,
-      includeInactive === 'true',
+    console.log(
+      `[SubCategoriesController] GET /categories/sub request. Query params -> categoryId: "${categoryId}", includeInactive: "${includeInactive}"`,
     );
+    try {
+      // The service method is async, so this will return a Promise
+      const subcategoriesPromise = this.subCategoryService.findAll(
+        categoryId,
+        includeInactive === 'true',
+      );
+      console.log(
+        `[SubCategoriesController] Called subCategoryService.findAll for categoryId: "${categoryId}"`,
+      );
+      return subcategoriesPromise;
+    } catch (error) {
+      console.error(
+        `[SubCategoriesController] Error in findAllSubCategories for categoryId: "${categoryId}":`,
+        error.message,
+        error.stack,
+      );
+      throw error; // Rethrow to let NestJS handle the HTTP response
+    }
   }
 
   @Get(':id')

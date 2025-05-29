@@ -19,6 +19,7 @@ export const productSchema = z.object({
         message: "გთხოვთ აირჩიოთ ქვეკატეგორია",
       }
     ),
+  categoryId: z.string().optional(), // Add categoryId field for proper relationship
   ageGroup: z.enum(["ADULTS", "KIDS"]).optional(),
   price: z.coerce.number().positive("ფასი უნდა იყოს დადებითი რიცხვი"),
   countInStock: z.coerce
@@ -41,6 +42,8 @@ export const productSchema = z.object({
       depth: z.number().optional().nullable(),
     })
     .optional(),
+  size: z.string().optional(),
+  color: z.string().optional(),
 });
 
 export type ProductFormData = z.infer<typeof productSchema>;

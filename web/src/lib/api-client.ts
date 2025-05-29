@@ -1,6 +1,10 @@
 import axios from "axios";
 import { getAccessToken } from "./auth";
-import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import type {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 
 // Create an axios instance with default configs
 export const apiClient = axios.create({
@@ -25,6 +29,38 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Add interceptors for logging requests and responses
+apiClient.interceptors.request.use(
+  (config) => {
+    console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
+    return config;
+  },
+  (error) => {
+    console.error("API Request Error:", error);
+    return Promise.reject(error);
+  }
+);
+
+apiClient.interceptors.response.use(
+  (response) => {
+    console.log(
+      `API Response [${response.status}] from: ${response.config.url}`
+    );
+    return response;
+  },
+  (error) => {
+    if (error.response) {
+      console.error(
+        `API Error [${error.response.status}] from: ${error.config?.url}`,
+        error.response.data
+      );
+    } else {
+      console.error("API Error:", error);
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Helper function to check if user is authenticated
 export const isAuthenticated = () => {
   return !!getAccessToken();
@@ -45,14 +81,18 @@ declare global {
   }
 }
 
-export const setupResponseInterceptors = (refreshAuthTokenFn: RefreshAuthTokenFunction): void => {
+export const setupResponseInterceptors = (
+  refreshAuthTokenFn: RefreshAuthTokenFunction
+): void => {
   // Clear existing interceptors if any
   apiClient.interceptors.response.clear();
 
   apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
-      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+      };
 
       // Skip auth endpoints to avoid infinite loops
       const isAuthEndpoint =

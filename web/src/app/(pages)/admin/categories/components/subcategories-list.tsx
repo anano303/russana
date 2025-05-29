@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useSubCategories,
   useCreateSubCategory,
@@ -32,51 +32,122 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     colors: [],
     isActive: true,
   });
+  const [error, setError] = useState<string | null>(null);
 
-  const { data: subcategories, isLoading } = useSubCategories(
-    categoryId,
-    showInactive
-  );
+  const {
+    data: subcategories,
+    isLoading,
+    isError,
+    error: queryError,
+  } = useSubCategories(categoryId, showInactive);
   const { data: attributes, isLoading: isLoadingAttributes } = useAttributes();
   const createSubCategory = useCreateSubCategory();
   const updateSubCategory = useUpdateSubCategory();
   const deleteSubCategory = useDeleteSubCategory();
 
+  useEffect(() => {
+    console.log(`SubcategoriesList mounted with categoryId: ${categoryId}`);
+
+    // Clear any previous errors when the categoryId changes
+    setError(null);
+
+    return () => {
+      console.log(`SubcategoriesList unmounted for categoryId: ${categoryId}`);
+    };
+  }, [categoryId]);
+
+  useEffect(() => {
+    if (isError) {
+      console.error("Error fetching subcategories:", queryError);
+      setError("ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა");
+    } else {
+      setError(null);
+    }
+
+    if (subcategories) {
+      console.log(
+        `Successfully loaded ${subcategories.length} subcategories for category: ${categoryId}`
+      );
+    }
+  }, [isError, queryError, subcategories, categoryId]);
+
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createSubCategory.mutateAsync({
-      ...(formData as SubCategoryCreateInput),
-      categoryId,
-    });
-    setIsCreating(false);
-    setFormData({
-      name: "",
-      categoryId,
-      description: "",
-      ageGroups: [],
-      sizes: [],
-      colors: [],
-      isActive: true,
-    });
-  };
 
-  const handleUpdateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isEditing) {
-      await updateSubCategory.mutateAsync({
-        id: isEditing,
-        data: formData as SubCategoryUpdateInput,
-      });
-      setIsEditing(null);
+    // Validation before submission
+    if (!formData.name || !formData.name.trim()) {
+      console.error("Subcategory name is required");
+      return;
+    }
+
+    // Ensure categoryId is explicitly set from the parent category
+    const dataToSubmit = {
+      ...formData,
+      categoryId: categoryId, // Ensure categoryId is explicitly set to the selected category
+      name: (formData.name || "").trim(), // Trim whitespace with null check
+    };
+
+    console.log("Creating subcategory with data:", dataToSubmit);
+
+    try {
+      await createSubCategory.mutateAsync(
+        dataToSubmit as SubCategoryCreateInput
+      );
+      setIsCreating(false);
       setFormData({
         name: "",
-        categoryId,
+        categoryId: categoryId, // Keep the current categoryId
         description: "",
         ageGroups: [],
         sizes: [],
         colors: [],
         isActive: true,
       });
+      console.log("Subcategory created successfully");
+    } catch (error) {
+      console.error("Failed to create subcategory:", error);
+      setError("ქვეკატეგორიის შექმნა ვერ მოხერხდა");
+    }
+  };
+
+  const handleUpdateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isEditing) return;
+
+    // Validation before submission
+    if (!formData.name || !formData.name.trim()) {
+      console.error("Subcategory name is required");
+      return;
+    }
+
+    try {
+      // Ensure we're maintaining the category relationship
+      const updateData = {
+        ...formData,
+        categoryId, // Make sure categoryId is always set
+        name: (formData.name || "").trim(), // Trim whitespace with null check
+      };
+
+      console.log("Updating subcategory with data:", updateData);
+
+      await updateSubCategory.mutateAsync({
+        id: isEditing,
+        data: updateData as SubCategoryUpdateInput,
+      });
+      setIsEditing(null);
+      setFormData({
+        name: "",
+        categoryId, // Keep categoryId in the form data
+        description: "",
+        ageGroups: [],
+        sizes: [],
+        colors: [],
+        isActive: true,
+      });
+      console.log("Subcategory updated successfully");
+    } catch (error) {
+      console.error("Failed to update subcategory:", error);
+      setError("ქვეკატეგორიის განახლება ვერ მოხერხდა");
     }
   };
 
@@ -97,8 +168,16 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("დარწმუნებული ხართ, რომ გსურთ ქვეკატეგორიის წაშლა?")) {
+    if (!window.confirm("დარწმუნებული ხართ, რომ გსურთ ქვეკატეგორიის წაშლა?")) {
+      return;
+    }
+
+    try {
       await deleteSubCategory.mutateAsync(id);
+      console.log("Subcategory deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete subcategory:", error);
+      setError("ქვეკატეგორიის წაშლა ვერ მოხერხდა");
     }
   };
 
@@ -114,10 +193,28 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     setFormData({ ...formData, [type]: updatedValues });
   };
 
+  // Add a reload function for better error handling
+  const handleReload = () => {
+    setError(null);
+    window.location.reload();
+  };
+
   if (isLoading || isLoadingAttributes) {
     return (
       <div className="loading-container">
         <Loader />
+        <p>იტვირთება...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p className="error-message">{error}</p>
+        <button className="btn-retry" onClick={handleReload}>
+          ხელახლა ცდა
+        </button>
       </div>
     );
   }

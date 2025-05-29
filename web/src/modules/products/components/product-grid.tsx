@@ -82,21 +82,24 @@ export function ProductGrid({
 
           const processedItems = items.map((item) => {
             if (!item.categoryStructure) {
-              const mainCategory =
-                item.category &&
-                ["მაისურები", "კაბები", "ჰუდები"].includes(item.category)
-                  ? MainCategory.CLOTHING
-                  : ["კეპები", "პანამები"].includes(item.category)
-                  ? MainCategory.ACCESSORIES
-                  : ["სპორტული", "ყოველდღიური"].includes(item.category)
-                  ? MainCategory.FOOTWEAR
-                  : MainCategory.SWIMWEAR;
+              let mainCategory = MainCategory.SWIMWEAR; // Default
 
+              // First determine the main category based on the category name
+              if (["მაისურები", "კაბები", "ჰუდები"].includes(item.category)) {
+                mainCategory = MainCategory.CLOTHING;
+              } else if (["კეპები", "პანამები"].includes(item.category)) {
+                mainCategory = MainCategory.ACCESSORIES;
+              } else if (["სპორტული", "ყოველდღიური"].includes(item.category)) {
+                mainCategory = MainCategory.FOOTWEAR;
+              }
+
+              // Make sure we store the category ID for proper relationship
               return {
                 ...item,
                 categoryStructure: {
                   main: mainCategory,
                   sub: item.category,
+                  categoryId: item.categoryId || null, // Make sure categoryId is passed through
                 },
               };
             }
@@ -127,11 +130,13 @@ export function ProductGrid({
           ];
           const isHandmade = handmadeCategories.includes(item.category);
 
+          // Store category ID for proper relationship
           return {
             ...item,
             categoryStructure: {
               main: isHandmade ? MainCategory.HANDMADE : MainCategory.PAINTINGS,
               sub: item.category,
+              categoryId: item.categoryId || null, // Make sure categoryId is passed through
             },
           };
         }
