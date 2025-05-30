@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 // import Link from "next/link";
 import "./TopItems.css";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +10,10 @@ import LoadingAnim from "../loadingAnim/loadingAnim";
 import { ProductCard } from "@/modules/products/components/product-card";
 
 const TopItems: React.FC = () => {
+  const [isScrolling, setIsScrolling] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const { data: topProducts, isLoading } = useQuery({
     queryKey: ["topProducts"],
     queryFn: async () => {
@@ -28,6 +32,39 @@ const TopItems: React.FC = () => {
     },
   });
 
+  // Handle scroll event to show/hide scrollbar
+  useEffect(() => {
+    const gridElement = gridRef.current;
+
+    const handleScroll = () => {
+      setIsScrolling(true);
+
+      // Clear previous timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      // Set a timeout to hide the scrollbar after scrolling stops
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 1000); // Hide after 1 second of no scrolling
+    };
+
+    if (gridElement) {
+      gridElement.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (gridElement) {
+        gridElement.removeEventListener("scroll", handleScroll);
+      }
+
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   if (isLoading) {
     return (
       <div className="top-items-container loading">
@@ -42,7 +79,10 @@ const TopItems: React.FC = () => {
         <h2 className="top-items-title">ყველაზე პოპულარული</h2>
       </div>
 
-      <div className="top-items-grid">
+      <div
+        ref={gridRef}
+        className={`top-items-grid ${isScrolling ? "scrolling" : ""}`}
+      >
         {topProducts?.map((product: Product, index: number) => (
           <div
             key={product._id}

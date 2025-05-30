@@ -54,16 +54,51 @@
   overflow-x: auto;
   overflow-y: hidden;
   gap: min(70px);
-  padding: 15px 20px 5px 20px; /* Restore padding on both sides */
+  padding: 15px 20px 5px 20px;
   margin-left: 0;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: #e91e63 #f5f5f5;
   align-items: stretch;
-  min-height: 400px; /* Increased to allow more space for content */
-  padding: 15px 20px 5px 20px; /* Added top padding to prevent cut-off */
+  min-height: 400px;
+  padding: 15px 20px 5px 20px;
   justify-content: space-between;
+
+  /* Hide scrollbar by default */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.top-items-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Show scrollbar on hover/active state */
+.top-items-grid:hover,
+.top-items-grid:active,
+.top-items-grid:focus,
+.top-items-grid.scrolling {
+  scrollbar-width: thin; /* Firefox */
+  -ms-overflow-style: auto; /* IE and Edge */
+  scrollbar-color: #e50000 #f5f5f5; /* Firefox - thumb and track colors */
+}
+
+.top-items-grid:hover::-webkit-scrollbar,
+.top-items-grid:active::-webkit-scrollbar,
+.top-items-grid:focus::-webkit-scrollbar,
+.top-items-grid.scrolling::-webkit-scrollbar {
+  display: block;
+  height: 8px;
+}
+
+.top-items-grid::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.top-items-grid::-webkit-scrollbar-thumb {
+  background: #e50000; /* Changed to match the site's red color (#e50000) */
+  border-radius: 10px;
 }
 
 /* Add this class for the first product card to ensure it's not cut off */
