@@ -35,6 +35,7 @@ export class CartService {
         (p) => p._id.toString() === item.productId.toString(),
       );
       if (product) {
+        item.qty = Math.min(item.qty, product.countInStock);
         item.countInStock = product.countInStock;
       }
       return item;
