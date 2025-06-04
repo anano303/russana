@@ -29,13 +29,20 @@ export class CartController {
 
   @Post('items')
   addToCart(
-    @Body() { productId, qty, size, color }: AddToCartDto,
+    @Body() { productId, qty, size, color, ageGroup }: AddToCartDto,
     @CurrentUser() user: UserDocument,
   ) {
     if (!productId) {
       throw new BadRequestException('Product ID is required');
     }
-    return this.cartService.addCartItem(productId, qty, user, size, color);
+    return this.cartService.addCartItem(
+      productId,
+      qty,
+      user,
+      size,
+      color,
+      ageGroup,
+    );
   }
 
   @Put('items/:productId')
@@ -57,10 +64,21 @@ export class CartController {
   @Delete('items/:productId')
   removeFromCart(
     @Param('productId') productId: string,
-    @Body() { size, color }: { size?: string; color?: string },
+    @Body()
+    {
+      size,
+      color,
+      ageGroup,
+    }: { size?: string; color?: string; ageGroup?: string },
     @CurrentUser() user: UserDocument,
   ) {
-    return this.cartService.removeCartItem(productId, user, size, color);
+    return this.cartService.removeCartItem(
+      productId,
+      user,
+      size,
+      color,
+      ageGroup,
+    );
   }
 
   @Post('shipping')

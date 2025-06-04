@@ -13,10 +13,14 @@ export interface ShippingDetails {
 
 export interface OrderItem {
   name: string;
+  nameEn?: string;
   qty: number;
   image: string;
   price: number;
   productId: string;
+  size?: string;
+  color?: string;
+  ageGroup?: string;
   product?: {
     deliveryType?: string; // Use string type to avoid enum conversion issues
     minDeliveryDays?: number;

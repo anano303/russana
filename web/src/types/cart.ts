@@ -8,4 +8,5 @@ export interface CartItem {
   qty: number;
   size?: string; // Add size field
   color?: string; // Add color field
+  ageGroup?: string; // Add ageGroup field
 }

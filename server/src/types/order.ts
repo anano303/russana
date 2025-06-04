@@ -3,14 +3,17 @@ import { User } from '.';
 export interface OrderItem {
   _id?: string;
   name: string;
-  nameEn?: string; // Add nameEn field
+  nameEn?: string;
   qty: number;
   image: string;
   price: number;
   productId: string;
+  size?: string;
+  color?: string;
+  ageGroup?: string;
   product: {
     _id: string;
-    nameEn?: string; // Add nameEn field
+    nameEn?: string;
     deliveryType?: string;
     minDeliveryDays?: number;
     maxDeliveryDays?: number;

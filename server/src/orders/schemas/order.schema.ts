@@ -19,6 +19,9 @@ export class Order {
         qty: { required: true, type: Number },
         image: { required: true, type: String },
         price: { required: true, type: Number },
+        size: { required: false, type: String },
+        color: { required: false, type: String },
+        ageGroup: { required: false, type: String },
         productId: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,

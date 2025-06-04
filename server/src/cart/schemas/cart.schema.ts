@@ -1,7 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { User } from '../../users/schemas/user.schema';
-import { CartItem as CartItemInterface, ShippingDetails } from '../../interfaces';
+import {
+  CartItem as CartItemInterface,
+  ShippingDetails,
+} from '../../interfaces';
 
 export type CartDocument = Cart & Document;
 
@@ -33,6 +36,9 @@ export class CartItem {
 
   @Prop({ required: false, type: String })
   color?: string;
+
+  @Prop({ required: false, type: String })
+  ageGroup?: string;
 }
 
 export const CartItemSchema = SchemaFactory.createForClass(CartItem);

@@ -61,11 +61,14 @@ export interface CategoryStructure {
 // New variant schema for tracking inventory by size/color
 @Schema()
 export class ProductVariant {
-  @Prop({ required: true })
-  size: string;
+  @Prop({ required: false })
+  size?: string;
 
-  @Prop({ required: true })
-  color: string;
+  @Prop({ required: false })
+  color?: string;
+
+  @Prop({ required: false })
+  ageGroup?: string;
 
   @Prop({ required: true, default: 0 })
   stock: number;

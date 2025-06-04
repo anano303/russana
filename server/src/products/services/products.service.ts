@@ -217,6 +217,18 @@ export class ProductsService {
     return product;
   }
 
+  findByIds(productIds: string[]) {
+    if (!productIds || productIds.length === 0) {
+      return Promise.resolve([]);
+    }
+
+    return this.productModel
+      .find({ _id: { $in: productIds } })
+      .populate('mainCategory')
+      .populate('subCategory')
+      .exec();
+  }
+
   async createMany(products: Partial<Product>[]): Promise<ProductDocument[]> {
     const createdProducts = await this.productModel.insertMany(products);
 
@@ -465,6 +477,23 @@ export class ProductsService {
       data.sizes = Array.isArray(data.sizes) ? data.sizes : [];
       data.colors = Array.isArray(data.colors) ? data.colors : [];
 
+      // Parse variants if it's a string
+      if (data.variants && typeof data.variants === 'string') {
+        try {
+          data.variants = JSON.parse(data.variants);
+        } catch (error) {
+          console.error('Error parsing variants string to JSON:', error);
+          throw new BadRequestException(
+            'Invalid variants format. Expected a valid JSON array.',
+          );
+        }
+      }
+
+      // Ensure variants is an array
+      if (data.variants && !Array.isArray(data.variants)) {
+        throw new BadRequestException('Variants must be an array');
+      }
+
       const status =
         productData.user.role === Role.Admin
           ? ProductStatus.APPROVED
@@ -544,8 +573,9 @@ export class ProductsService {
   // Update inventory after a purchase
   async updateInventory(
     productId: string,
-    size: string,
-    color: string,
+    size?: string,
+    color?: string,
+    selectedAgeGroup?: string,
     quantity: number = 1,
   ): Promise<void> {
     const product = await this.productModel.findById(productId).exec();
@@ -557,7 +587,10 @@ export class ProductsService {
     // If the product has variants
     if (product.variants && product.variants.length > 0) {
       const variantIndex = product.variants.findIndex(
-        (v) => v.size === size && v.color === color,
+        (v) =>
+          v.size === size &&
+          v.color === color &&
+          v.ageGroup === selectedAgeGroup,
       );
       if (variantIndex === -1) {
         throw new NotFoundException(
@@ -717,5 +750,68 @@ export class ProductsService {
     });
 
     return Array.from(ageGroups).sort();
+  }
+
+  /**
+   * Update product stock when an order is paid
+   * @param productId - The ID of the product
+   * @param qty - The quantity to subtract from stock
+   * @param size - Optional size for variant
+   * @param color - Optional color for variant
+   * @param ageGroup - Optional age group for variant
+   */
+  async updateStockAfterPayment(
+    productId: string,
+    qty: number,
+    size?: string,
+    color?: string,
+    ageGroup?: string,
+  ): Promise<void> {
+    const product = await this.productModel.findById(productId);
+
+    if (!product) {
+      console.warn(
+        `Product with ID ${productId} not found when updating stock after payment`,
+      );
+      return;
+    }
+
+    // Check if the product has variants and the ordered item has variant specifications
+    if (
+      product.variants &&
+      product.variants.length > 0 &&
+      (size || color || ageGroup)
+    ) {
+      // Find the specific variant
+      const variantIndex = product.variants.findIndex(
+        (v) => v.size === size && v.color === color && v.ageGroup === ageGroup,
+      );
+
+      if (variantIndex >= 0) {
+        // Update the variant stock
+        product.variants[variantIndex].stock = Math.max(
+          0,
+          product.variants[variantIndex].stock - qty,
+        );
+        console.log(
+          `Updated variant stock for product ${product.name}, variant: ${size}/${color}/${ageGroup}, new stock: ${product.variants[variantIndex].stock}`,
+        );
+      } else {
+        // If variant not found but attributes were specified, log a warning
+        console.warn(
+          `Variant not found for product ${product.name} with attributes: size=${size}, color=${color}, ageGroup=${ageGroup}`,
+        );
+        // Fall back to updating general stock
+        product.countInStock = Math.max(0, product.countInStock - qty);
+      }
+    } else {
+      // Update general product stock if no variants or no variant specifications
+      product.countInStock = Math.max(0, product.countInStock - qty);
+      console.log(
+        `Updated general stock for product ${product.name}, new stock: ${product.countInStock}`,
+      );
+    }
+
+    await product.save();
   }
 }

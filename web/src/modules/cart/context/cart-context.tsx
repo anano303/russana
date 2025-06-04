@@ -23,7 +23,8 @@ interface CartContextType {
     productId: string,
     quantity?: number,
     size?: string,
-    color?: string
+    color?: string,
+    ageGroup?: string
   ) => Promise<void>;
   totalItems: number;
 }
@@ -94,7 +95,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 
   const addToCart = useCallback(
-    async (productId: string, quantity = 1, size = "", color = "") => {
+    async (
+      productId: string,
+      quantity = 1,
+      size = "",
+      color = "",
+      ageGroup = ""
+    ) => {
       setLoading(true);
       try {
         if (user) {
@@ -103,6 +110,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             qty: quantity,
             size,
             color,
+            ageGroup,
           });
           setItems(data.items);
         } else {
@@ -112,13 +120,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           setItems((prevItems) => {
             const itemKey = `${productId}${size ? `-${size}` : ""}${
               color ? `-${color}` : ""
-            }`;
+            }${ageGroup ? `-${ageGroup}` : ""}`;
 
             const existingItemIndex = prevItems.findIndex(
               (item) =>
                 item.productId === productId &&
                 item.size === size &&
-                item.color === color
+                item.color === color &&
+                item.ageGroup === ageGroup
             );
 
             if (existingItemIndex >= 0) {
@@ -137,6 +146,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                   qty: quantity,
                   size,
                   color,
+                  ageGroup,
                   itemKey,
                 },
               ];

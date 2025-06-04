@@ -28,6 +28,17 @@ export class CartService {
         items: [],
       });
     }
+    const productIds = cart.items.map((item) => item.productId);
+    const products = await this.productsService.findByIds(productIds);
+    cart.items = cart.items.map((item) => {
+      const product = products.find(
+        (p) => p._id.toString() === item.productId.toString(),
+      );
+      if (product) {
+        item.countInStock = product.countInStock;
+      }
+      return item;
+    });
 
     return cart;
   }
@@ -88,6 +99,7 @@ export class CartService {
     user: UserDocument,
     size?: string,
     color?: string,
+    ageGroup?: string,
   ): Promise<CartDocument> {
     const product = await this.productsService.findById(productId);
     if (!product) throw new NotFoundException('Product not found');
@@ -99,8 +111,11 @@ export class CartService {
       (item) =>
         item.productId.toString() === productId &&
         item.size === size &&
-        item.color === color,
+        item.color === color &&
+        item.ageGroup === ageGroup,
     );
+
+    console.log('Existing item:', product.variants, size, color, ageGroup);
 
     if (existingItem) {
       existingItem.qty = qty;
@@ -111,10 +126,15 @@ export class CartService {
         nameEn: product.nameEn,
         image: product.images[0],
         price: product.price,
-        countInStock: product.countInStock,
+        countInStock:
+          product.variants?.find(
+            (v) =>
+              v.size === size && v.color === color && v.ageGroup === ageGroup,
+          )?.stock || product.countInStock,
         qty,
         size,
         color,
+        ageGroup,
       };
       cart.items.push(cartItem);
     }
@@ -128,6 +148,7 @@ export class CartService {
     user: UserDocument,
     size?: string,
     color?: string,
+    ageGroup?: string,
   ): Promise<CartDocument> {
     const cart = await this.getCart(user);
 
@@ -136,8 +157,9 @@ export class CartService {
       (item) =>
         !(
           item.productId.toString() === productId &&
-          item.size === size &&
-          item.color === color
+          (!size || item.size === size) &&
+          (!color || item.color === color) &&
+          (!ageGroup || item.ageGroup === ageGroup)
         ),
     );
 

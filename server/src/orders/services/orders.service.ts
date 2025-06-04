@@ -7,16 +7,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { PaymentResult } from 'src/interfaces';
 import { Order, OrderDocument } from '../schemas/order.schema';
-import {
-  Product,
-  ProductDocument,
-} from '../../products/schemas/product.schema';
+import { Product } from '../../products/schemas/product.schema';
+import { ProductsService } from '@/products/services/products.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(Product.name) private productModel: Model<Product>,
+    private productsService: ProductsService,
   ) {}
 
   async create(
@@ -49,10 +48,14 @@ export class OrdersService {
 
           return {
             ...item,
+            // Ensure size, color, and ageGroup are included from the order item
+            size: item.size || '',
+            color: item.color || '',
+            ageGroup: item.ageGroup || '',
             product: {
               _id: product._id,
               name: product.name,
-              nameEn: product.nameEn, // Include nameEn
+              nameEn: product.nameEn,
               deliveryType: product.deliveryType,
               minDeliveryDays: product.minDeliveryDays,
               maxDeliveryDays: product.maxDeliveryDays,
@@ -123,6 +126,26 @@ export class OrdersService {
     order.isPaid = true;
     order.paidAt = Date();
     order.paymentResult = paymentResult;
+
+    // Update product quantities after successful payment
+    for (const item of order.orderItems) {
+      try {
+        // Use the products service method to update stock
+        await this.productsService.updateStockAfterPayment(
+          item.productId.toString(),
+          item.qty,
+          item.size,
+          item.color,
+          item.ageGroup,
+        );
+      } catch (error) {
+        console.error(
+          `Error updating stock for product ${item.productId}:`,
+          error,
+        );
+        // Continue processing other items even if one fails
+      }
+    }
 
     const updatedOrder = await order.save();
 

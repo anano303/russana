@@ -43,6 +43,13 @@ export interface CategoryStructure {
   ageGroup?: AgeGroup;
 }
 
+export interface ProductVariant {
+  ageGroup?: string;
+  size?: string;
+  color?: string;
+  stock: number;
+}
+
 export interface Product {
   _id: string;
   user: User;
@@ -77,6 +84,7 @@ export interface Product {
     height?: number;
     depth?: number;
   };
+  variants?: ProductVariant[];
 }
 
 export enum ProductStatus {

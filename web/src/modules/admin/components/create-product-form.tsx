@@ -14,6 +14,7 @@ import Image from "next/image";
 import { getAccessToken } from "@/lib/auth";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { Category, SubCategory } from "@/types";
+import { useStocks } from "@/hooks/useStocks";
 
 // Extended ProductFormData to include all needed properties
 interface ProductFormData extends BaseProductFormData {
@@ -42,8 +43,6 @@ interface CreateProductFormProps {
   }) => void;
   isEdit?: boolean;
 }
-
-
 
 export function CreateProductForm({
   initialData,
@@ -427,7 +426,7 @@ export function CreateProductForm({
       formDataToSend.append("price", String(formData.price));
       formDataToSend.append("description", formData.description);
       formDataToSend.append("descriptionEn", formData.descriptionEn || "");
-      formDataToSend.append("countInStock", String(formData.countInStock));
+      formDataToSend.append("countInStock", String(totalCount));
 
       // Add new category structure - ensure we're sending strings, not objects
       formDataToSend.append("mainCategory", selectedCategory);
@@ -444,6 +443,10 @@ export function CreateProductForm({
 
       if (selectedColors.length > 0) {
         formDataToSend.append("colors", JSON.stringify(selectedColors));
+      }
+
+      if (stocks.length > 0) {
+        formDataToSend.append("variants", JSON.stringify(stocks));
       }
 
       // Handle brand name
@@ -639,6 +642,10 @@ export function CreateProductForm({
       }
     };
   }, []);
+
+  const { stocks, totalCount, setStockCount } = useStocks({
+    attributes: [selectedAgeGroups, selectedSizes, selectedColors],
+  });
 
   return (
     <div className="create-product-form">
@@ -847,13 +854,35 @@ export function CreateProductForm({
           </div>
         )}
 
+        {stocks &&
+          stocks.map((stock) => (
+            <div
+              key={`${stock.ageGroup} - ${stock.size} - ${stock.color}`}
+              className="stock-info"
+            >
+              <label>
+                {stock.ageGroup} - {stock.size} - {stock.color}
+              </label>
+              <input
+                id="countInStock"
+                name="countInStock"
+                type="number"
+                value={stock.stock}
+                onChange={(elem) => setStockCount(stock, +elem.target.value)}
+                min={0}
+                required
+              />
+            </div>
+          ))}
+
         <div>
           <label htmlFor="countInStock">რაოდენობა მარაგში</label>
           <input
             id="countInStock"
             name="countInStock"
             type="number"
-            value={formData.countInStock}
+            disabled
+            value={totalCount}
             onChange={handleChange}
             min={0}
             required

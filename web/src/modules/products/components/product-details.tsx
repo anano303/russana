@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { X } from "lucide-react"; // Added X icon for close button
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +20,7 @@ function AddToCartButton({
   className = "",
   selectedSize = "",
   selectedColor = "",
+  selectedAgeGroup = "",
   quantity = 1,
   disabled = false,
 }: {
@@ -28,6 +29,7 @@ function AddToCartButton({
   className?: string;
   selectedSize?: string;
   selectedColor?: string;
+  selectedAgeGroup?: string;
   quantity?: number;
   disabled?: boolean;
 }) {
@@ -38,8 +40,14 @@ function AddToCartButton({
   const handleClick = async () => {
     setPending(true);
     try {
-      // Add variant info if available
-      await addToCart(productId, quantity, selectedSize, selectedColor);
+      // Add variant info including ageGroup if available
+      await addToCart(
+        productId,
+        quantity,
+        selectedSize,
+        selectedColor,
+        selectedAgeGroup
+      );
       toast({
         title: "პროდუქტი დაემატა",
         description: "პროდუქტი წარმატებით დაემატა კალათაში",
@@ -94,9 +102,25 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
-  const [availableQuantity, setAvailableQuantity] = useState<number>(
-    product.countInStock || 0
-  );
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
+
+  const availableQuantity = useMemo(() => {
+    // Calculate available quantity based on selected attributes
+    let stock = product.countInStock || 0;
+
+    // If product has variants, adjust stock based on selected attributes
+    if (product.variants && product.variants.length > 0) {
+      const variant = product.variants.find(
+        (v) =>
+          v.size === selectedSize &&
+          v.color === selectedColor &&
+          v.ageGroup === selectedAgeGroup
+      );
+      stock = variant ? variant.stock : 0;
+    }
+
+    return stock;
+  }, [selectedSize, selectedColor, selectedAgeGroup, product]);
 
   const { t, language } = useLanguage();
 
@@ -123,8 +147,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       setSelectedColor(product.colors[0]);
     }
 
-    // Set available quantity based on product's countInStock
-    setAvailableQuantity(product.countInStock);
+    // Set default age group if ageGroups array exists
+    if (product.ageGroups && product.ageGroups.length > 0) {
+      setSelectedAgeGroup(product.ageGroups[0]);
+    }
   }, [product]);
 
   // Function to open fullscreen image
@@ -203,6 +229,24 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           {!isOutOfStock && (
             <div className="product-options-container">
+              {/* Age Group Selector - only show if product has age groups */}
+              {product.ageGroups && product.ageGroups.length > 0 && (
+                <div className="select-container">
+                  <select
+                    className="option-select"
+                    value={selectedAgeGroup}
+                    onChange={(e) => setSelectedAgeGroup(e.target.value)}
+                    disabled={isOutOfStock || product.ageGroups.length === 0}
+                  >
+                    {product.ageGroups.map((ageGroup) => (
+                      <option key={ageGroup} value={ageGroup}>
+                        {ageGroup}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {/* Size Selector - only show if product has sizes */}
               {product.sizes && product.sizes.length > 0 && (
                 <div className="select-container">
@@ -262,30 +306,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
               )}
 
-              {/* Age Group Display - if product has age groups */}
-              {/* {product.ageGroups && product.ageGroups.length > 0 && (
-                <div className="age-group-info">
-             
-                  <div className="age-group-tags">
-                    {product.ageGroups.map((ageGroup) => (
-                      <span key={ageGroup} className="age-group-tag">
-                        {language === "en"
-                          ? ageGroup === "ADULTS"
-                            ? "Adults"
-                            : ageGroup === "KIDS"
-                            ? "Kids"
-                            : ageGroup
-                          : ageGroup === "ADULTS"
-                          ? "უფროსები"
-                          : ageGroup === "KIDS"
-                          ? "ბავშვები"
-                          : ageGroup}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )} */}
-
               {/* Stock Status */}
               {availableQuantity <= 0 && (
                 <div className="out-of-stock-message">
@@ -305,11 +325,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               className="custom-style-2"
               selectedSize={selectedSize}
               selectedColor={selectedColor}
+              selectedAgeGroup={selectedAgeGroup}
               quantity={quantity}
               disabled={
                 availableQuantity <= 0 ||
                 (product.sizes && product.sizes.length > 0 && !selectedSize) ||
-                (product.colors && product.colors.length > 0 && !selectedColor)
+                (product.colors &&
+                  product.colors.length > 0 &&
+                  !selectedColor) ||
+                (product.ageGroups &&
+                  product.ageGroups.length > 0 &&
+                  !selectedAgeGroup)
               }
             />
           </div>

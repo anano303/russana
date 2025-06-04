@@ -18,4 +18,8 @@ export class AddToCartDto {
   @IsString()
   @IsOptional()
   color?: string;
+
+  @IsString()
+  @IsOptional()
+  ageGroup?: string;
 }
