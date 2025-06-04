@@ -217,7 +217,7 @@ export class ProductsService {
     return product;
   }
 
-  findByIds(productIds: string[]) {
+  findByIds(productIds: string[]): Promise<ProductDocument[]> {
     if (!productIds || productIds.length === 0) {
       return Promise.resolve([]);
     }

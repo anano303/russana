@@ -36,7 +36,13 @@ export class CartService {
       );
       if (product) {
         item.qty = Math.min(item.qty, product.countInStock);
-        item.countInStock = product.countInStock;
+        item.countInStock =
+          product.variants.find(
+            (v) =>
+              v.size === item.size &&
+              v.color === item.color &&
+              v.ageGroup === item.ageGroup,
+          )?.stock || product.countInStock;
       }
       return item;
     });

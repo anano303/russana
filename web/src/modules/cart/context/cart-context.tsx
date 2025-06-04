@@ -16,8 +16,19 @@ interface CartContextType {
   items: CartItem[];
   loading: boolean;
   addItem: (productId: string, qty: number) => Promise<void>;
-  removeItem: (productId: string) => Promise<void>;
-  updateQuantity: (productId: string, qty: number) => Promise<void>;
+  removeItem: (
+    productId: string,
+    size?: string,
+    color?: string,
+    ageGroup?: string
+  ) => Promise<void>;
+  updateQuantity: (
+    productId: string,
+    qty: number,
+    size?: string,
+    color?: string,
+    ageGroup?: string
+  ) => Promise<void>;
   clearCart: () => Promise<void>;
   addToCart: (
     productId: string,
@@ -174,23 +185,47 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 
   const updateQuantity = useCallback(
-    async (productId: string, qty: number) => {
+    async (
+      productId: string,
+      qty: number,
+      size?: string,
+      color?: string,
+      ageGroup?: string
+    ) => {
       setLoading(true);
       try {
         if (user) {
+          // For authenticated users, update on server
           const { data } = await apiClient.put(`/cart/items/${productId}`, {
             qty,
+            size,
+            color,
+            ageGroup,
           });
           setItems(data.items);
         } else {
-          setItems((prevItems) =>
-            prevItems.map((item) =>
-              item.productId === productId ? { ...item, qty } : item
-            )
-          );
+          // For guests, update locally
+          setItems((prevItems) => {
+            return prevItems.map((item) => {
+              // Check if this is the specific variant we want to update
+              if (
+                item.productId === productId &&
+                item.size === size &&
+                item.color === color &&
+                item.ageGroup === ageGroup
+              ) {
+                return { ...item, qty };
+              }
+              return item;
+            });
+          });
+
+          // Update local storage
+          // ...
         }
       } catch (error) {
-        console.error("Error updating cart item:", error);
+        console.error("Error updating item quantity:", error);
+        // Handle error
       } finally {
         setLoading(false);
       }
@@ -199,33 +234,45 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 
   const removeItem = useCallback(
-    async (productId: string) => {
+    async (
+      productId: string,
+      size?: string,
+      color?: string,
+      ageGroup?: string
+    ) => {
       setLoading(true);
       try {
         if (user) {
-          const { data } = await apiClient.delete(`/cart/items/${productId}`);
+          // For authenticated users, remove on server
+          const { data } = await apiClient.delete(`/cart/items/${productId}`, {
+            data: { size, color, ageGroup },
+          });
           setItems(data.items);
         } else {
+          // For guests, remove locally
           setItems((prevItems) =>
-            prevItems.filter((item) => item.productId !== productId)
+            prevItems.filter(
+              (item) =>
+                !(
+                  item.productId === productId &&
+                  item.size === size &&
+                  item.color === color &&
+                  item.ageGroup === ageGroup
+                )
+            )
           );
+
+          // Update local storage
+          // ...
         }
-        toast({
-          title: "Item removed",
-          description: "The item has been removed from your cart.",
-        });
       } catch (error) {
         console.error("Error removing item from cart:", error);
-        toast({
-          title: "Error removing item",
-          description: "There was a problem removing the item.",
-          variant: "destructive",
-        });
+        // Handle error
       } finally {
         setLoading(false);
       }
     },
-    [user, toast]
+    [user]
   );
 
   const clearCart = useCallback(async () => {
