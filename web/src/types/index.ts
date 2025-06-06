@@ -38,7 +38,7 @@ export interface SubCategory {
 }
 
 export interface CategoryStructure {
-  main: MainCategory;
+  main: string;
   sub: string;
   ageGroup?: AgeGroup;
 }
