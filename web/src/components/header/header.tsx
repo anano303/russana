@@ -35,10 +35,7 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link
-                href="/shop?page=1&mainCategory=paintings"
-                className="nav-link"
-              >
+              <Link href="/shop?page=1" className="nav-link">
                 <ShoppingBag size={16} className="nav-icon" />
                 <span>{t("navigation.shop")}</span>
               </Link>
