@@ -8,8 +8,6 @@ import { getProducts } from "@/modules/products/api/get-products";
 import { Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import "./ShopPage.css";
-import "./ShopAnimatedIcons.css";
-import { Shirt, ShoppingBag } from "lucide-react";
 
 const ShopContent = () => {
   const router = useRouter();
@@ -206,18 +204,18 @@ const ShopContent = () => {
   };
 
   // Decorative elements and UI
-  const renderAnimatedIcons = () => {
-    return (
-      <div className="shop-animated-icons modern">
-        <div className="icon clothing-icon">
-          <Shirt />
-        </div>
-        <div className="icon accessories-icon">
-          <ShoppingBag />
-        </div>
-      </div>
-    );
-  };
+  // const renderAnimatedIcons = () => {
+  //   return (
+  //     <div className="shop-animated-icons modern">
+  //       <div className="icon clothing-icon">
+  //         <Shirt />
+  //       </div>
+  //       <div className="icon accessories-icon">
+  //         <ShoppingBag />
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   // Handle filter changes in a more robust way
   const handleCategoryChange = useCallback(
@@ -286,30 +284,32 @@ const ShopContent = () => {
 
   return (
     <div className="shop-container default">
-      {renderAnimatedIcons()}
+      {/* {renderAnimatedIcons()} */}
 
       {/* Add 3D decorative elements */}
-      <div className="shop-3d-cube">
+      {/* <div className="shop-3d-cube">
         <div className="face front"></div>
         <div className="face back"></div>
         <div className="face right"></div>
         <div className="face left"></div>
         <div className="face top"></div>
         <div className="face bottom"></div>
-      </div>
+      </div> */}
 
-      <div className="shop-3d-sphere"></div>
-      <div className="shop-3d-pyramid"></div>
+      {/* <div className="shop-3d-sphere"></div>
+      <div className="shop-3d-pyramid"></div> */}
 
       <div className="content">
-        <h1
+        {/* <h1
           className="title"
           style={{ marginBottom: 40, marginTop: 70, zIndex: 9 }}
         >
           {selectedBrand
             ? `${selectedBrand}${t("shop.artistWorks")}`
             : t("shop.allArtworks")}
-        </h1>
+        </h1> */}
+
+
 
         <div className="shop-layout">
           <div className="filters-sidebar">

@@ -369,6 +369,7 @@
 /* Add new layout styles */
 .shop-layout {
   display: flex;
+  flex-direction: column;
   gap: 30px;
   width: 100%;
   max-width: 1400px;
