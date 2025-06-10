@@ -48,7 +48,7 @@ export const TRANSLATIONS: Translations = {
       priceHighToLow: "ფასი: მაღლიდან დაბლისკენ",
       emptyDescription:
         "დაათვალიერეთ ჩვენი პლატფორმა და იპოვეთ უნიკალური პროდუქტები",
-      seeAll: "ნახეთ ყველა...",
+      seeAll: "ნახე ყველა",
       allAges: "ყველა ასაკი",
       adults: "მოზრდილები",
       kids: "ბავშვები",
@@ -486,7 +486,7 @@ export const TRANSLATIONS: Translations = {
       priceLowToHigh: "Price: Low to High",
       priceHighToLow: "Price: High to Low",
       emptyDescription: "Browse our platform to find unique artworks",
-      seeAll: "See All...",
+      seeAll: "See All",
       allAges: "All Ages",
       adults: "Adults",
       kids: "Kids",

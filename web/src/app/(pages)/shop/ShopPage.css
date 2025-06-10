@@ -2,14 +2,14 @@
   position: relative;
   /* padding: 2rem 1rem 4rem; */
   min-height: 100vh;
-  background: linear-gradient(135deg, #fff5f7 0%, #fff9fa 100%);
+  /* background: linear-gradient(135deg, #fff5f7 0%, #fff9fa 100%); */
   overflow: hidden;
   z-index: 1;
 }
 
 /* Default theme (Paintings) */
 .shop-container.default {
-  background-color: #f5f8fa;
+  /* background-color: #f5f8fa;
   background-image: radial-gradient(
       circle at 10% 20%,
       rgba(1, 38, 69, 0.03) 0%,
@@ -26,12 +26,12 @@
       transparent 40%
     ),
     linear-gradient(to right, rgba(240, 248, 255, 0.5) 0%, transparent);
-  animation: moveBackground 60s infinite alternate linear;
+  animation: moveBackground 60s infinite alternate linear; */
 }
 
 /* Handmade theme */
 .shop-container.handmade-theme {
-  background-color: #faf6f2;
+  /* background-color: #faf6f2;
   background-image: radial-gradient(
       circle at 20% 30%,
       rgba(125, 90, 53, 0.03) 0%,
@@ -48,7 +48,7 @@
       transparent 30%
     ),
     linear-gradient(to right, rgba(252, 248, 244, 0.5) 0%, transparent);
-  animation: moveBackground 80s infinite alternate linear;
+  animation: moveBackground 80s infinite alternate linear; */
 }
 
 @keyframes moveBackground {

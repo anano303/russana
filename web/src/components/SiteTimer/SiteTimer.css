@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 90%;
+  width: 100%;
   padding: 2px;
   color: black;
   text-align: center;
@@ -10,73 +10,68 @@
   gap: 20px;
 }
 
-/* .site-timer-text {
-  white-space: nowrap;
-} */
+.site-timer-text {
+  white-space: wrap;
+}
 
 /* ანიმაციის სტილები */
 .bolt-container {
-  display: inline-block;
-  position: relative;
-}
-
-.bolt-image {
-  width: 100% !important;
-  height: auto !important;
-  animation: spin 10s linear infinite;
-  /* Performance improvements */
-  will-change: transform;
-  backface-visibility: hidden;
-  /* Prevent unnecessary preloading */
-  content-visibility: auto;
-}
-
-.small-small {
-  width: 15px;
-  height: 15px;
-}
-
-.small-medium {
-  width: 20px;
-  height: 20px;
-}
-
-.small-large {
-  width: 30px;
-  height: 30px;
-}
-
-.rotate-right .bolt-image {
-  animation-direction: normal;
-}
-
-.rotate-left .bolt-image {
-  animation-direction: reverse;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
+    display: inline-block;
+    position: relative;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .bolt-image {
+    width: 100%;
+    animation: spin 10s linear infinite;
   }
-}
 
-.small-anim-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+  .small-small {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .small-medium {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .small-large {
+    width: 30px;
+    height: 30px;
+  }
 
-.small-top-bolt {
-  margin-bottom: -10px;
-  margin-left: 60px;
-}
+  .rotate-right .bolt-image {
+    animation-direction: normal;
+  }
+  
+  .rotate-left .bolt-image {
+    animation-direction: reverse;
+  }
 
-.small-bottom-bolts {
-  display: flex;
-  gap: 0px;
-  width: 0px;
-}
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .small-anim-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .small-top-bolt {
+    margin-bottom: -10px; 
+    margin-left: 60px; 
+  }
+  
+  .small-bottom-bolts {
+    display: flex;
+    gap: 0px;
+    width: 0px; 
+  }
+  

@@ -181,7 +181,7 @@
   font-weight: 400;
   margin-bottom: 1.5rem;
   text-align: left;
-  border-bottom: 2px solid #e5e5e5;
+  /* border-bottom: 2px solid #e5e5e5; */
   padding-bottom: 0.5rem;
   position: relative;
   display: flex;
@@ -196,7 +196,7 @@
   left: 0;
   width: 70%;
   height: 2px;
-  background: linear-gradient(to right, #e91e63, transparent);
+  /* background: linear-gradient(to right, #e91e63, transparent); */
 }
 
 .title-heart-icon {
@@ -225,24 +225,22 @@
 
 .shop-container .see-more {
   display: flex;
-  justify-content: center;
+  justify-content: end;
   margin-top: 2rem;
 }
 
 .shop-container .see-more-btn {
-  background-color: #a5bda5;
-  color: white;
-  padding: 0.5rem 2rem;
+  color: black;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s;
+  font-size: 20px;
+  font-family: ALK Katerina;
+  border-bottom: 2px solid black;
 }
 
-.shop-container .see-more-btn:hover {
+/* .shop-container .see-more-btn:hover {
   background-color: #92a992;
-}
+} */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
