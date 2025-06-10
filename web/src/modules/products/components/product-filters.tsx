@@ -169,7 +169,10 @@ export function ProductFilters({
   };
 
   // Translate category/subcategory names based on language
-  const getLocalizedName = (name: string, originalItem?: { nameEn?: string }): string => {
+  const getLocalizedName = (
+    name: string,
+    originalItem?: { nameEn?: string }
+  ): string => {
     if (language === "en") {
       // First check if the item has an English name field
       if (originalItem && originalItem.nameEn) {
@@ -189,12 +192,12 @@ export function ProductFilters({
     onColorChange("");
   };
 
-  const clearSubcategoryFilter = () => {
-    onSubCategoryChange("");
-    onAgeGroupChange("");
-    onSizeChange("");
-    onColorChange("");
-  };
+  // const clearSubcategoryFilter = () => {
+  //   onSubCategoryChange("");
+  //   onAgeGroupChange("");
+  //   onSizeChange("");
+  //   onColorChange("");
+  // };
 
   // Reset all filters to default values
   const resetAllFilters = () => {
@@ -255,29 +258,36 @@ export function ProductFilters({
                         ? "selected"
                         : ""
                     }`}
-                    onClick={() => onCategoryChange(category.id || category._id || "")}
+                    onClick={() =>
+                      onCategoryChange(category.id || category._id || "")
+                    }
                   >
                     <div className="category-content">
                       <span className="category-name">
                         {getLocalizedName(category.name, category)}
                       </span>
                     </div>
-                    {subcategories.length > 0 && selectedCategoryId === (category.id || category._id) && (
-                      <div className="subcategories-overlay">
-                        {subcategories.map((sub) => (
-                          <div
-                            key={sub.id || sub._id}
-                            className="subcategory-item"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onSubCategoryChange(sub.id || sub._id || "");
-                            }}
-                          >
-                            {getLocalizedName(sub.name, sub)}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {subcategories.length > 0 &&
+                      selectedCategoryId === (category.id || category._id) && (
+                        <div className="subcategories-overlay">
+                          {isSubcategoriesLoading ? (
+                            <div className="loading">იტვირთება...</div>
+                          ) : (
+                            subcategories.map((sub) => (
+                              <div
+                                key={sub.id || sub._id}
+                                className="subcategory-item"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onSubCategoryChange(sub.id || sub._id || "");
+                                }}
+                              >
+                                {getLocalizedName(sub.name, sub)}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
                   </div>
                 ))
               ) : (
@@ -290,7 +300,7 @@ export function ProductFilters({
 
       {/* Filter toggle button */}
       {!showFilters && (
-        <button 
+        <button
           className="filter-toggle-btn"
           onClick={() => setShowFilters(true)}
         >
@@ -300,9 +310,9 @@ export function ProductFilters({
 
       {/* Additional filters section */}
       {showFilters && (
-        <div className={`additional-filters ${isClosing ? 'closing' : ''}`}>
+        <div className={`additional-filters ${isClosing ? "closing" : ""}`}>
           <div className="filters-header">
-            <button 
+            <button
               className="filters-close-btn"
               onClick={handleClose}
               aria-label="Close filters"
@@ -312,156 +322,161 @@ export function ProductFilters({
           </div>
 
           {/* Age Group Filter */}
-          {selectedSubCategoryId && getAvailableAttributes("ageGroups").length > 0 && (
-            <div className="filter-section">
-              <div className="filter-header">
-                <h3 className="filter-title">ასაკობრივი ჯგუფი</h3>
-                {selectedAgeGroup && (
-                  <button
-                    className="filter-clear-btn"
-                    onClick={() => onAgeGroupChange("")}
-                    aria-label="Clear age group filter"
-                  >
-                    გასუფთავება
-                  </button>
-                )}
-              </div>
-              <div className="filter-options">
-                <div className="filter-group">
-                  {getAvailableAttributes("ageGroups").map((ageGroup) => (
-                    <div
-                      key={ageGroup}
-                      className={`filter-option ${
-                        selectedAgeGroup === ageGroup ? "selected" : ""
-                      }`}
-                      onClick={() =>
-                        onAgeGroupChange(
-                          ageGroup === selectedAgeGroup ? "" : ageGroup
-                        )
-                      }
+          {selectedSubCategoryId &&
+            getAvailableAttributes("ageGroups").length > 0 && (
+              <div className="filter-section">
+                <div className="filter-header">
+                  <h3 className="filter-title">ასაკობრივი ჯგუფი</h3>
+                  {selectedAgeGroup && (
+                    <button
+                      className="filter-clear-btn"
+                      onClick={() => onAgeGroupChange("")}
+                      aria-label="Clear age group filter"
                     >
-                      {language === "en"
-                        ? ageGroup === "ADULTS"
-                          ? "Adults"
+                      გასუფთავება
+                    </button>
+                  )}
+                </div>
+                <div className="filter-options">
+                  <div className="filter-group">
+                    {getAvailableAttributes("ageGroups").map((ageGroup) => (
+                      <div
+                        key={ageGroup}
+                        className={`filter-option ${
+                          selectedAgeGroup === ageGroup ? "selected" : ""
+                        }`}
+                        onClick={() =>
+                          onAgeGroupChange(
+                            ageGroup === selectedAgeGroup ? "" : ageGroup
+                          )
+                        }
+                      >
+                        {language === "en"
+                          ? ageGroup === "ADULTS"
+                            ? "Adults"
+                            : ageGroup === "KIDS"
+                            ? "Kids"
+                            : ageGroup
+                          : ageGroup === "ADULTS"
+                          ? "უფროსები"
                           : ageGroup === "KIDS"
-                          ? "Kids"
-                          : ageGroup
-                        : ageGroup === "ADULTS"
-                        ? "უფროსები"
-                        : ageGroup === "KIDS"
-                        ? "ბავშვები"
-                        : ageGroup}
-                    </div>
-                  ))}
+                          ? "ბავშვები"
+                          : ageGroup}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Size Filter */}
-          {selectedSubCategoryId && getAvailableAttributes("sizes").length > 0 && (
-            <div className="filter-section">
-              <div className="filter-header">
-                <h3 className="filter-title">ზომები</h3>
-                {selectedSize && (
-                  <button
-                    className="filter-clear-btn"
-                    onClick={() => onSizeChange("")}
-                    aria-label="Clear size filter"
-                  >
-                    გასუფთავება
-                  </button>
-                )}
-              </div>
-              <div className="filter-options">
-                <div className="filter-group size-group">
-                  {getAvailableAttributes("sizes").map((size) => (
-                    <div
-                      key={size}
-                      className={`filter-option size ${
-                        selectedSize === size ? "selected" : ""
-                      }`}
-                      onClick={() =>
-                        onSizeChange(size === selectedSize ? "" : size)
-                      }
+          {selectedSubCategoryId &&
+            getAvailableAttributes("sizes").length > 0 && (
+              <div className="filter-section">
+                <div className="filter-header">
+                  <h3 className="filter-title">ზომები</h3>
+                  {selectedSize && (
+                    <button
+                      className="filter-clear-btn"
+                      onClick={() => onSizeChange("")}
+                      aria-label="Clear size filter"
                     >
-                      {size}
-                    </div>
-                  ))}
+                      გასუფთავება
+                    </button>
+                  )}
+                </div>
+                <div className="filter-options">
+                  <div className="filter-group size-group">
+                    {getAvailableAttributes("sizes").map((size) => (
+                      <div
+                        key={size}
+                        className={`filter-option size ${
+                          selectedSize === size ? "selected" : ""
+                        }`}
+                        onClick={() =>
+                          onSizeChange(size === selectedSize ? "" : size)
+                        }
+                      >
+                        {size}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Color Filter */}
-          {selectedSubCategoryId && getAvailableAttributes("colors").length > 0 && (
-            <div className="filter-section">
-              <div className="filter-header">
-                <h3 className="filter-title">ფერები</h3>
-                {selectedColor && (
-                  <button
-                    className="filter-clear-btn"
-                    onClick={() => onColorChange("")}
-                    aria-label="Clear color filter"
-                  >
-                    გასუფთავება
-                  </button>
-                )}
-              </div>
-              <div className="filter-options">
-                <div className="filter-group color-group">
-                  {getAvailableAttributes("colors").map((color) => (
-                    <div
-                      key={color}
-                      className={`filter-option color ${
-                        selectedColor === color ? "selected" : ""
-                      }`}
-                      onClick={() =>
-                        onColorChange(color === selectedColor ? "" : color)
-                      }
+          {selectedSubCategoryId &&
+            getAvailableAttributes("colors").length > 0 && (
+              <div className="filter-section">
+                <div className="filter-header">
+                  <h3 className="filter-title">ფერები</h3>
+                  {selectedColor && (
+                    <button
+                      className="filter-clear-btn"
+                      onClick={() => onColorChange("")}
+                      aria-label="Clear color filter"
                     >
-                      {color}
-                    </div>
-                  ))}
+                      გასუფთავება
+                    </button>
+                  )}
+                </div>
+                <div className="filter-options">
+                  <div className="filter-group color-group">
+                    {getAvailableAttributes("colors").map((color) => (
+                      <div
+                        key={color}
+                        className={`filter-option color ${
+                          selectedColor === color ? "selected" : ""
+                        }`}
+                        onClick={() =>
+                          onColorChange(color === selectedColor ? "" : color)
+                        }
+                      >
+                        {color}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Brand Filter */}
-          {!isBrandsLoading && availableBrands && availableBrands.length > 0 && (
-            <div className="filter-section">
-              <div className="filter-header">
-                <h3 className="filter-title">ბრენდები</h3>
-                {selectedBrand && (
-                  <button
-                    className="filter-clear-btn"
-                    onClick={() => onBrandChange("")}
-                    aria-label="Clear brand filter"
-                  >
-                    გასუფთავება
-                  </button>
-                )}
-              </div>
-              <div className="filter-options">
-                <div className="filter-group">
-                  {availableBrands.slice(0, 10).map((brand) => (
-                    <div
-                      key={brand}
-                      className={`filter-option ${
-                        selectedBrand === brand ? "selected" : ""
-                      }`}
-                      onClick={() =>
-                        onBrandChange(brand === selectedBrand ? "" : brand)
-                      }
+          {!isBrandsLoading &&
+            availableBrands &&
+            availableBrands.length > 0 && (
+              <div className="filter-section">
+                <div className="filter-header">
+                  <h3 className="filter-title">ბრენდები</h3>
+                  {selectedBrand && (
+                    <button
+                      className="filter-clear-btn"
+                      onClick={() => onBrandChange("")}
+                      aria-label="Clear brand filter"
                     >
-                      {brand}
-                    </div>
-                  ))}
+                      გასუფთავება
+                    </button>
+                  )}
+                </div>
+                <div className="filter-options">
+                  <div className="filter-group">
+                    {availableBrands.slice(0, 10).map((brand) => (
+                      <div
+                        key={brand}
+                        className={`filter-option ${
+                          selectedBrand === brand ? "selected" : ""
+                        }`}
+                        onClick={() =>
+                          onBrandChange(brand === selectedBrand ? "" : brand)
+                        }
+                      >
+                        {brand}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Price Range Filter */}
           <div className="filter-section">
@@ -511,7 +526,10 @@ export function ProductFilters({
                 onChange={(e) => {
                   const value = e.target.value;
                   const [field, direction] = value.split("-");
-                  onSortChange({ field, direction: direction as "asc" | "desc" });
+                  onSortChange({
+                    field,
+                    direction: direction as "asc" | "desc",
+                  });
                 }}
               >
                 <option value="createdAt-desc">უახლესი</option>
