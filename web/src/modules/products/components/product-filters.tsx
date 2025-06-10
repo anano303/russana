@@ -249,7 +249,7 @@ export function ProductFilters({
               {isCategoriesLoading ? (
                 <div className="loading">იტვირთება...</div>
               ) : categories.length > 0 ? (
-                categories.map((category, index) => (
+                categories.map((category) => (
                   <div
                     key={category.id || category._id}
                     className={`main-category-option ${
