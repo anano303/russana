@@ -301,22 +301,70 @@
 
 @media (max-width: 480px) {
   .product-card {
-    width: 160px;
-    min-height: 230px;
+    width: 140px; /* Reduced from 160px */
+    min-height: 160px; /* Reduced from 230px */
+    margin: 10px; /* Reduced from 15px */
   }
 
   .product-image {
-    width: 90px;
-    height: 90px;
+    min-width: 140px;
+    max-width: 140px;
+    min-height: 70px;
+    max-height: 70px;
+    margin: 14px auto 0 auto; /* Reduced bottom margin */
+    transform: translateX(5px); /* Slightly move image right */
   }
+
+  .heart-shape {
+    width: 140px; /* Reduced from 200px */
+    height: 140px;
+    top: 49px; /* Reduced from 70px */
+  }
+
+  .heart-shape::before,
+  .heart-shape::after {
+    width: 140px;
+    height: 140px;
+  }
+
+  .heart-shape::before {
+    top: -70px; /* Reduced from -100px */
+  }
+
+  .heart-shape::after {
+    left: 70px; /* Reduced from 100px */
+  }
+
   .product-info {
-    margin-left: 40%;
+    margin-left: 18%; /* Reduced from 40% */
+    margin-top: 2px; /* Reduce space after image */
   }
+
+  .product-name {
+    font-size: 14px; /* Reduced from 18px */
+    max-height: 16px; /* Reduced from 20px */
+    margin-bottom: -2px; /* Reduce space between name and price */
+  }
+
+  .product-price {
+    font-size: 14px; /* Reduced from 18px */
+    margin-bottom: 0; /* Reduce space before button */
+  }
+
   .buyBtn {
-    margin-left: 40%;
+    margin-left: 18%; /* Reduced from 40% */
+    margin-top: -8px; /* Add small space after price */
+    font-size: 14px;
+    padding: 4px 8px;
+    letter-spacing: 5%;
+  }
+
+  .buyBtn:hover {
+    transform: scale(1.03);
   }
 
   .addButtonCart {
-    padding: 4px 8px;
+    padding: 4px 6px;
+    font-size: 10px; /* Reduced from 12px */
   }
 }

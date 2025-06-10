@@ -166,7 +166,7 @@ export default function HomePageShop() {
                     {t("shop.newest")} {categoryData.category}
                   </h2>
                   <ProductGrid
-                    products={categoryData.products}
+                    products={categoryData.products.slice(0, 3)} // Only take first 3 products
                     theme="default"
                     isShopPage={false}
                   />
