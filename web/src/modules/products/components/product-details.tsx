@@ -366,6 +366,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 />
               </div>
             </div>
+            
           )}
         </div>
       </div>

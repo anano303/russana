@@ -2,8 +2,10 @@
 
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import "./language-switcher.css";
 import { Globe } from "lucide-react";
+import lang from "../../assets/icons/lang.png";
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
@@ -34,7 +36,7 @@ export function LanguageSwitcher() {
   return (
     <div className="language-switcher" ref={switcherRef}>
       <button className="language-button" onClick={toggleDropdown}>
-        <Globe size={16} style={{ marginRight: "4px" }} />
+        <Image src={lang} alt="language" />
         {language === "en" ? "ENG" : "ქარ"}
       </button>
 

@@ -4,7 +4,7 @@
   left: 10px;
   width: 200px;
   height: 200px;
-  background-color: #ffcdd2;
+  background-color: #FFE5E8;
   transform: rotate(-45deg);
   z-index: -1;
 }
@@ -15,7 +15,7 @@
   position: absolute;
   width: 200px;
   height: 200px;
-  background-color: #ffcdd2;
+  background-color: #FFE5E8;
   border-radius: 50%;
 }
 

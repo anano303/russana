@@ -10,6 +10,11 @@ import UserMenu from "./user-menu";
 import { LanguageSwitcher } from "@/components/language-switcher/language-switcher";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Home, ShoppingBag, Star } from "lucide-react";
+import home from "../../assets/icons/home.png";
+import shop from "../../assets/icons/products.png"; 
+import about from "../../assets/icons/aboutUs.png";
+import cart from "../../assets/icons/cart.png";
+import lang from "../../assets/icons/lang.png";
 
 export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -30,19 +35,19 @@ export default function Header() {
           <ul>
             <li>
               <Link href="/" className="nav-link">
-                <Home size={16} className="nav-icon" />
+                <Image src={home} alt="home" />
                 <span>{t("navigation.home")}</span>
               </Link>
             </li>
             <li>
               <Link href="/shop?page=1" className="nav-link">
-                <ShoppingBag size={16} className="nav-icon" />
+                <Image src={shop} alt="shop" />
                 <span>{t("navigation.shop")}</span>
               </Link>
             </li>
             <li>
               <Link href="/about" className="nav-link">
-                <Star size={16} className="nav-icon" />
+                <Image src={about} alt="about" />
                 <span>{t("navigation.about")}</span>
               </Link>
             </li>
@@ -52,7 +57,7 @@ export default function Header() {
               <div className="user-menu">
                 <UserMenu />
               </div>
-              <CartIcon />
+              {/* <CartIcon /> */}
               <div className="language-switcher-container">
                 <LanguageSwitcher />
               </div>

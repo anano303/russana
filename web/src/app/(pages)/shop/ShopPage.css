@@ -60,42 +60,6 @@
   }
 }
 
-/* 3D decorative shapes */
-.shop-container::before {
-  content: "";
-  position: absolute;
-  top: -8%;
-  right: -5%;
-  width: 400px;
-  height: 400px;
-  background: linear-gradient(
-    135deg,
-    rgba(233, 30, 99, 0.05),
-    rgba(233, 30, 99, 0.02)
-  );
-  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-  z-index: -1;
-  animation: float-slow 15s ease-in-out infinite;
-  opacity: 0.6;
-}
-
-.shop-container::after {
-  content: "";
-  position: absolute;
-  bottom: -10%;
-  left: -5%;
-  width: 500px;
-  height: 500px;
-  background: linear-gradient(
-    135deg,
-    rgba(233, 30, 99, 0.03),
-    rgba(255, 193, 7, 0.02)
-  );
-  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-  z-index: -1;
-  animation: float-slow 20s ease-in-out infinite reverse;
-  opacity: 0.5;
-}
 
 .content {
   max-width: 1400px;

@@ -17,8 +17,7 @@
   padding-bottom: 50px;
 }
 .see-more {
-  margin-right: 4%;
-  margin-bottom: 5%;
+  margin-right: 8%;
   cursor: pointer;
 }
 
@@ -137,7 +136,7 @@
   animation-delay: 7s;
 }
 
-@keyframes float {
+/* @keyframes float {
   0% {
     transform: translateY(0) rotate(0);
   }
@@ -147,7 +146,7 @@
   100% {
     transform: translateY(0) rotate(0);
   }
-}
+} */
 
 .shop-container .content {
   position: relative;
@@ -175,14 +174,14 @@
 
 .section-title {
   font-family: ALK Life;
-  margin-left: 2%;
+  margin-left: 10%;
   color: #e50000;
   font-size: 1.8rem;
   font-weight: 400;
-  margin-bottom: 1.5rem;
+  margin-bottom: -54px;
   text-align: left;
   /* border-bottom: 2px solid #e5e5e5; */
-  padding-bottom: 0.5rem;
+  padding-bottom: 0;
   position: relative;
   display: flex;
   align-items: center;

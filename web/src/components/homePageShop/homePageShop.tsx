@@ -11,7 +11,7 @@ import { Category, Product } from "@/types";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
-import { Shirt, ShoppingBag, Footprints } from "lucide-react";
+// import { Shirt, ShoppingBag, Footprints } from "lucide-react";
 
 interface CategoryProducts {
   category: string;
@@ -116,31 +116,14 @@ export default function HomePageShop() {
     }
   }, [categories, language]);
 
-  const renderAnimatedIcons = () => {
-    return (
-      <div className="shop-animated-icons-container">
-        <div className="shop-animated-icons modern">
-          <div className="icon clothing-icon">
-            <Shirt />
-          </div>
-          <div className="icon accessories-icon">
-            <ShoppingBag />
-          </div>
-          <div className="icon footwear-icon">
-            <Footprints />
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="container shop-container">
-      {renderAnimatedIcons()}
+
 
       <div className="content">
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <h1
+        {/* <div style={{ display: "flex", alignItems: "center", gap: 10 }}> */}
+          {/* <h1
             className="title"
             style={{
               marginBottom: 40,
@@ -148,10 +131,10 @@ export default function HomePageShop() {
               zIndex: 9,
               textAlign: "left",
             }}
-          >
-            {t("shop.allArtworks")}
-          </h1>
-        </div>
+          > */}
+            {/* {t("shop.allArtworks")} */}
+          {/* </h1> */}
+        {/* </div> */}
 
         {isLoading ? (
           <div className="loading-container">
@@ -165,12 +148,8 @@ export default function HomePageShop() {
                   <h2 className="section-title">
                     {t("shop.newest")} {categoryData.category}
                   </h2>
-                  <ProductGrid
-                    products={categoryData.products.slice(0, 3)} // Only take first 3 products
-                    theme="default"
-                    isShopPage={false}
-                  />
-                  <div className="see-more">
+
+                      <div className="see-more">
                     <Link
                       href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
                     >
@@ -179,6 +158,12 @@ export default function HomePageShop() {
                       </button>
                     </Link>
                   </div>
+                  <ProductGrid
+                    products={categoryData.products.slice(0, 3)} // Only take first 3 products
+                    theme="default"
+                    isShopPage={false}
+                  />
+              
                 </div>
               ))
             ) : (
