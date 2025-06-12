@@ -16,11 +16,19 @@
   gap: 24px;
   padding-bottom: 50px;
 }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .see-more {
   margin-right: 8%;
   cursor: pointer;
 }
 
+.see-more-mobile {
+  display: none !important;
+}
 .see-more-btn {
   border: none;
   background: transparent;
@@ -178,7 +186,7 @@
   color: #e50000;
   font-size: 1.8rem;
   font-weight: 400;
-  margin-bottom: -54px;
+
   text-align: left;
   /* border-bottom: 2px solid #e5e5e5; */
   padding-bottom: 0;
@@ -220,12 +228,6 @@
 .site-timer-content {
   position: relative;
   z-index: 21;
-}
-
-.shop-container .see-more {
-  display: flex;
-  justify-content: end;
-  margin-top: 2rem;
 }
 
 .shop-container .see-more-btn {
@@ -287,5 +289,26 @@
     margin: 15px auto;
     display: block;
     text-align: center;
+  }
+  .see-more-desktop {
+    display: none !important;
+  }
+  .see-more-mobile {
+    display: block !important;
+    margin-right: 0;
+    justify-self: center;
+    margin-left: 15%;
+  }
+  .section-title {
+    margin-bottom: 1px;
+    text-align: center;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+  .section-header {
+    justify-self: center;
+  }
+  .product-sections {
+    gap: 0.1rem;
   }
 }

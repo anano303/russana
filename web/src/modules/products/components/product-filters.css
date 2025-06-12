@@ -1,7 +1,7 @@
 .product-filters {
   display: flex;
   flex-direction: column;
-  background-color: #FFF5F6;
+  background-color: #fff5f6;
   width: 100%;
   gap: 20px;
 }
@@ -20,8 +20,8 @@
   top: 2px;
   padding: 15px;
   padding-bottom: 20px; /* Added extra padding for diamonds */
-  background: #FFF5F6;
-  border-bottom: 2px solid #CF0A0A;
+  background: #fff5f6;
+  border-bottom: 2px solid #cf0a0a;
   position: relative;
   margin-bottom: 10px; /* Added margin to prevent diamonds from being hidden */
   padding-top: 50px; /* Add space for close button */
@@ -87,26 +87,26 @@
 
 /* Left diamond - repositioned */
 .additional-filters::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -5px; /* Changed from top to bottom */
-  left: -5px;   /* Changed from right to left */
+  left: -5px; /* Changed from right to left */
   width: 8px;
   height: 8px;
-  background-color: #CF0A0A;
+  background-color: #cf0a0a;
   transform: rotate(45deg);
   z-index: 10; /* Increased z-index */
 }
 
 /* Right diamond - repositioned */
 .additional-filters::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -5px;
   right: -5px;
   width: 8px;
   height: 8px;
-  background-color: #CF0A0A;
+  background-color: #cf0a0a;
   transform: rotate(45deg);
   z-index: 10; /* Increased z-index */
 }
@@ -117,7 +117,7 @@
   background: none;
   color: #000;
   border: none;
-  font-family: 'ALK Katerina', sans-serif;
+  font-family: "ALK Katerina", sans-serif;
   font-size: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -129,7 +129,7 @@
 }
 
 .filter-toggle-btn:hover {
-  color: #CF0A0A;
+  color: #cf0a0a;
   background: none;
   transform: none;
   box-shadow: none;
@@ -143,7 +143,7 @@
   width: 30px;
   height: 30px;
   border: none;
-  background: #FFCAD4;
+  background: #ffcad4;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -168,12 +168,12 @@
 .price-input,
 .price-apply-btn,
 .clear-filters-btn {
-  background-color: #FFE5E8;
-  border: 1px solid #CF0A0A;
-  color: #CF0A0A;
+  background-color: #ffe5e8;
+  border: 1px solid #cf0a0a;
+  color: #cf0a0a;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: 'ALK Katerina', sans-serif;
+  font-family: "ALK Katerina", sans-serif;
 }
 
 /* Common styles for filter options */
@@ -188,7 +188,7 @@
   padding: 8px 15px;
   border-radius: 4px;
   font-size: 16px;
-  font-family: 'ALK Katerina', sans-serif;
+  font-family: "ALK Katerina", sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
@@ -205,7 +205,7 @@
 .size-option.selected,
 .color-option.selected,
 .brand-option.selected {
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
   transform: translateY(-1px);
 }
 
@@ -218,7 +218,7 @@
   padding: 8px 15px;
   border-radius: 4px;
   font-size: 16px;
-  font-family: 'ALK Katerina', sans-serif;
+  font-family: "ALK Katerina", sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -227,7 +227,7 @@
 .sort-select:focus,
 .price-input:hover,
 .price-input:focus {
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
   outline: none;
 }
 
@@ -250,13 +250,13 @@
   padding: 8px 15px;
   border-radius: 4px;
   font-size: 16px;
-  font-family: 'ALK Katerina', sans-serif;
+  font-family: "ALK Katerina", sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .price-apply-btn:hover {
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
 }
 
 /* Sort select specific styles */
@@ -276,7 +276,7 @@
 
 .sort-select:hover,
 .sort-select:focus {
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
   /* color: #CF0A0A; */
   outline: none;
 }
@@ -291,13 +291,13 @@
 }
 
 .price-input::placeholder {
-  color: #CF0A0A;
+  color: #cf0a0a;
   opacity: 0.7;
 }
 
 .price-input:hover,
 .price-input:focus {
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
   outline: none;
 }
 
@@ -313,21 +313,21 @@
 }
 
 .price-separator {
-  color: #CF0A0A;
+  color: #cf0a0a;
 }
 
 /* Price apply button */
 .price-apply-btn {
   padding: 8px 12px;
-  background-color: #FFE5E8;
-  color: #CF0A0A;
+  background-color: #ffe5e8;
+  color: #cf0a0a;
   border-radius: 4px;
   font-size: 16px;
   margin-left: auto;
 }
 
 .price-apply-btn:hover {
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
 }
 
 /* Filter options styling */
@@ -339,12 +339,12 @@
 }
 
 .filter-option:hover {
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
 }
 
 .filter-option.selected {
-  background-color: #FFCAD4;
-  border-color: #CF0A0A;
+  background-color: #ffcad4;
+  border-color: #cf0a0a;
 }
 
 /* Age groups, sizes, colors styling */
@@ -352,9 +352,9 @@
 .size-option,
 .color-option,
 .brand-option {
-  background-color: #FFE5E8;
-  border: 1px solid #CF0A0A;
-  color: #CF0A0A;
+  background-color: #ffe5e8;
+  border: 1px solid #cf0a0a;
+  color: #cf0a0a;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -364,8 +364,8 @@
 .color-option.selected,
 .brand-option.selected,
 .filter-option.selected {
-  background-color: #FFCAD4;
-  border-color: #CF0A0A;
+  background-color: #ffcad4;
+  border-color: #cf0a0a;
 }
 
 /* Custom cursor for all interactive elements */
@@ -387,7 +387,7 @@
 .size-option:hover,
 .color-option:hover,
 .brand-option:hover {
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
   transform: translateY(-1px);
 }
 
@@ -445,7 +445,7 @@
 
 .filter-clear-btn {
   font-size: 12px;
-  color: #CF0A0A;
+  color: #cf0a0a;
   background: none;
   border: none;
   cursor: pointer;
@@ -493,32 +493,30 @@
   justify-content: center;
 }
 
-
-
 /* Background image styling - default states */
 .main-category-option:nth-child(3n + 1) {
-  background: url('../../../assets/Images/default 1.png') center/58% no-repeat; /* Reduced from 75% */
+  background: url("../../../assets/Images/default 1.png") center/58% no-repeat; /* Reduced from 75% */
 }
 
 .main-category-option:nth-child(3n + 2) {
-  background: url('../../../assets/Images/default 2.png') center/58% no-repeat;
+  background: url("../../../assets/Images/default 2.png") center/58% no-repeat;
 }
 
 .main-category-option:nth-child(3n + 3) {
-  background: url('../../../assets/Images/default 3.png') center/58% no-repeat;
+  background: url("../../../assets/Images/default 3.png") center/58% no-repeat;
 }
 
 /* Background image styling - hover states */
 .main-category-option:nth-child(3n + 1):hover {
-  background: url('../../../assets/Images/hover 1.png') center/58% no-repeat;
+  background: url("../../../assets/Images/hover 1.png") center/58% no-repeat;
 }
 
 .main-category-option:nth-child(3n + 2):hover {
-  background: url('../../../assets/Images/hover 2.png') center/58% no-repeat;
+  background: url("../../../assets/Images/hover 2.png") center/58% no-repeat;
 }
 
 .main-category-option:nth-child(3n + 3):hover {
-  background: url('../../../assets/Images/hover 3.png') center/58% no-repeat;
+  background: url("../../../assets/Images/hover 3.png") center/58% no-repeat;
 }
 
 /* Remove the ::before pseudo-element since we're using direct background */
@@ -545,15 +543,17 @@
 .category-name {
   color: #000;
   font-size: 28px;
-  font-family: 'ALK Katerina', sans-serif;
+  font-family: "ALK Katerina", sans-serif;
   background: none;
+  max-width: 80%;
+  text-align: center;
 }
 
 /* Subcategory items styling */
 .subcategory-item {
   color: #000;
   font-size: 20px;
-  font-family: 'ALK Katerina', sans-serif;
+  font-family: "ALK Katerina", sans-serif;
   padding: 8px 18px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 4px;
@@ -565,7 +565,7 @@
 }
 
 .subcategory-item:hover {
-  color: #CF0A0A;
+  color: #cf0a0a;
   background: #fff;
   transform: scale(1.05);
 }
@@ -624,7 +624,7 @@
 
 .price-apply-btn {
   padding: 8px 12px;
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
   color: black;
   border: none;
   border-radius: 4px;
@@ -653,9 +653,9 @@
 .clear-filters-btn {
   width: 100%;
   padding: 10px;
-  background-color: #FFCAD4;
+  background-color: #ffcad4;
   color: black;
-  border: none; 
+  border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
@@ -735,7 +735,7 @@
   .main-category-option {
     height: 200px;
   }
-  
+
   .main-category-option::before {
     width: 85%;
     height: 85%;
@@ -751,13 +751,15 @@
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  
+
   .main-category-option {
     height: 180px;
   }
-  
+
   .main-category-option span {
     font-size: 18px;
+    max-width: 60%;
+    text-align: center;
   }
 }
 
@@ -765,9 +767,11 @@
   .category-option {
     height: 250px;
   }
-  
+
   .category-name {
     font-size: 20px;
+    max-width: 80%;
+    text-align: center;
   }
 
   .subcategory-option {
@@ -778,10 +782,16 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .main-categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+    /* gap: 12px; */
+  }
   .category-name {
     font-size: 28px;
+    max-width: 60%;
+    text-align: center;
   }
-  
+
   .subcategory-item {
     font-size: 18px;
     padding: 6px 16px;
@@ -791,8 +801,10 @@
 @media (max-width: 576px) {
   .category-name {
     font-size: 24px;
+    max-width: 80%;
+    text-align: center;
   }
-  
+
   .subcategory-item {
     font-size: 16px;
     padding: 6px 14px;

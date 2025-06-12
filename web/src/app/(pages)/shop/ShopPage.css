@@ -60,7 +60,6 @@
   }
 }
 
-
 .content {
   max-width: 1400px;
   margin: 0 auto;
@@ -373,9 +372,9 @@
 
 /* Responsive styling for h1 */
 @media (max-width: 768px) {
-  .shop-container {
+  /* .shop-container {
     max-width: 90%;
-  }
+  } */
 
   .shop-container h1 {
     font-size: 1.8rem;

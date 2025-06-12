@@ -59,7 +59,7 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   align-items: stretch;
-  min-height: 400px;
+  min-height: 320px;
   padding: 15px 20px 5px 20px;
   justify-content: space-between;
 
@@ -201,6 +201,12 @@
   .view-all-button {
     padding: 10px 20px;
     font-size: 14px;
+  }
+  .top-items-grid {
+    min-height: 220px;
+  }
+  .shop-container {
+    padding-top: 10px;
   }
 }
 

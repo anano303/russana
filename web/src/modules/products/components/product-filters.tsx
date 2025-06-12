@@ -121,7 +121,7 @@ export function ProductFilters({
     queryKey: ["brands"],
     queryFn: async () => {
       try {
-        const response = await fetchWithAuth("/products/brands");
+        const response = await fetchWithAuth("/products/");
         if (!response.ok) {
           return []; // Silently fail if brands endpoint doesn't exist
         }

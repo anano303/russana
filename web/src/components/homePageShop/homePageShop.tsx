@@ -145,11 +145,12 @@ export default function HomePageShop() {
             {categoryProducts.length > 0 ? (
               categoryProducts.map((categoryData, index) => (
                 <div key={index} className="product-section">
+                  <div className="section-header">
                   <h2 className="section-title">
                     {t("shop.newest")} {categoryData.category}
                   </h2>
 
-                      <div className="see-more">
+                      <div className="see-more-desktop see-more">
                     <Link
                       href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
                     >
@@ -158,11 +159,21 @@ export default function HomePageShop() {
                       </button>
                     </Link>
                   </div>
+                  </div>
                   <ProductGrid
                     products={categoryData.products.slice(0, 3)} // Only take first 3 products
                     theme="default"
                     isShopPage={false}
                   />
+                       <div className="see-more-mobile see-more">
+                    <Link
+                      href={`/shop?page=1&mainCategory=${categoryData.categoryId}`}
+                    >
+                      <button className="see-more-btn">
+                        {t("shop.seeAll")}
+                      </button>
+                    </Link>
+                  </div>
               
                 </div>
               ))
