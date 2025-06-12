@@ -1,0 +1,153 @@
+.pink-character-wrapper {
+  position: relative;
+}
+
+.pink-character-section {
+  background-color: rgba(255, 229, 232, 1);
+  padding: 40px 20px;
+  margin: 120px;
+  /* margin-top: 80px; */
+
+  overflow: hidden;
+}
+
+.pink-character-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pink-character-message {
+  flex: 1;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-items: center;
+}
+
+.pink-character-title {
+  font-family: ALK Life;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 100%;
+  letter-spacing: 10%;
+  color: rgba(207, 10, 10, 1);
+  white-space: nowrap;
+
+  margin-bottom: 20px;
+}
+
+.pink-character-subtitle {
+  font-family: ALK Life;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 100%;
+  letter-spacing: 10%;
+
+  color: rgba(207, 10, 10, 1);
+
+  margin-bottom: 30px;
+}
+
+.pink-character-button {
+  font-family: ALK Katerina;
+  font-weight: 400;
+  font-size: 2rem !important;
+  line-height: 100%;
+  line-height: 100%;
+    letter-spacing: 3px;
+
+  display: inline-block;
+  background-color: rgba(207, 10, 10, 1);
+  color: white;
+ 
+  padding: 18px 45px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(207, 10, 10, 0.3);
+}
+
+.pink-character-button:hover {
+  background-color: #b00606;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(207, 10, 10, 0.4);
+}
+
+.pink-character-image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  width: 263px;
+}
+
+.pink-character-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 15px rgba(231, 90, 136, 0.2));
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 992px) {
+  .pink-character-title {
+    font-size: 2.2rem;
+  }
+
+  .pink-character-subtitle {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .pink-character-container {
+    flex-direction: column-reverse;
+  }
+
+  .pink-character-message {
+    
+    text-align: center;
+    padding: 20px 0;
+    max-width: 100%;
+  }
+
+  .pink-character-title {
+    font-size: 2rem;
+  }
+
+  .pink-character-subtitle {
+    font-size: 1.4rem;
+  }
+
+  .pink-character-image {
+    max-height: 400px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pink-character-title {
+    font-size: 1.8rem;
+  }
+
+  .pink-character-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .pink-character-button {
+    font-size: 1rem;
+    padding: 10px 25px;
+  }
+
+  .pink-character-image {
+    max-height: 300px;
+  }
+}

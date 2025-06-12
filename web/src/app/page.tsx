@@ -1,7 +1,8 @@
 import HomePagesHead from "@/components/homePagesHead/homePagesHead";
 import HomePageShop from "@/components/homePageShop/homePageShop";
-// import Navbar from "@/components/navbar/navbar";
 import TopItems from "@/components/TopItems/TopItems";
+import PinkCharacter from "@/components/PinkCharacter/PinkCharacter";
+
 const Home = () => {
   return (
     <div>
@@ -13,8 +14,8 @@ const Home = () => {
       >
         {/* ...existing site-timer code... */}
       </div>
-      {/* <Navbar/> */}
       <HomePageShop />
+      <PinkCharacter />
     </div>
   );
 };
