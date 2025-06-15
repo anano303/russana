@@ -341,6 +341,15 @@ export class ProductsService {
       updateFields.sizes = Array.isArray(data.sizes) ? data.sizes : [];
     if (data.colors)
       updateFields.colors = Array.isArray(data.colors) ? data.colors : [];
+    if (data.variants) {
+      // Ensure variants is an array
+      if (Array.isArray(data.variants)) {
+        // Validate each variant object
+        updateFields.variants = data.variants;
+      } else {
+        throw new BadRequestException('Variants must be an array');
+      }
+    }
 
     // Make sure we have proper population options
     const populateOptions = [{ path: 'mainCategory' }, { path: 'subCategory' }];

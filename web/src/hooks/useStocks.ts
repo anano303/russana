@@ -1,11 +1,14 @@
+import { ProductFormData } from "@/modules/products/validation/product";
 import { useMemo, useEffect, useState, useCallback } from "react";
 
 interface UseStocksProps {
+  initialData?: ProductFormData;
   attributes: [string[], string[], string[]]; // [ageGroups, sizes, colors]
 }
 
 // Updated StockItem to have named fields
 interface StockItem {
+  _id?: string; // Optional ID for existing items
   ageGroup?: string;
   size?: string;
   color?: string;
@@ -20,7 +23,11 @@ export const generateCombinations = (
 ): Array<{ ageGroup?: string; size?: string; color?: string }> => {
   // Return empty array if all attribute arrays are empty
   if (attrArrays.every((arr) => arr.length === 0)) {
-    return [];
+    return [
+      {
+        // Default stock for empty combinations
+      },
+    ];
   }
 
   // Return current object if we've processed all attribute arrays
@@ -66,7 +73,7 @@ export const generateCombinations = (
  * @param attributes An array of arrays: [ageGroups, sizes, colors]
  * @returns An object with stocks array and setStockCount function
  */
-export const useStocks = ({ attributes }: UseStocksProps) => {
+export const useStocks = ({ initialData, attributes }: UseStocksProps) => {
   const [stocks, setStocks] = useState<Record<string, StockItem>>({});
 
   // Generate combinations whenever attributes change
@@ -141,6 +148,17 @@ export const useStocks = ({ attributes }: UseStocksProps) => {
     },
     []
   );
+
+  const [isInitialRender, setIsInitialRender] = useState(true);
+  useEffect(() => {
+    if (combinations.length !== 0 && isInitialRender) {
+      setIsInitialRender(false);
+      initialData?.variants?.forEach((variant) =>
+        setStockCount(variant, variant.stock)
+      );
+      console.log("Initial stock counts set from initialData");
+    }
+  }, [combinations.length, isInitialRender, initialData, setStockCount]);
 
   // Calculate total count from all stock items
   const totalCount = useMemo(

@@ -23,6 +23,12 @@ export interface ProductFormData {
   deliveryType?: "SELLER" | "SoulArt";
   minDeliveryDays?: number | string;
   maxDeliveryDays?: number | string;
+  variants?: {
+    ageGroup?: string;
+    size?: string;
+    color?: string;
+    stock: number;
+  }[];
 }
 
 export const productSchema = z.object({

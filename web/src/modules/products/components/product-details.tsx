@@ -112,9 +112,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     if (product.variants && product.variants.length > 0) {
       const variant = product.variants.find(
         (v) =>
-          v.size === selectedSize &&
-          v.color === selectedColor &&
-          v.ageGroup === selectedAgeGroup
+          (!v.size || v.size === selectedSize) &&
+          (!v.color || v.color === selectedColor) &&
+          (!v.ageGroup || v.ageGroup === selectedAgeGroup)
       );
       stock = variant ? variant.stock : 0;
     }

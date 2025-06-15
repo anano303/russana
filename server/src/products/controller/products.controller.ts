@@ -392,6 +392,11 @@ export class ProductsController {
           ? productData.subCategory
           : product.subCategory;
 
+      const parseVariants =
+        typeof productData.variants === 'string'
+          ? JSON.parse(productData.variants)
+          : productData.variants;
+
       // Create update data object
       const updateData = {
         ...productDataWithoutUser,
@@ -402,9 +407,12 @@ export class ProductsController {
         ageGroups,
         sizes,
         colors,
+        variants: parseVariants,
       };
 
+      console.log('UPDATING PRODUCT WITH DATA:', updateData);
       const updatedProduct = await this.productsService.update(id, updateData);
+      console.log('Updated product:', updatedProduct);
 
       return updatedProduct;
     } catch (error) {

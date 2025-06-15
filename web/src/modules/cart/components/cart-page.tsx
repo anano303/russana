@@ -45,7 +45,14 @@ export function CartPage() {
                 language === "en" && item.nameEn ? item.nameEn : item.name,
             };
 
-            return <CartItem key={item.productId} item={itemWithDisplayName} />;
+            return (
+              <CartItem
+                key={`${item.productId}-${item.color ?? "c"}-${
+                  item.size ?? "s"
+                }-${item.ageGroup ?? "a"}`}
+                item={itemWithDisplayName}
+              />
+            );
           })}
         </div>
 

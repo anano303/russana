@@ -446,6 +446,7 @@ export function CreateProductForm({
       }
 
       if (stocks.length > 0) {
+        console.log("Sending stocks:", stocks);
         formDataToSend.append("variants", JSON.stringify(stocks));
       }
 
@@ -644,6 +645,7 @@ export function CreateProductForm({
   }, []);
 
   const { stocks, totalCount, setStockCount } = useStocks({
+    initialData,
     attributes: [selectedAgeGroups, selectedSizes, selectedColors],
   });
 
