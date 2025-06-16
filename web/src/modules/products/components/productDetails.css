@@ -336,7 +336,9 @@ select:focus {
 }
 .product-options-container {
   display: flex;
-
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 3rem;
   margin-bottom: 1.5rem;
 }
@@ -344,7 +346,7 @@ select:focus {
 .option-select {
   font-family: ALK Katerina;
   font-weight: 400;
-  font-size: 36px;
+
   line-height: 100%;
   letter-spacing: 0%;
   color: rgba(207, 10, 10, 1);
