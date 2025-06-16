@@ -1,16 +1,18 @@
 .create-product-form {
-  background-color: #faf6f2;
-  color: #4a3f35;
+  background-color: #fff;
+  color: #333333;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(122, 94, 65, 0.08);
+  box-shadow: 0 8px 20px rgba(207, 10, 10, 0.08);
   max-width: 800px;
   margin: 0 auto;
-  font-family: "Georgia", serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .create-product-form h1 {
   text-align: center;
+  color: rgba(207, 10, 10, 1);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .create-product-form form {
@@ -24,7 +26,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #6d4c41;
+  color: rgba(207, 10, 10, 0.8);
 }
 
 .create-product-form input,
@@ -32,10 +34,10 @@
 .create-product-form select {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #e0d5c8;
+  border: 1px solid rgba(255, 229, 232, 0.7);
   border-radius: 6px;
-  background-color: #f9f5f0;
-  color: #4a3f35;
+  background-color: #fff;
+  color: #333333;
   font-family: inherit;
 }
 
@@ -43,8 +45,8 @@
 .create-product-form textarea:focus,
 .create-product-form select:focus {
   outline: none;
-  border-color: #8d6e63;
-  box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.2);
+  border-color: rgba(207, 10, 10, 1);
+  box-shadow: 0 0 0 2px rgba(207, 10, 10, 0.2);
 }
 
 .create-product-input.disabled {
@@ -60,8 +62,8 @@
 }
 
 .create-product-file {
-  border: 1px dashed #e0d5c8;
-  background-color: #f5f0e9;
+  border: 1px dashed rgba(255, 229, 232, 0.7);
+  background-color: rgba(255, 229, 232, 0.3);
   padding: 1rem;
   cursor: pointer;
 }
@@ -79,7 +81,7 @@
   height: 100px;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #e0d5c8;
+  border: 1px solid rgba(255, 229, 232, 0.7);
 }
 
 .preview-image {
@@ -101,7 +103,7 @@
   justify-content: center;
   border: none;
   cursor: pointer;
-  color: #a65d5d;
+  color: rgba(207, 10, 10, 1);
   font-size: 12px;
   z-index: 2;
 }
@@ -111,7 +113,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #8d6e63;
+  background-color: rgba(207, 10, 10, 1);
   color: white;
   padding: 0.75rem;
   border: none;
@@ -120,12 +122,13 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 1rem;
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .create-product-button:hover:not(:disabled) {
-  background-color: #6d4c41;
+  background-color: rgba(177, 8, 8, 1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(109, 76, 65, 0.3);
+  box-shadow: 0 4px 8px rgba(207, 10, 10, 0.3);
 }
 
 .create-product-button:disabled {
@@ -140,32 +143,33 @@
 }
 
 .create-product-error {
-  color: #a65d5d;
+  color: rgba(207, 10, 10, 1);
   font-size: 0.9rem;
   margin-top: 0.25rem;
 }
 
 .server-error {
-  background-color: #f9e5e5;
+  background-color: rgba(255, 229, 232, 0.5);
   padding: 0.75rem;
   border-radius: 6px;
-  border-left: 4px solid #c27c80;
+  border-left: 4px solid rgba(207, 10, 10, 1);
   margin-bottom: 1rem;
+  color: rgba(207, 10, 10, 0.8);
 }
 
 .success-message {
-  background-color: #e5f0e5;
+  background-color: rgba(255, 229, 232, 0.3);
   padding: 0.75rem;
   border-radius: 6px;
-  border-left: 4px solid #7cc280;
+  border-left: 4px solid rgba(207, 10, 10, 0.7);
   margin-bottom: 1rem;
-  color: #3d5f3d;
+  color: rgba(207, 10, 10, 1);
 }
 
 /* New Category Structure and Attributes Styles */
 .attributes-section {
-  background-color: #f9f5f0;
-  border: 1px solid #e0d5c8;
+  background-color: rgba(255, 229, 232, 0.3);
+  border: 1px solid rgba(255, 229, 232, 0.7);
   border-radius: 6px;
   padding: 1rem;
   margin-top: 1rem;
@@ -174,7 +178,8 @@
 .attributes-section h3 {
   font-size: 1rem;
   margin-bottom: 0.75rem;
-  color: #6d4c41;
+  color: rgba(207, 10, 10, 1);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .attribute-group {
@@ -195,7 +200,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #f0e8e0;
+  background-color: rgba(255, 229, 232, 0.3);
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   cursor: pointer;
@@ -203,7 +208,7 @@
 }
 
 .attribute-checkbox:hover {
-  background-color: #e8ded2;
+  background-color: rgba(255, 229, 232, 0.5);
 }
 
 .attribute-checkbox input[type="checkbox"] {
@@ -213,8 +218,8 @@
 
 /* Delivery Section Styles */
 .delivery-section {
-  background-color: #f9f5f0;
-  border: 1px solid #e0d5c8;
+  background-color: rgba(255, 229, 232, 0.3);
+  border: 1px solid rgba(255, 229, 232, 0.7);
   border-radius: 6px;
   padding: 1rem;
 }
@@ -222,7 +227,8 @@
 .delivery-section h3 {
   font-size: 1rem;
   margin-bottom: 0.75rem;
-  color: #6d4c41;
+  color: rgba(207, 10, 10, 1);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .delivery-type-options {

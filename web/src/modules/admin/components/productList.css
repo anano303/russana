@@ -1,11 +1,11 @@
 /* Main container */
 .prd-card {
-  background-color: #faf6f2;
+  background-color: #fff;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 8px 20px rgba(122, 94, 65, 0.08);
-  color: #4a3f35;
-  font-family: 'Georgia', serif;
+  box-shadow: 0 8px 20px rgba(207, 10, 10, 0.08);
+  color: #333333;
+  font-family: "Roboto", sans-serif;
 }
 
 /* Header */
@@ -14,16 +14,16 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #e0d5c8;
+  border-bottom: 2px solid rgba(255, 229, 232, 0.7);
   padding-bottom: 1rem;
 }
 
 .prd-title {
   font-size: 2rem;
   font-weight: normal;
-  color: #5d4037;
+  color: rgba(207, 10, 10, 1);
   letter-spacing: 1px;
-  font-family: 'Playfair Display', serif;
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .prd-actions {
@@ -32,7 +32,9 @@
 }
 
 /* Buttons */
-.prd-btn, .prd-btn-outline, .pagination-btn {
+.prd-btn,
+.prd-btn-outline,
+.pagination-btn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -44,27 +46,27 @@
 }
 
 .prd-btn {
-  background-color: #8d6e63;
+  background-color: rgba(207, 10, 10, 1);
   color: white;
   border: none;
 }
 
 .prd-btn:hover {
-  background-color: #6d4c41;
+  background-color: rgba(177, 8, 8, 1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(109, 76, 65, 0.3);
+  box-shadow: 0 4px 8px rgba(207, 10, 10, 0.3);
 }
 
 .prd-btn-outline {
   background-color: transparent;
-  color: #8d6e63;
-  border: 1px solid #8d6e63;
+  color: rgba(207, 10, 10, 1);
+  border: 1px solid rgba(207, 10, 10, 1);
 }
 
 .prd-btn-outline:hover {
-  background-color: #f5f0e9;
+  background-color: rgba(255, 229, 232, 0.7);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(109, 76, 65, 0.1);
+  box-shadow: 0 4px 8px rgba(207, 10, 10, 0.1);
 }
 
 .prd-icon {
@@ -79,20 +81,20 @@
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(207, 10, 10, 0.05);
 }
 
 .prd-thead-row {
-  background-color: #e0d5c8;
+  background-color: rgba(255, 229, 232, 0.7);
 }
 
 .prd-th {
   text-align: left;
   padding: 12px 16px;
   font-weight: 600;
-  color: #5d4037;
-  border-bottom: 2px solid #d7c9b8;
-  font-family: 'Playfair Display', serif;
+  color: rgba(207, 10, 10, 1);
+  border-bottom: 2px solid rgba(255, 229, 232, 1);
+  font-family: "ALK Katerina", sans-serif;
   font-size: 0.9rem;
 }
 
@@ -101,28 +103,29 @@
 }
 
 .prd-tr {
-  background-color: #f5f0e9;
+  background-color: #fff;
   transition: background-color 0.2s;
 }
 
 .prd-tr:nth-child(even) {
-  background-color: #f9f5f0;
+  background-color: rgba(255, 229, 232, 0.3);
 }
 
 .prd-tr:hover {
-  background-color: #efe6da;
+  background-color: rgba(255, 229, 232, 0.5);
 }
 
 .prd-td {
   padding: 12px 16px;
-  border-bottom: 1px solid #e0d5c8;
-  color: #4a3f35;
+  border-bottom: 1px solid rgba(255, 229, 232, 0.7);
+  color: #333333;
   font-size: 0.9rem;
+  font-family: "Roboto", sans-serif;
 }
 
 .prd-td-bold {
   font-weight: 600;
-  color: #6d4c41;
+  color: rgba(207, 10, 10, 0.8);
 }
 
 .prd-td-right {
@@ -136,7 +139,7 @@
   height: 60px;
   border-radius: 6px;
   overflow: hidden;
-  border: 1px solid #e0d5c8;
+  border: 1px solid rgba(255, 229, 232, 1);
 }
 
 .prd-img {
@@ -153,14 +156,14 @@
 }
 
 .pagination-btn {
-  background-color: #f5f0e9;
-  color: #6d4c41;
-  border: 1px solid #e0d5c8;
+  background-color: rgba(255, 229, 232, 0.7);
+  color: rgba(207, 10, 10, 1);
+  border: 1px solid rgba(255, 229, 232, 1);
   padding: 0.5rem 1rem;
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background-color: #e0d5c8;
+  background-color: rgba(255, 229, 232, 1);
 }
 
 .pagination-btn:disabled {
@@ -169,38 +172,24 @@
 }
 
 .pagination-info {
-  color: #7d6e63;
+  color: rgba(207, 10, 10, 0.7);
   font-style: italic;
+  font-family: "Roboto", sans-serif;
 }
 
 /* Pending products section */
 .pending-products {
-  background-color: #f9f2ed;
+  background-color: rgba(255, 229, 232, 0.5);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 2rem;
-  border-left: 4px solid #c27c80;
+  border-left: 4px solid rgba(207, 10, 10, 1);
 }
 
 .pending-products h2 {
-  color: #5d4037;
-  font-family: 'Playfair Display', serif;
+  color: rgba(207, 10, 10, 1);
+  font-family: "ALK Katerina", sans-serif;
   margin-bottom: 1rem;
-}
-
-/* Seller info */
-.seller-info {
-  font-size: 0.85rem;
-  line-height: 1.4;
-}
-
-.seller-info p:first-child {
-  color: #5d4037;
-  font-weight: 500;
-}
-
-.seller-info p {
-  color: #7d6e63;
 }
 
 /* Responsive adjustments */
@@ -210,7 +199,7 @@
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .prd-actions {
     width: 100%;
     justify-content: space-between;
@@ -222,13 +211,14 @@
     display: block;
     overflow-x: auto;
   }
-  
+
   .prd-actions {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
-  .prd-btn, .prd-btn-outline {
+
+  .prd-btn,
+  .prd-btn-outline {
     width: 100%;
     justify-content: center;
   }

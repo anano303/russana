@@ -1,10 +1,10 @@
 .orders-container {
-  background-color: #faf6f2;
+  background-color: #fff;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 8px 20px rgba(122, 94, 65, 0.08);
-  color: #4a3f35;
-  font-family: 'Georgia', serif;
+  box-shadow: 0 8px 20px rgba(207, 10, 10, 0.08);
+  color: #333333;
+  font-family: "Roboto", sans-serif;
 }
 
 .orders-header {
@@ -12,16 +12,16 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #e0d5c8;
+  border-bottom: 2px solid rgba(255, 229, 232, 0.7);
   padding-bottom: 1rem;
 }
 
 .orders-title {
   font-size: 2rem;
   font-weight: normal;
-  color: #5d4037;
+  color: rgba(207, 10, 10, 1);
   letter-spacing: 1px;
-  font-family: 'Playfair Display', serif;
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .orders-table {
@@ -30,36 +30,37 @@
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(207, 10, 10, 0.05);
 }
 
 .orders-table th {
   text-align: left;
   padding: 12px 16px;
   font-weight: 600;
-  color: #5d4037;
-  background-color: #e0d5c8;
-  border-bottom: 2px solid #d7c9b8;
-  font-family: 'Playfair Display', serif;
+  color: rgba(207, 10, 10, 1);
+  background-color: rgba(255, 229, 232, 0.7);
+  border-bottom: 2px solid rgba(255, 229, 232, 1);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .orders-table td {
   padding: 12px 16px;
-  border-bottom: 1px solid #e0d5c8;
-  color: #4a3f35;
+  border-bottom: 1px solid rgba(255, 229, 232, 0.7);
+  color: #333333;
+  font-family: "Roboto", sans-serif;
 }
 
 .orders-table tr {
-  background-color: #f5f0e9;
+  background-color: #fff;
   transition: background-color 0.2s;
 }
 
 .orders-table tr:nth-child(even) {
-  background-color: #f9f5f0;
+  background-color: rgba(255, 229, 232, 0.3);
 }
 
 .orders-table tr:hover {
-  background-color: #efe6da;
+  background-color: rgba(255, 229, 232, 0.5);
 }
 
 .status-badge {
@@ -72,13 +73,13 @@
 }
 
 .status-badge.success {
-  background-color: #d7e0c8;
-  color: #4f5d37;
+  background-color: rgba(255, 229, 232, 0.7);
+  color: rgba(207, 10, 10, 1);
 }
 
 .status-badge.error {
-  background-color: #e2c0c0;
-  color: #a65d5d;
+  background-color: rgba(207, 10, 10, 0.1);
+  color: rgba(207, 10, 10, 1);
 }
 
 .icon {
@@ -89,7 +90,7 @@
 .view-link {
   display: inline-block;
   padding: 0.3rem 0.7rem;
-  background-color: #8d6e63;
+  background-color: rgba(207, 10, 10, 1);
   color: white;
   text-decoration: none;
   border-radius: 6px;
@@ -98,9 +99,9 @@
 }
 
 .view-link:hover {
-  background-color: #6d4c41;
+  background-color: rgba(177, 8, 8, 1);
   transform: translateY(-2px);
-  box-shadow: 0 2px 6px rgba(109, 76, 65, 0.3);
+  box-shadow: 0 2px 6px rgba(207, 10, 10, 0.3);
 }
 
 .pagination {
@@ -112,9 +113,9 @@
 }
 
 .pagination-btn {
-  background-color: #f5f0e9;
-  color: #6d4c41;
-  border: 1px solid #e0d5c8;
+  background-color: rgba(255, 229, 232, 0.7);
+  color: rgba(207, 10, 10, 1);
+  border: 1px solid rgba(255, 229, 232, 1);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -122,7 +123,7 @@
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background-color: #e0d5c8;
+  background-color: rgba(255, 229, 232, 1);
 }
 
 .pagination-btn:disabled {
@@ -131,8 +132,9 @@
 }
 
 .pagination-info {
-  color: #7d6e63;
+  color: rgba(207, 10, 10, 0.7);
   font-style: italic;
+  font-family: "Roboto", sans-serif;
 }
 
 @media (max-width: 768px) {
@@ -158,15 +160,15 @@
 }
 
 .delivery-badge.seller {
-  background-color: #ffecb3;
-  color: #b7791f;
+  background-color: rgba(255, 229, 232, 0.5);
+  color: rgba(207, 10, 10, 0.8);
   flex-direction: column;
   align-items: flex-start;
 }
 
 .delivery-badge.soulart {
-  background-color: #d1e7dd;
-  color: #0f5132;
+  background-color: rgba(255, 229, 232, 0.7);
+  color: rgba(207, 10, 10, 1);
 }
 
 .delivery-time {

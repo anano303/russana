@@ -2,9 +2,10 @@
   max-width: 1200px;
   margin: auto;
   padding: 20px;
-  /* background: linear-gradient(135deg, #012645, #093d67); */
+  background: #fff;
   border-radius: 16px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 15px rgba(207, 10, 10, 0.1);
+  font-family: "Roboto", sans-serif;
 }
 
 .header {
@@ -17,8 +18,8 @@
 .header h1 {
   font-size: 28px;
   font-weight: bold;
-  color: #2a5530;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  color: rgba(207, 10, 10, 1);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .status {
@@ -34,24 +35,25 @@
 }
 
 .badge.paid {
-  background: linear-gradient(135deg, #4caf50, #093d67);
-  color: #ffffff;
+  background: rgba(255, 229, 232, 0.7);
+  color: rgba(207, 10, 10, 1);
 }
 
 .badge.pending {
-  background: linear-gradient(135deg, #f44336, #093d67);
-  color: #ffffff;
+  background: rgba(207, 10, 10, 0.1);
+  color: rgba(207, 10, 10, 1);
 }
 
 .deliver-btn {
-  background: linear-gradient(135deg, #e0d849, #093d67);
-  color: #012645;
+  background: rgba(207, 10, 10, 1);
+  color: white;
   border-radius: 8px;
   transition: transform 0.2s ease;
 }
 
 .deliver-btn:hover {
   transform: scale(1.05);
+  background: rgba(177, 8, 8, 1);
 }
 
 .grid-container {
@@ -62,16 +64,18 @@
 }
 
 .card {
-  background: linear-gradient(to bottom, #ffffff, #f3f4f6);
+  background: #fff;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(207, 10, 10, 0.05);
   margin-bottom: 10px;
 }
 
 .card h2 {
   font-size: 18px;
   margin-bottom: 10px;
+  color: rgba(207, 10, 10, 1);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .alert {
@@ -85,13 +89,13 @@
 }
 
 .alert.success {
-  background: linear-gradient(to right, #d4edda, #2a5530);
-  color: white;
+  background: rgba(255, 229, 232, 0.7);
+  color: rgba(207, 10, 10, 1);
 }
 
 .alert.error {
-  background: linear-gradient(to right, #f8d7da, #ec9843);
-  color: white;
+  background: rgba(207, 10, 10, 0.1);
+  color: rgba(207, 10, 10, 1);
 }
 
 .order-item {
@@ -104,15 +108,17 @@
 .item-image {
   border-radius: 5px;
   object-fit: cover;
+  border: 1px solid rgba(255, 229, 232, 0.7);
 }
 
 .item-name {
   font-weight: bold;
-  color: #007bff;
+  color: rgba(207, 10, 10, 0.8);
 }
 
 .item-name:hover {
   text-decoration: underline;
+  color: rgba(207, 10, 10, 1);
 }
 
 .summary-item {
@@ -128,11 +134,12 @@
   font-weight: bold;
   font-size: 16px;
   margin-top: 10px;
+  color: rgba(207, 10, 10, 1);
 }
 
 .delivery-group {
   margin-bottom: 1.5rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgba(255, 229, 232, 0.7);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -146,21 +153,23 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background-color: #f3f4f6;
-  border-bottom: 1px solid #e5e7eb;
+  background-color: rgba(255, 229, 232, 0.3);
+  border-bottom: 1px solid rgba(255, 229, 232, 0.7);
 }
 
 .delivery-group-header h3 {
   margin: 0;
   font-weight: 500;
   font-size: 1rem;
+  color: rgba(207, 10, 10, 0.8);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .delivery-time {
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #b7791f;
-  background-color: #ffecb3;
+  color: rgba(207, 10, 10, 1);
+  background-color: rgba(255, 229, 232, 0.5);
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   display: inline-block;

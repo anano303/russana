@@ -296,9 +296,9 @@ export function ProductsList() {
             <th className="prd-th">CATEGORY</th>
             <th className="prd-th">SUBCATEGORY</th>
             <th className="prd-th">STOCK</th>
-            <th className="prd-th">Status</th>
-            <th className="prd-th">DELIVERY</th>
-            <th className="prd-th">SELLER INFO</th>
+            {/* <th className="prd-th">Status</th> */}
+            {/* <th className="prd-th">DELIVERY</th>
+            <th className="prd-th">SELLER INFO</th> */}
             <th className="prd-th prd-th-right">ACTIONS</th>
           </tr>
         </thead>
@@ -324,9 +324,9 @@ export function ProductsList() {
               <td className="prd-td">{getCategoryDisplayName(product)}</td>
               <td className="prd-td">{getSubcategoryDisplayName(product)}</td>
               <td className="prd-td">{product.countInStock}</td>
-              <td className="prd-td">
+              {/* <td className="prd-td">
                 <StatusBadge status={product.status} />
-              </td>
+              </td> */}
               {/* <td className="prd-td">
                 <div className="delivery-info">
                   <span>{product.deliveryType || "SOULART"}</span>
@@ -339,7 +339,7 @@ export function ProductsList() {
                     )}
                 </div>
               </td> */}
-              <td className="prd-td">
+              {/* <td className="prd-td">
                 <div className="seller-info">
                   <p className="font-medium">{product.user?.name || "N/A"}</p>
                   <p className="text-sm text-gray-500">
@@ -349,7 +349,7 @@ export function ProductsList() {
                     {product.user?.phoneNumber || "N/A"}
                   </p>
                 </div>
-              </td>
+              </td> */}
               <td className="prd-td prd-td-right">
                 <ProductsActions
                   product={product}

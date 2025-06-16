@@ -3,7 +3,8 @@
   background: #fff;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 10px rgba(207, 10, 10, 0.1);
+  font-family: "Roboto", sans-serif;
 }
 
 .orders-header {
@@ -16,6 +17,8 @@
 .orders-title {
   font-size: 24px;
   font-weight: bold;
+  color: rgba(207, 10, 10, 1);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .orders-table {
@@ -26,8 +29,14 @@
 .orders-table th,
 .orders-table td {
   padding: 12px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid rgba(255, 229, 232, 0.7);
   text-align: left;
+}
+
+.orders-table th {
+  background-color: rgba(255, 229, 232, 0.7);
+  color: rgba(207, 10, 10, 1);
+  font-family: "ALK Katerina", sans-serif;
 }
 
 .orders-actions {
@@ -43,28 +52,28 @@
 }
 
 .order-badge.paid {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: rgba(255, 229, 232, 0.7);
+  color: rgba(207, 10, 10, 1);
 }
 
 .order-badge.not-paid {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: rgba(207, 10, 10, 0.1);
+  color: rgba(207, 10, 10, 1);
 }
 
 .order-badge.delivered {
-  background-color: #cce5ff;
-  color: #004085;
+  background-color: rgba(255, 229, 232, 0.9);
+  color: rgba(207, 10, 10, 0.8);
 }
 
 .order-badge.not-delivered {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: rgba(255, 229, 232, 0.5);
+  color: rgba(207, 10, 10, 0.7);
 }
 
 .order-view-button {
   padding: 6px 12px;
-  background: #007bff;
+  background: rgba(207, 10, 10, 1);
   color: white;
   border-radius: 4px;
   text-decoration: none;
@@ -72,12 +81,12 @@
 }
 
 .order-view-button:hover {
-  background: #0056b3;
+  background: rgba(177, 8, 8, 1);
 }
 
 .order-deliver-button {
   padding: 6px 12px;
-  background: #28a745;
+  background: rgba(207, 10, 10, 0.8);
   color: white;
   border-radius: 4px;
   border: none;
@@ -86,7 +95,7 @@
 }
 
 .order-deliver-button:hover {
-  background: #218838;
+  background: rgba(207, 10, 10, 1);
 }
 
 .icon {

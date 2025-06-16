@@ -453,7 +453,7 @@ export const TRANSLATIONS: Translations = {
     // Navigation
     navigation: {
       home: "Home",
-      shop: "Shop Artwork",
+      shop: "Shop Products",
       auction: "Auction",
       myOrders: "My Orders",
       forum: "Forum",
