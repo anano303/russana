@@ -1,6 +1,4 @@
 .top-items-container {
-  width: 90%;
-  justify-self: center;
   margin-top: 10%;
   overflow: hidden; /* Prevent any potential overflow issues */
 }
@@ -192,6 +190,9 @@
     font-size: 1.5rem;
     gap: 8px;
     margin-left: 0; /* Ensure no left margin on mobile */
+  }
+  .top-items-grid {
+    gap: min(0px);
   }
 
   .top-items-grid > * {

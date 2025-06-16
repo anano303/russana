@@ -256,6 +256,7 @@
   .copyright {
     margin-right: 0;
     justify-content: center;
+    padding-left: 0 !important;
   }
 }
 
@@ -295,6 +296,7 @@
     font-size: 14px;
     align-items: center;
     gap: 10px;
+    padding-left: 0px !important;
   }
 
   .footer-logo {

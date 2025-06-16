@@ -127,6 +127,7 @@ export const TRANSLATIONS: Translations = {
       adding: "ემატება...",
       outOfStock: "არ არის მარაგში",
       title: "კალათა",
+      emptyDescription:"თქვენი კალათა ცარიელია. დაამატეთ პროდუქტები, რომ დაიწყოთ შოპინგი.",
     },
 
     // About page
@@ -566,6 +567,7 @@ export const TRANSLATIONS: Translations = {
       adding: "Adding...",
       outOfStock: "Out of Stock",
       title: "Shopping Cart",
+      emptyDescription: "Your cart is empty. Add products to start shopping.",
     },
 
     // About page

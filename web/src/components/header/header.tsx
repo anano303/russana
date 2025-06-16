@@ -9,12 +9,12 @@ import "./header.scss";
 import UserMenu from "./user-menu";
 import { LanguageSwitcher } from "@/components/language-switcher/language-switcher";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { Home, ShoppingBag, Star } from "lucide-react";
+// import { Home, ShoppingBag, Star } from "lucide-react";
 import home from "../../assets/icons/home.png";
 import shop from "../../assets/icons/products.png"; 
 import about from "../../assets/icons/aboutUs.png";
-import cart from "../../assets/icons/cart.png";
-import lang from "../../assets/icons/lang.png";
+// import cart from "../../assets/icons/cart.png";
+// import lang from "../../assets/icons/lang.png";
 
 export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -57,7 +57,7 @@ export default function Header() {
               <div className="user-menu">
                 <UserMenu />
               </div>
-              {/* <CartIcon /> */}
+              <CartIcon />
               <div className="language-switcher-container">
                 <LanguageSwitcher />
               </div>

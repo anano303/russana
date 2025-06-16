@@ -8,13 +8,13 @@
   max-width: 600px;
   text-align: center;
   background-color: #faf6f2;
-  color: #4a3f35;
-  font-family: 'Georgia', serif;
+  color: #cf0a0a;
+  font-family: "Georgia", serif;
 }
 
 .cart-empty-icon {
   position: relative;
-  color: #d7c9b8;
+  color: #cf0a0a73;
   margin-bottom: 1.5rem;
 }
 
@@ -40,19 +40,19 @@
   font-size: 2rem;
   font-weight: normal;
   margin-bottom: 1rem;
-  color: #5d4037;
-  font-family: 'Playfair Display', serif;
+  color: #cf0a0a;
+  font-family: "Playfair Display", serif;
   letter-spacing: 1px;
 }
 
 .cart-empty-message {
-  color: #7d6e63;
+  color: #cf0a0a;
   font-size: 1.1rem;
   line-height: 1.6;
 }
 
 .continue-shopping-button {
-  background-color: #8d6e63;
+  background-color: #bb3030;
   color: white;
   border: none;
   border-radius: 8px;
@@ -61,11 +61,11 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(109, 76, 65, 0.2);
+  box-shadow: 0 2px 8px rgba(185, 70, 31, 0.2);
 }
 
 .continue-shopping-button:hover {
-  background-color: #6d4c41;
+  background-color: #cf0a0a;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(109, 76, 65, 0.3);
 }
@@ -75,11 +75,11 @@
   .cart-empty-container {
     padding: 3rem 1rem;
   }
-  
+
   .cart-empty-title {
     font-size: 1.75rem;
   }
-  
+
   .cart-empty-message {
     font-size: 1rem;
   }
@@ -90,16 +90,16 @@
     width: 60px;
     height: 60px;
   }
-  
+
   .cart-empty-icon::after {
     width: 100px;
     height: 100px;
   }
-  
+
   .cart-empty-title {
     font-size: 1.5rem;
   }
-  
+
   .continue-shopping-button {
     padding: 12px 24px;
     font-size: 1rem;
