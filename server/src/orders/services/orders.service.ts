@@ -30,6 +30,7 @@ export class OrdersService {
       taxPrice,
       shippingPrice,
       totalPrice,
+     
     } = orderAttrs;
 
     if (orderItems && orderItems.length < 1)

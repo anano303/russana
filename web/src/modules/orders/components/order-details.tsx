@@ -108,7 +108,9 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                   <h3>{t("Seller Delivery")}</h3>
                 </div>
                 {sellerDeliveryItems.map((item) => (
-                  <div key={item.productId} className="order-item">
+                  <div key={`${item.productId}-${item.color ?? "c"}-${
+                  item.size ?? "s"
+                }-${item.ageGroup ?? "a"}`} className="order-item">
                     <div className="order-item-image">
                       <Image
                         src={item.image}
@@ -148,7 +150,12 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                   <h3>{t("SoulArt Courier")}</h3>
                 </div> */}
                 {soulartDeliveryItems.map((item) => (
-                  <div key={item.productId} className="order-item">
+                  <div
+                    key={`${item.productId}-${item.color ?? "c"}-${
+                      item.size ?? "s"
+                    }-${item.ageGroup ?? "a"}`}
+                    className="order-item"
+                  >
                     <div className="order-item-image">
                       <Image
                         src={item.image}

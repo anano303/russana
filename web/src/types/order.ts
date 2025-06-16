@@ -10,6 +10,9 @@ export interface OrderItem {
   price: number;
   productId: string;
   product?: Product;
+  size?: string;
+  color?: string;
+  ageGroup?: string;
 }
 
 export interface Order {

@@ -35,6 +35,9 @@ export function OrderReview() {
         image: item.image,
         price: item.price,
         productId: item.productId,
+        size: item.size,
+        color: item.color,
+        ageGroup: item.ageGroup,
       }));
 
       const response = await apiClient.post("/orders", {
@@ -92,7 +95,9 @@ export function OrderReview() {
 
               return (
                 <div
-                  key={item.productId}
+                  key={`${item.productId}-${item.color ?? "c"}-${
+                    item.size ?? "s"
+                  }-${item.ageGroup ?? "a"}`}
                   className="order-item flex items-center space-x-4"
                 >
                   <div className="image-container relative h-20 w-20">

@@ -56,7 +56,7 @@ export default function RootLayout({
           async
           defer
           crossOrigin="anonymous"
-          src={`https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appId=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&autoLogAppEvents=1`}
+          src={`https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appid=${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}&autoLogAppEvents=1`}
         />
         {/* Remove the problematic prefetch links */}
       </head>
