@@ -111,7 +111,7 @@ header {
 
         &:hover {
           background: rgba(255, 255, 255, 0.1); /* Subtle hover background */
-          color: #e0d849; /* Change text color on hover to match other links */
+          color: pink; /* Change text color on hover to match other links */
         }
       }
     }
@@ -167,7 +167,7 @@ header {
 
           &:hover {
             color: #19100d;
-            border-bottom: 3px solid #a5bda5;
+            border-bottom: 3px solid pink;
           }
 
           .nav-icon {
@@ -317,7 +317,7 @@ header {
 
         &:hover {
           color: #19100d;
-          border-bottom: 3px solid #a5bda5;
+          border-bottom: 3px solid pink;
         }
 
         .nav-icon {
