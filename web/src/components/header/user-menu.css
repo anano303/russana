@@ -7,13 +7,16 @@
   cursor: pointer;
   font-size: 16px;
   text-decoration: none;
-  color: #e50000;
+
   font-weight: bolder;
+   font-family: "ALK Katerina", sans-serif;
+       font-size: 14px;
+    font-weight: 500;
 }
 
 .icon {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   font-family: "ALK Katerina", sans-serif;
 }
 
@@ -23,7 +26,7 @@
   border-radius: 50%;
   overflow: hidden;
   margin-right: 8px;
-  border: 1px solid #e50000;
+  border: 1px solid #000;
 }
 
 .avatar-image {
