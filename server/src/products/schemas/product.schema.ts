@@ -97,7 +97,7 @@ export class Product {
   nameEn?: string;
 
   @Prop({ required: true })
-  brand!: string;
+  brand?: string;
 
   @Prop({})
   brandLogo?: string;

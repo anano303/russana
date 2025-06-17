@@ -72,14 +72,14 @@
 }
 
 /* Show scrollbar on hover/active state */
-.top-items-grid:hover,
+/* .top-items-grid:hover,
 .top-items-grid:active,
 .top-items-grid:focus,
 .top-items-grid.scrolling {
-  scrollbar-width: thin; /* Firefox */
-  -ms-overflow-style: auto; /* IE and Edge */
-  scrollbar-color: #e50000 #f5f5f5; /* Firefox - thumb and track colors */
-}
+  scrollbar-width: thin;
+  -ms-overflow-style: auto; 
+  scrollbar-color: #e50000 #f5f5f5; 
+} */
 
 .top-items-grid:hover::-webkit-scrollbar,
 .top-items-grid:active::-webkit-scrollbar,

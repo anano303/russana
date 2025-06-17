@@ -74,7 +74,7 @@ export class ProductDto {
   images!: string[];
 
   @IsString()
-  brand!: string;
+  brand?: string;
 
   // Legacy category field - kept for backward compatibility
   @IsString()

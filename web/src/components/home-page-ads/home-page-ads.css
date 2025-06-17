@@ -1,0 +1,31 @@
+.home-page-ads {
+  margin-top: 7%;
+}
+
+.ads-heading {
+  font-family: ALK Life, sans-serif;
+  color: #cf0a0a;
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .ads-heading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page-ads {
+    width: 98%;
+    margin: 1.5rem auto;
+  }
+
+  .ads-heading {
+    font-size: 1.3rem;
+  }
+}

@@ -35,7 +35,7 @@ export interface Product {
   images: string[];
   description: string;
   descriptionEn?: string;
-  brand: string;
+  brand?: string;
   brandLogo: string;
   category: string; // Legacy field
   // New category system fields

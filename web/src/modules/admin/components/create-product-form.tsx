@@ -65,7 +65,7 @@ export function CreateProductForm({
       description: "",
       descriptionEn: "",
       images: [],
-      brand: "",
+      brand: "RussanaForDire", // Set default brand here
       category: "",
       subcategory: "",
       countInStock: 0,
@@ -141,7 +141,7 @@ export function CreateProductForm({
     if (user && isSeller && !isEdit) {
       setFormData((prevData) => ({
         ...prevData,
-        brand: user.name || user.storeName || "",
+        brand: user.name || user.storeName || "RussanaForDire",
         brandLogo: user.storeLogo || undefined,
       }));
     }
@@ -155,7 +155,7 @@ export function CreateProductForm({
         _id: initialData._id,
         name: initialData.name || "",
         nameEn: initialData.nameEn || "",
-        brand: initialData.brand || "",
+        brand: initialData.brand || "russanaForDire",
         brandLogo:
           typeof initialData.brandLogo === "string"
             ? initialData.brandLogo
@@ -227,7 +227,7 @@ export function CreateProductForm({
       description: "",
       descriptionEn: "",
       images: [],
-      brand: "",
+      brand: "RussanaForDire", // Set default brand here too
       category: "",
       subcategory: "",
       countInStock: 0,
@@ -450,14 +450,14 @@ export function CreateProductForm({
         formDataToSend.append("variants", JSON.stringify(stocks));
       }
 
-      // Handle brand name
+      // Handle brand name - ensure it's always set to RussanaForDire if empty
       if (isSeller) {
         formDataToSend.append(
           "brand",
-          user?.name || user?.storeName || formData.brand
+          user?.name || user?.storeName || formData.brand || "RussanaForDire"
         );
       } else {
-        formDataToSend.append("brand", formData.brand);
+        formDataToSend.append("brand", formData.brand || "RussanaForDire");
       }
 
       // SIMPLIFIED logo handling - THIS IS THE FIX
@@ -957,7 +957,6 @@ export function CreateProductForm({
             onChange={handleChange}
             placeholder="Enter brand name"
             className={"create-product-input"}
-            required
           />
           {errors.brand && (
             <p className="create-product-error">{errors.brand}</p>
@@ -1013,7 +1012,7 @@ export function CreateProductForm({
 
         <div>
           <label htmlFor="brandLogo">
-            მხატვრის/კომპანიის ლოგო (არასავალდებულო)
+           ბრენდის ლოგო (არასავალდებულო)
           </label>
 
           <div className="brand-logo-container">
