@@ -64,6 +64,7 @@
   /* Hide scrollbar by default */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  padding-bottom: 1%;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
