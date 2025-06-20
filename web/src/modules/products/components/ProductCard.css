@@ -20,8 +20,7 @@
   background-color: #ffe5e8;
   border-radius: 50%;
   /* Add shadow to the heart circles */
-  box-shadow: 10px 0px 7px  rgb(207 10 10 / 10%);
-  
+  box-shadow: 10px 0px 7px rgb(207 10 10 / 10%);
 }
 
 .heart-shape::before {
@@ -304,11 +303,21 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width:480px){
+  .product-grid{
+    width: 90% !important;
+  }
+      .grid-container{
+        gap: 50px !important;
+        margin-bottom: 60px;
+      }
+}
+
+@media (max-width: 350px) {
   .product-card {
-    width: 140px; /* Reduced from 160px */
-    min-height: 160px; /* Reduced from 230px */
-    margin: 10px; /* Reduced from 15px */
+    width: 140px; 
+    min-height: 160px; 
+    margin: 10px; 
   }
 
   .product-image {
@@ -316,14 +325,14 @@
     max-width: 140px;
     min-height: 70px;
     max-height: 70px;
-    margin: 14px auto 0 auto; /* Reduced bottom margin */
-    transform: translateX(5px); /* Slightly move image right */
+    margin: 14px auto 0 auto; 
+    transform: translateX(5px); 
   }
 
   .heart-shape {
-    width: 140px; /* Reduced from 200px */
+    width: 140px; 
     height: 140px;
-    top: 49px; /* Reduced from 70px */
+    top: 49px; 
   }
 
   .heart-shape::before,
@@ -333,32 +342,32 @@
   }
 
   .heart-shape::before {
-    top: -70px; /* Reduced from -100px */
+    top: -70px; 
   }
 
   .heart-shape::after {
-    left: 70px; /* Reduced from 100px */
+    left: 70px; 
   }
 
   .product-info {
-    margin-left: 18%; /* Reduced from 40% */
-    margin-top: 2px; /* Reduce space after image */
+    margin-left: 18%; 
+    margin-top: 2px; 
   }
 
   .product-name {
-    font-size: 14px; /* Reduced from 18px */
-    max-height: 16px; /* Reduced from 20px */
-    margin-bottom: -2px; /* Reduce space between name and price */
+    font-size: 14px; 
+    max-height: 16px; 
+    margin-bottom: -2px; 
   }
 
   .product-price {
-    font-size: 14px; /* Reduced from 18px */
-    margin-bottom: 0; /* Reduce space before button */
+    font-size: 14px; 
+    margin-bottom: 0; 
   }
 
   .buyBtn {
-    margin-left: 18%; /* Reduced from 40% */
-    margin-top: -8px; /* Add small space after price */
+    margin-left: 18%; 
+    margin-top: -8px; 
     font-size: 14px;
     padding: 4px 8px;
     letter-spacing: 5%;
@@ -370,6 +379,6 @@
 
   .addButtonCart {
     padding: 4px 6px;
-    font-size: 10px; /* Reduced from 12px */
+    font-size: 10px;
   }
 }
