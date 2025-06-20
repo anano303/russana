@@ -7,6 +7,7 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Role } from "@/types/role";
 import { User } from "@/types";
 import "./edit-user.css";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 export default function EditUserPage() {
   const params = useParams();
@@ -74,7 +75,7 @@ export default function EditUserPage() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <HeartLoading size="medium" />;
   if (!user) return <div>User not found</div>;
 
   return (

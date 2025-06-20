@@ -2,12 +2,68 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
+  color: #cf0a0a;
 }
 
 .loading-wrapper {
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+/* Heart loading animation */
+.heart-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.heart-icon {
+  animation: spin 3.5s linear infinite;
+  color: #cf0a0a;
+  width: 40px;
+  height: 40px;
+}
+
+.heart-beat {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-text {
+  font-size: 22px;
+  color: #cf0a0a;
+  font-weight: bold;
+  font-family: "ALK Katerina", sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.dots {
+  display: inline-block;
+  width: 30px;
+  text-align: left;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .card {
@@ -29,7 +85,7 @@
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background: linear-gradient(90deg, #ffe5e8 25%, #fff5f6 50%, #ffe5e8 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite linear;
   border-radius: 4px;
@@ -60,12 +116,6 @@
   }
 }
 
-.loading-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
 .admin-users-wrapper {
   padding: 40px 0;
 }
@@ -94,9 +144,9 @@
 .pagination-link.active,
 .pagination-prev.active,
 .pagination-next.active {
-  background: #007bff;
+  background: #cf0a0a;
   color: #fff;
-  border-color: #007bff;
+  border-color: #cf0a0a;
 }
 
 .pagination-link.disabled,

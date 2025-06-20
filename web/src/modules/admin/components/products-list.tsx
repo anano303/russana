@@ -13,6 +13,7 @@ import { useUser } from "@/modules/auth/hooks/use-user";
 import { StatusBadge } from "./status-badge";
 import { Role } from "@/types/role";
 import { useLanguage } from "@/hooks/LanguageContext";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 // Extended Product type to include mainCategory and subCategory properties
 interface ProductWithCategories extends Product {
@@ -222,7 +223,7 @@ export function ProductsList() {
     return "";
   }
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <HeartLoading size="medium" />;
 
   const products = data?.items || [];
   const totalPages = data?.pages || 1;

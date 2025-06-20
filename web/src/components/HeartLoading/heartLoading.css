@@ -1,0 +1,59 @@
+
+.heart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #CF0A0A;
+}
+
+.heart-loading.small {
+  font-size: 16px;
+}
+
+.heart-loading.medium {
+  font-size: 20px;
+}
+
+.heart-loading.large {
+  font-size: 24px;
+}
+
+.heart-spin {
+  animation: heart-rotate 3s linear infinite;
+}
+
+.heart-icon {
+  width: 1.5em;
+  height: 1.5em;
+  color: #CF0A0A;
+}
+
+.loading-text {
+  font-family: 'ALK Katerina', sans-serif;
+  font-weight: 400;
+  color: #CF0A0A;
+}
+
+.dots {
+  display: inline-block;
+  width: 20px;
+}
+
+@keyframes heart-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes heart-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}

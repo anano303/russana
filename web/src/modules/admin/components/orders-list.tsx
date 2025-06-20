@@ -7,6 +7,7 @@ import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Order } from "@/types/order";
 import "./ordersList.css";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 export function OrdersList() {
   const [page, setPage] = useState(1);
@@ -25,7 +26,7 @@ export function OrdersList() {
   });
 
   if (isLoading) {
-    return <div className="orders-container">Loading...</div>;
+    return <div className="orders-container">{<HeartLoading size="medium" />}</div>;
   }
 
   const orders = data?.items || [];

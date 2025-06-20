@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { ResetPasswordForm } from "@/modules/auth/components/reset-password";
 import { AuthLayout } from "@/modules/auth/layouts/auth-layout";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 export default function ResetPasswordPage() {
   return (
@@ -8,7 +9,7 @@ export default function ResetPasswordPage() {
       title="Reset Your Password"
       subtitle="Please fill in the password recovery form"
     >
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<HeartLoading size="medium" />}>
         <ResetPasswordForm />
       </Suspense>
     </AuthLayout>

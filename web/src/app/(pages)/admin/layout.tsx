@@ -61,7 +61,7 @@ export default function AdminLayout({
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg">იტვირთება...</p>
+        <p className="text-lg" style={{ color: "red" }}>იტვირთება...</p>
       </div>
     );
   }

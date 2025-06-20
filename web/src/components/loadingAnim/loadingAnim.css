@@ -1,38 +1,54 @@
 .loading-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .loading-image {
-    animation: spin 3.5s linear infinite;
-    /* height: 16px;
-    width: 30px; */
-  }
-  
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-  .loading-text {
-    font-size: 18px;
-    color: #012645b2;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    min-width: 100px; 
-    max-width: 100px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
-  
-  .dots {
-    display: inline-block;
-    width: 20px;
-    text-align: left;
+
+.loading-image {
+  animation: spin 3.5s linear infinite;
+  color: #cf0a0a; /* Red color to match your theme */
+  width: 24px;
+  height: 24px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #cf0a0a; /* Changed to red to match your site's color scheme */
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  min-width: 100px;
+  max-width: 100px;
+  font-family: "ALK Katerina", sans-serif; /* Using your site's font */
+}
+
+.dots {
+  display: inline-block;
+  width: 20px;
+  text-align: left;
+}
+
+/* Add heart beat animation for a nice effect */
+.heart-beat {
+  animation: pulse 1.5s ease-in-out infinite;
+}

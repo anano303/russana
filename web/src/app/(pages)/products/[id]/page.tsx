@@ -4,6 +4,7 @@ import { ProductDetails } from "@/modules/products/components/product-details";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { useParams } from "next/navigation";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 export default function ProductPage() {
   const params = useParams();
@@ -17,7 +18,7 @@ export default function ProductPage() {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <HeartLoading size="medium" />;
   if (!product) return <div>Product not found</div>;
 
   return (

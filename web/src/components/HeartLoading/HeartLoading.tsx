@@ -1,13 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import "./loadingAnim.css";
+import { useEffect, useState } from "react";
+import "./heartLoading.css";
 
-interface LoadingAnimProps {
-  text?: string;
-}
-
-export default function LoadingAnim({ text = "იტვირთება" }: LoadingAnimProps) {
+export default function HeartLoading({ size = "small" }) {
   const [dots, setDots] = useState("");
 
   useEffect(() => {
@@ -22,10 +18,10 @@ export default function LoadingAnim({ text = "იტვირთება" }: Lo
   }, []);
 
   return (
-    <div className="loading-container">
-      <div className="heart-beat">
+    <div className={`heart-loading ${size}`}>
+      <div className="heart-spin">
         <svg
-          className="loading-image"
+          className="heart-icon"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
@@ -34,7 +30,7 @@ export default function LoadingAnim({ text = "იტვირთება" }: Lo
         </svg>
       </div>
       <div className="loading-text">
-        {text}
+        იტვირთება
         <span className="dots">{dots}</span>
       </div>
     </div>
