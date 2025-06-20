@@ -4,9 +4,11 @@
   left: 10px;
   width: 200px;
   height: 200px;
-  background-color: #FFE5E8;
+  background-color: #ffe5e8;
   transform: rotate(-45deg);
   z-index: -1;
+  /* Add shadow to the heart base */
+  box-shadow: 0 4px 15px rgba(207, 10, 10, 0.2);
 }
 
 .heart-shape::before,
@@ -15,8 +17,11 @@
   position: absolute;
   width: 200px;
   height: 200px;
-  background-color: #FFE5E8;
+  background-color: #ffe5e8;
   border-radius: 50%;
+  /* Add shadow to the heart circles */
+  box-shadow: 10px 0px 7px  rgb(207 10 10 / 10%);
+  
 }
 
 .heart-shape::before {
