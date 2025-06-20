@@ -280,7 +280,12 @@
 
   .social-icons {
     gap: 15px;
-    padding: 0 25px;
+    padding: 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 90%;
   }
 
   .social-icon {
