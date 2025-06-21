@@ -11,6 +11,7 @@ import {
 import { SubcategoriesList } from "./subcategories-list";
 import { Loader } from "lucide-react";
 import "./styles/categories-list.css";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 export const CategoriesList = () => {
   const [isCreating, setIsCreating] = useState(false);
@@ -167,7 +168,7 @@ export const CategoriesList = () => {
                 className="btn-submit"
                 disabled={createCategory.isPending}
               >
-                {createCategory.isPending ? "იტვირთება..." : "დამატება"}
+                {createCategory.isPending ?<HeartLoading size="medium" /> : "დამატება"}
               </button>
               <button
                 type="button"
@@ -251,7 +252,7 @@ export const CategoriesList = () => {
                         disabled={updateCategory.isPending}
                       >
                         {updateCategory.isPending
-                          ? "იტვირთება..."
+                          ? <HeartLoading size="medium" />
                           : "განახლება"}
                       </button>
                       <button

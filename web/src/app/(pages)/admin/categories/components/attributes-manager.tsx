@@ -16,6 +16,7 @@ import {
 } from "../hook/use-categories";
 import { Loader } from "lucide-react";
 import "./styles/attributes-manager.css";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 type AttributeType = "color" | "size" | "ageGroup";
 
@@ -200,7 +201,7 @@ export const AttributesManager = () => {
                 disabled={isPending || !inputValue.trim()}
               >
                 {isPending
-                  ? "იტვირთება..."
+                  ? <HeartLoading size="medium" />
                   : isEditing
                   ? "განახლება"
                   : "დამატება"}

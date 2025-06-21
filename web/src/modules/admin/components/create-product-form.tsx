@@ -15,6 +15,7 @@ import { getAccessToken } from "@/lib/auth";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { Category, SubCategory } from "@/types";
 import { useStocks } from "@/hooks/useStocks";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 // Extended ProductFormData to include all needed properties
 interface ProductFormData extends BaseProductFormData {
@@ -749,7 +750,7 @@ export function CreateProductForm({
             disabled={isCategoriesLoading}
           >
             <option value="">
-              {isCategoriesLoading ? "იტვირთება..." : "აირჩიეთ კატეგორია"}
+              {isCategoriesLoading ? <HeartLoading size="medium" /> : "აირჩიეთ კატეგორია"}
             </option>
             {categories?.map((category) => (
               <option key={category.id} value={category.id}>

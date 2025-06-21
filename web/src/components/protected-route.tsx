@@ -3,13 +3,17 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import HeartLoading from "./HeartLoading/HeartLoading";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   adminOnly?: boolean;
 }
 
-export function ProtectedRoute({ children, adminOnly = false }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  adminOnly = false,
+}: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
@@ -39,7 +43,11 @@ export function ProtectedRoute({ children, adminOnly = false }: ProtectedRoutePr
 
   // თუ ინფორმაცია იტვირთება ან მომხმარებელი არაა დალოგინებული, აჩვენოს ლოადინგ
   if (isLoading || !user) {
-    return <div className="loading-container">გთხოვთ დაელოდოთ...</div>;
+    return (
+      <div className="loading-container">
+        <HeartLoading size="medium" /> გთხოვთ დაელოდოთ...
+      </div>
+    );
   }
 
   // თუ ადმინის გვერდია და მომხმარებელი არაა ადმინი

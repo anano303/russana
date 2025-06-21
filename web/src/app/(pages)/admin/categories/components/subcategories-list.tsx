@@ -12,6 +12,7 @@ import {
 } from "../hook/use-categories";
 import { Loader } from "lucide-react";
 import "./styles/subcategories-list.css";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 interface SubcategoriesListProps {
   categoryId: string;
@@ -263,7 +264,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     return (
       <div className="loading-container">
         <Loader />
-        <p>იტვირთება...</p>
+        <p><HeartLoading size="medium" /></p>
       </div>
     );
   }
@@ -446,7 +447,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                       disabled={updateSubCategory.isPending}
                     >
                       {updateSubCategory.isPending
-                        ? "იტვირთება..."
+                        ? <HeartLoading size="medium" />
                         : "განახლება"}
                     </button>
                     <button

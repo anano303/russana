@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/api-client";
 import { getUserData } from "@/lib/auth";
 import { Sidebar } from "lucide-react";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 export default function AdminLayout({
   children,
@@ -61,7 +62,7 @@ export default function AdminLayout({
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg" style={{ color: "red" }}>იტვირთება...</p>
+        <p className="text-lg" style={{ color: "red" }}><HeartLoading size="medium" /></p>
       </div>
     );
   }

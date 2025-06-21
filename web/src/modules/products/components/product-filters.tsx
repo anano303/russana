@@ -6,6 +6,7 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./product-filters.css";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { Category, SubCategory } from "@/types";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 interface FilterProps {
   onCategoryChange: (categoryId: string) => void;
@@ -247,7 +248,9 @@ export function ProductFilters({
           <div className="filter-options">
             <div className="main-categories-grid">
               {isCategoriesLoading ? (
-                <div className="loading">იტვირთება...</div>
+                <div className="loading">
+                  <HeartLoading size="medium" />
+                </div>
               ) : categories.length > 0 ? (
                 categories.map((category) => (
                   <div
@@ -271,7 +274,9 @@ export function ProductFilters({
                       selectedCategoryId === (category.id || category._id) && (
                         <div className="subcategories-overlay">
                           {isSubcategoriesLoading ? (
-                            <div className="loading">იტვირთება...</div>
+                            <div className="loading">
+                              <HeartLoading size="medium" />
+                            </div>
                           ) : (
                             subcategories.map((sub) => (
                               <div

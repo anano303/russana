@@ -6,8 +6,9 @@ import "./TopItems.css";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import { Product } from "@/types";
-import LoadingAnim from "../loadingAnim/loadingAnim";
+// import LoadingAnim from "../loadingAnim/loadingAnim";
 import { ProductCard } from "@/modules/products/components/product-card";
+import HeartLoading from "../HeartLoading/HeartLoading";
 
 const TopItems: React.FC = () => {
   const [isScrolling, setIsScrolling] = useState(false);
@@ -68,7 +69,7 @@ const TopItems: React.FC = () => {
   if (isLoading) {
     return (
       <div className="top-items-container loading">
-        <LoadingAnim />
+        <HeartLoading size="medium" />
       </div>
     );
   }
