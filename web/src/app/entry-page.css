@@ -1,0 +1,36 @@
+/* Hide the header and footer when the entry page is shown */
+.entry-page-active header,
+.entry-page-active footer,
+.entry-page-active #chat-button,
+.entry-page-active .site-timer-container {
+  display: none !important;
+}
+
+/* Make the entry page take up the full viewport */
+.entry-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 9999;
+  background-color: black;
+}
+
+/* Style for the entry button */
+.entry-button {
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.entry-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
