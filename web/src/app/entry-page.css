@@ -15,22 +15,5 @@
   height: 100vh;
   z-index: 9999;
   background-color: #e91e63;
-}
-
-/* Style for the entry button */
-.entry-button {
-  margin-top: 2rem;
-  padding: 0.75rem 1.5rem;
-  background-color: white;
-  color: black;
-  border: none;
-  border-radius: 0.25rem;
-  font-size: 1.125rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.entry-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  
 }

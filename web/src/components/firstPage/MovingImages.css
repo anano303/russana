@@ -13,16 +13,13 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url(https://media.gettyimages.com/id/1209377324/photo/3d-rendering-abstract-background.jpg?s=2048x2048&w=gi&k=20&c=2DvHqPz9ty-Jp2VobwKV7kQL-5t1yx9bad1ZTy9Pxcc=);
+  background-image: url(/bgImage.jpg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.4; /* 🎯 აქ აკონტროლებ გამჭვირვალობას */
   z-index: -1;
 }
-
-
-
 
 .floating-item {
   position: absolute;
@@ -31,7 +28,7 @@
   animation: flyAndGrow 30s ease-in-out forwards;
   transform: translate(-50%, -50%);
   pointer-events: auto;
-   /* pointer-events: none; */
+  /* pointer-events: none; */
 }
 
 .image-wrapper2 {
@@ -67,7 +64,8 @@
     opacity: 1;
   }
   70% {
-    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(2.5);
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y)))
+      scale(2.5);
     opacity: 0.8;
   }
   100% {

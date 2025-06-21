@@ -111,22 +111,21 @@ main {
   }
 }
 
-
-
 .entry-button {
   position: relative;
   z-index: 99999;
   margin-top: 0px;
   padding: 8px 0px;
-  background-color: #CF0A0A33;
-  color: #CF0A0A;
+  background-color: #f9f9f96e;
+  color: #cf0a0a;
   font-size: 20px;
   font-weight: 800;
   /* border-radius: 9999px; */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  border: 2px solid #CF0A0A;
+  border: 2px solid #cf0a0a;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 15px;
 }
 
 .entry-button:hover {
