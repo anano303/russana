@@ -110,3 +110,25 @@ main {
     opacity: 0;
   }
 }
+
+
+
+.entry-button {
+  position: relative;
+  z-index: 99999;
+  margin-top: 0px;
+  padding: 8px 0px;
+  background-color: #CF0A0A33;
+  color: #CF0A0A;
+  font-size: 20px;
+  font-weight: 800;
+  /* border-radius: 9999px; */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border: 2px solid #CF0A0A;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.entry-button:hover {
+  background-color: #cf0a0a4b;
+}

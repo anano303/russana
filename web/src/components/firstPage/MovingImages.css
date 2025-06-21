@@ -1,0 +1,136 @@
+.moving-images-absolute-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.moving-images-absolute-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url(https://media.gettyimages.com/id/1209377324/photo/3d-rendering-abstract-background.jpg?s=2048x2048&w=gi&k=20&c=2DvHqPz9ty-Jp2VobwKV7kQL-5t1yx9bad1ZTy9Pxcc=);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.4; /* 🎯 აქ აკონტროლებ გამჭვირვალობას */
+  z-index: -1;
+}
+
+
+
+
+.floating-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  animation: flyAndGrow 30s ease-in-out forwards;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+   /* pointer-events: none; */
+}
+
+.image-wrapper {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.floating-image {
+  width: 100%;
+  height: 100%;
+}
+
+.overlay-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: scale(0.5); /* რომ იმიჯს არ გადაფაროს ძალიან */
+}
+
+@keyframes flyAndGrow {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+  10% {
+    opacity: 1;
+  }
+  70% {
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(2.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(3);
+    opacity: 0;
+  }
+}
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+.popup-content {
+  position: relative;
+  width: 80vw;
+  height: 80vh;
+  max-width: 600px;
+  max-height: 600px;
+  cursor: default;
+}
+
+.popup-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.popup-beep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: all;
+  transform: scale(0.5);
+}
+.overlay-icon {
+  position: absolute;
+  pointer-events: none;
+}
+
+.popup-beep {
+  position: absolute;
+  pointer-events: all;
+}
+.overlay-icon {
+  position: absolute;
+  pointer-events: none;
+}
+
+.popup-beep {
+  position: absolute;
+  pointer-events: all;
+}
