@@ -20,7 +20,7 @@ interface OverlayStyle {
 
 interface AnimatedImage {
   id: string;
-  src: any;
+  src: StaticImageData;
   shape: ShapeType;
   overlayStyle: OverlayStyle;
   popupOverlayStyle: OverlayStyle;
@@ -28,8 +28,10 @@ interface AnimatedImage {
   y: string;
 }
 
+import { StaticImageData } from "next/image";
+
 const imageConfigs: {
-  src: any;
+  src: StaticImageData;
   shape: ShapeType;
   overlayStyle: OverlayStyle;
   popupOverlayStyle: OverlayStyle;
@@ -148,12 +150,12 @@ const MovingImages = () => {
             key={img.id}
             className="floating-item"
             style={{
-              ["--x" as any]: img.x,
-              ["--y" as any]: img.y,
+              ["--x" as string]: img.x,
+              ["--y" as string]: img.y,
             }}
             onClick={() => setSelectedImage(img)}
           >
-            <div className="image-wrapper" style={{ position: "relative", width: "60px", height: "60px" }}>
+            <div className="image-wrapper2" style={{ position: "relative", width: "60px", height: "60px" }}>
               <Image
                 src={img.src}
                 alt="animated-img"

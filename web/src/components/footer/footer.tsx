@@ -120,7 +120,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               // className="copyright"
             >
-              <text className="bestsoft">BESTSOFT.GE</text>
+              <span className="bestsoft">BESTSOFT.GE</span>
             </a>
             </p>
             </div>

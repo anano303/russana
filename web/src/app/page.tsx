@@ -25,9 +25,8 @@
 
 // export default Home;
 
-
 import EntryGate from "./EntryGate";
 
 export default function Home() {
-  return <EntryGate/>;
+  return <EntryGate />;
 }
