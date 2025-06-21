@@ -317,4 +317,7 @@
     margin: 0 auto;
     transform: rotate(-30deg) translateX(0); /* Reset any offset */
   }
+  .footer-message-container {
+    align-items: center;
+  }
 }
