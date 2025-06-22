@@ -34,7 +34,7 @@ export default function Header() {
         <nav className="main-nav">
           <ul>
             <li>
-              <Link href="/" className="nav-link">
+              <Link href="/home" className="nav-link">
                 <Image src={home} alt="home" />
                 <span>{t("navigation.home")}</span>
               </Link>
@@ -66,7 +66,7 @@ export default function Header() {
         </nav>
 
         <div className="logo-container">
-          <Link href="/">
+          <Link href="/home">
             <Image
               src={logo}
               width={125}

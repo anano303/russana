@@ -22,7 +22,7 @@ type LoginFormValues = z.infer<typeof schema>;
 export function LoginForm() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/";
+  const redirect = searchParams.get("redirect") || "/home";
   const router = useRouter();
 
   const [loginError, setLoginError] = useState<string | null>(null);

@@ -21,6 +21,7 @@ async function bootstrap() {
       const allowedOrigins = [
         'https://www.russana.vercel.app',
         'https://russana.vercel.app',
+        'https://russana.vercel.app/home',
         'http://localhost:3000',
         'https://localhost:3000',
         'http://localhost:4000',

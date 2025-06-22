@@ -18,7 +18,7 @@ export default function Footer() {
               {/* <h3 className="footer-heading">{t("footer.quickLinks")}</h3> */}
               <ul className="footer-link-list">
                 <li>
-                  <Link href="/" className="footer-link">
+                  <Link href="/home" className="footer-link">
                     {/* {t("navigation.shop")} */}
                     მთავარი გვერდი
                   </Link>
