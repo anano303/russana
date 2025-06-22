@@ -118,7 +118,7 @@ export default function UserMenu() {
                 className="dropdown-item"
                 onClick={() => setIsOpen(false)}
               >
-                კატეგორიები
+                  {t("shop.categories")}
               </Link>
               <Link
                 href="/admin/users"
