@@ -13,6 +13,8 @@ export const TRANSLATIONS: Translations = {
     // Navigation
     navigation: {
       home: "მთავარი",
+      homePage: "მთავარი გვერდი",
+
       shop: "პროდუქტები",
       auction: "აუქციონი",
       myOrders: "ჩემი შეკვეთები",
@@ -25,9 +27,7 @@ export const TRANSLATIONS: Translations = {
       products: "პროდუქტები",
       users: "მომხმარებლები",
       logout: "გასვლა",
-    },
-
-    // Shop
+    }, // Shop
     shop: {
       allartworks: "ყველა პროდუქტი",
       artistWorks: "-ის პროდუქტები",
@@ -54,6 +54,28 @@ export const TRANSLATIONS: Translations = {
       kids: "ბავშვები",
       ageGroup: "ასაკობრივი ჯგუფი",
       newest: "უახლესი",
+      // Filter-specific translations
+      clear: "გასუფთავება",
+      noCategories: "კატეგორიები არ მოიძებნა",
+      ageGroupFilter: "ასაკობრივი ჯგუფი",
+      sizes: "ზომები",
+      colors: "ფერები",
+      brands: "ბრენდები",
+      sortBy: "სორტირება",
+      min: "მინ",
+      max: "მაქს",
+      applyPrice: "დადასტურება",
+      priceLowHigh: "ფასი: დაბლიდან მაღლა",
+      priceHighLow: "ფასი: მაღლიდან დაბლა",
+      nameAZ: "სახელი: ა-ჰ",
+      nameZA: "სახელი: ჰ-ა",
+      ratingHigh: "რეიტინგი: მაღალი",
+      clearAllFilters: "ფილტრების გასუფთავება",
+      filterToggle: "ფილტრი",
+      close: "დახურვა",
+      // Error messages
+      errorLoadingCategories: "კატეგორიების ჩატვირთვა ვერ მოხერხდა",
+      errorLoadingSubcategories: "ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა",
     },
 
     // Product Details
@@ -218,13 +240,15 @@ export const TRANSLATIONS: Translations = {
       subscribePrompt: "გამოიწერეთ სიახლეები და მიიღეთ განახლებები",
       subscribe: "გამოწერა",
       emailPlaceholder: "შეიყვანეთ თქვენი ელფოსტა",
+      beforeYouLeave: "სანამ წახვალ დააპიპინეეე!!!",
     },
-
-    // Home page
     home: {
       heroTitle: "შეარჩიე ხელოვანების პროდუქტები ან გაყიდე შენი 🖌️",
       heroSubtitle:
         "პერსონალური და ხელნაკეთი პროდუქტები ქართველი ხელოვანებისგან",
+      mostPopular: "ყველაზე პოპულარული",
+      welcomeMessage: "მოგესალმებით საპიპინეთშიიიიიიიი !!!",
+      pipSound: "პიიიპ პიიიიპ!",
     },
 
     // Timer translations
@@ -623,6 +647,7 @@ export const TRANSLATIONS: Translations = {
     // Navigation
     navigation: {
       home: "Home",
+      homePage: "Home Page",
       shop: "Shop Products",
       auction: "Auction",
       myOrders: "My Orders",
@@ -635,9 +660,7 @@ export const TRANSLATIONS: Translations = {
       products: "Products",
       users: "Users",
       logout: "Logout",
-    },
-
-    // Shop
+    }, // Shop
     shop: {
       allArtworks: "All Products",
       allCategories: "All Categories",
@@ -663,6 +686,28 @@ export const TRANSLATIONS: Translations = {
       kids: "Kids",
       ageGroup: "Age Group",
       newest: "Latest",
+      // Filter-specific translations
+      clear: "Clear",
+      noCategories: "No categories found",
+      ageGroupFilter: "Age Group",
+      sizes: "Sizes",
+      colors: "Colors",
+      brands: "Brands",
+      sortBy: "Sort By",
+      min: "Min",
+      max: "Max",
+      applyPrice: "Apply",
+      priceLowHigh: "Price: Low to High",
+      priceHighLow: "Price: High to Low",
+      nameAZ: "Name: A-Z",
+      nameZA: "Name: Z-A",
+      ratingHigh: "Rating: High",
+      clearAllFilters: "Clear All Filters",
+      filterToggle: "Filters",
+      close: "Close",
+      // Error messages
+      errorLoadingCategories: "Failed to load categories",
+      errorLoadingSubcategories: "Failed to load subcategories",
     },
 
     // Product Details
@@ -794,6 +839,13 @@ export const TRANSLATIONS: Translations = {
       subscribePrompt: "Subscribe to our newsletter for updates",
       subscribe: "Subscribe",
       emailPlaceholder: "Enter your email",
+      beforeYouLeave: "Before you go, piiip it out!!!",
+    },
+
+    home: {
+      mostPopular: "Most Popular",
+      welcomeMessage: "Welcome to Pipiii World !!!",
+      pipSound: "Piip Piip!",
     },
 
     // Timer translations

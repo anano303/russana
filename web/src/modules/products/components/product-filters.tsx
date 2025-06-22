@@ -46,7 +46,7 @@ export function ProductFilters({
   selectedBrand,
   priceRange = [0, 1000],
 }: FilterProps) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [minPrice, setMinPrice] = useState(priceRange[0]);
   const [maxPrice, setMaxPrice] = useState(priceRange[1]);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +77,7 @@ export function ProductFilters({
         return response.json();
       } catch (err) {
         console.error("Failed to fetch categories:", err);
-        setError("კატეგორიების ჩატვირთვა ვერ მოხერხდა");
+        setError(t("shop.errorLoadingCategories"));
         return [];
       }
     },
@@ -104,7 +104,7 @@ export function ProductFilters({
         return response.json();
       } catch (err) {
         console.error("Failed to fetch subcategories:", err);
-        setError("ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა");
+        setError(t("shop.errorLoadingSubcategories"));
         return [];
       }
     },
@@ -279,7 +279,7 @@ export function ProductFilters({
     setTimeout(() => {
       setShowFilters(false);
       setIsClosing(false);
-    }, 500); // მატჩეს ანიმაციის ხანგრძლივობას
+    }, 500); // matches animation duration
   };
 
   return (
@@ -289,7 +289,7 @@ export function ProductFilters({
         {error && (
           <div className="filter-error">
             <p>{error}</p>
-            <button onClick={() => setError(null)}>დახურვა</button>
+            <button onClick={() => setError(null)}>{t("shop.close")}</button>
           </div>
         )}
 
@@ -302,7 +302,7 @@ export function ProductFilters({
                 onClick={clearCategoryFilter}
                 aria-label="Clear category filter"
               >
-                {language === "en" ? "Clear" : "გასუფთავება"}
+                {t("shop.clear")}
               </button>
             )}
           </div>
@@ -357,7 +357,7 @@ export function ProductFilters({
                   </div>
                 ))
               ) : (
-                <div className="no-data">კატეგორიები არ მოიძებნა</div>
+                <div className="no-data">{t("shop.noCategories")}</div>
               )}
             </div>
           </div>
@@ -370,7 +370,7 @@ export function ProductFilters({
           className="filter-toggle-btn"
           onClick={() => setShowFilters(true)}
         >
-          {language === "en" ? "Filters" : "ფილტრი"}
+          {t("shop.filterToggle")}
         </button>
       )}
 
@@ -391,16 +391,15 @@ export function ProductFilters({
             getAvailableAttributes("ageGroups").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">
-                    {language === "en" ? "Age Group" : "ასაკობრივი ჯგუფი"}
-                  </h3>
+                  {" "}
+                  <h3 className="filter-title">{t("shop.ageGroupFilter")}</h3>
                   {selectedAgeGroup && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onAgeGroupChange("")}
                       aria-label="Clear age group filter"
                     >
-                      {language === "en" ? "Clear" : "გასუფთავება"}
+                      {t("shop.clear")}
                     </button>
                   )}
                 </div>
@@ -431,16 +430,15 @@ export function ProductFilters({
             getAvailableAttributes("sizes").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">
-                    {language === "en" ? "Sizes" : "ზომები"}
-                  </h3>
+                  {" "}
+                  <h3 className="filter-title">{t("shop.sizes")}</h3>
                   {selectedSize && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onSizeChange("")}
                       aria-label="Clear size filter"
                     >
-                      {language === "en" ? "Clear" : "გასუფთავება"}
+                      {t("shop.clear")}
                     </button>
                   )}
                 </div>
@@ -468,16 +466,15 @@ export function ProductFilters({
             getAvailableAttributes("colors").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">
-                    {language === "en" ? "Colors" : "ფერები"}
-                  </h3>
+                  {" "}
+                  <h3 className="filter-title">{t("shop.colors")}</h3>
                   {selectedColor && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onColorChange("")}
                       aria-label="Clear color filter"
                     >
-                      {language === "en" ? "Clear" : "გასუფთავება"}
+                      {t("shop.clear")}
                     </button>
                   )}
                 </div>
@@ -506,16 +503,15 @@ export function ProductFilters({
             availableBrands.length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">
-                    {language === "en" ? "Brands" : "ბრენდები"}
-                  </h3>
+                  {" "}
+                  <h3 className="filter-title">{t("shop.brands")}</h3>
                   {selectedBrand && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onBrandChange("")}
                       aria-label="Clear brand filter"
                     >
-                      {language === "en" ? "Clear" : "გასუფთავება"}
+                      {t("shop.clear")}
                     </button>
                   )}
                 </div>
@@ -540,9 +536,8 @@ export function ProductFilters({
             )}{" "}
           {/* Price Range Filter */}
           <div className="filter-section">
-            <h3 className="filter-title">
-              {language === "en" ? "Price Range" : "ფასის დიაპაზონი"}
-            </h3>
+            {" "}
+            <h3 className="filter-title">{t("shop.priceRange")}</h3>
             <div className="price-range">
               <div className="price-inputs">
                 <input
@@ -553,7 +548,7 @@ export function ProductFilters({
                     const value = Number(e.target.value);
                     setMinPrice(value >= 0 ? value : 0);
                   }}
-                  placeholder={language === "en" ? "Min" : "მინ"}
+                  placeholder={t("shop.min")}
                   className="price-input"
                 />
                 <span className="price-separator">-</span>
@@ -565,7 +560,7 @@ export function ProductFilters({
                     const value = Number(e.target.value);
                     setMaxPrice(value >= minPrice ? value : minPrice);
                   }}
-                  placeholder={language === "en" ? "Max" : "მაქს"}
+                  placeholder={t("shop.max")}
                   className="price-input"
                 />
                 <button
@@ -573,16 +568,15 @@ export function ProductFilters({
                   onClick={handlePriceChange}
                   aria-label="Apply price filter"
                 >
-                  დადასტურება
+                  {t("shop.applyPrice")}
                 </button>
               </div>
             </div>
           </div>{" "}
           {/* Sort Options */}
           <div className="filter-section">
-            <h3 className="filter-title">
-              {language === "en" ? "Sort By" : "სორტირება"}
-            </h3>
+            {" "}
+            <h3 className="filter-title">{t("shop.sortBy")}</h3>
             <div className="sort-options">
               <select
                 className="sort-select"
@@ -595,28 +589,13 @@ export function ProductFilters({
                   });
                 }}
               >
-                <option value="createdAt-desc">
-                  {language === "en" ? "Newest" : "უახლესი"}
-                </option>
-                <option value="price-asc">
-                  {language === "en"
-                    ? "Price: Low to High"
-                    : "ფასი: დაბლიდან მაღლა"}
-                </option>
-                <option value="price-desc">
-                  {language === "en"
-                    ? "Price: High to Low"
-                    : "ფასი: მაღლიდან დაბლა"}
-                </option>
-                <option value="name-asc">
-                  {language === "en" ? "Name: A-Z" : "სახელი: ა-ჰ"}
-                </option>
-                <option value="name-desc">
-                  {language === "en" ? "Name: Z-A" : "სახელი: ჰ-ა"}
-                </option>
-                <option value="rating-desc">
-                  {language === "en" ? "Rating: High" : "რეიტინგი: მაღალი"}
-                </option>
+                {" "}
+                <option value="createdAt-desc">{t("shop.newest")}</option>{" "}
+                <option value="price-asc">{t("shop.priceLowHigh")}</option>{" "}
+                <option value="price-desc">{t("shop.priceHighLow")}</option>{" "}
+                <option value="name-asc">{t("shop.nameAZ")}</option>{" "}
+                <option value="name-desc">{t("shop.nameZA")}</option>{" "}
+                <option value="rating-desc">{t("shop.ratingHigh")}</option>
               </select>
             </div>
           </div>
@@ -635,9 +614,7 @@ export function ProductFilters({
                 onClick={resetAllFilters}
                 aria-label="Clear all filters"
               >
-                {language === "en"
-                  ? "Clear All Filters"
-                  : "ფილტრების გასუფთავება"}
+                {t("shop.clearAllFilters")}
               </button>
             </div>
           )}

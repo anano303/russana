@@ -2,7 +2,7 @@ import { useCart } from "../context/cart-context";
 import Image from "next/image";
 import Link from "next/link";
 import "./cart-icon.css";
-import { ShoppingCart } from "lucide-react";
+// import { ShoppingCart } from "lucide-react";
 import { useLanguage } from "@/hooks/LanguageContext";
 import cart from "../../../assets/icons/cart.png"; // Assuming you have a cart icon image
 

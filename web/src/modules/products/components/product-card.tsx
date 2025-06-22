@@ -32,7 +32,7 @@ export function ProductCard({
   return (
     <div className={`product-card ${theme} ${className}`}>
       <Link href={`/products/${product._id}`}>
-       <div className="heart-shape"></div>
+        <div className="heart-shape"></div>
         <div className="product-image">
           <Image
             src={productImage}
@@ -68,11 +68,12 @@ export function ProductCard({
           >
             <span className="author">{language === "en" ? "Author: " : "ავტორი: "}</span>
             {product.brand}
-          </p> */}
-
+          </p> */}{" "}
           <div className="product-details">
             <div className="priceAndRaiting">
-              <h3 className="product-price">{product.price} ლარი </h3>
+              <h3 className="product-price">
+                {product.price} {language === "en" ? "GEL" : "ლარი"}{" "}
+              </h3>
             </div>
           </div>
         </div>
@@ -81,9 +82,12 @@ export function ProductCard({
         productId={product._id}
         countInStock={product.countInStock}
         className="addButtonCart"
-      /> */}
-       <Link href={`/products/${product._id}`}>
-      <button className="buyBtn"> იყიდე </button>
+      /> */}{" "}
+      <Link href={`/products/${product._id}`}>
+        <button className="buyBtn">
+          {" "}
+          {language === "en" ? "Buy" : "იყიდე"}{" "}
+        </button>
       </Link>
     </div>
   );

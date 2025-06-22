@@ -37,9 +37,9 @@ function AddToCartButton({
   disabled?: boolean;
 }) {
   const [pending, setPending] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { addToCart } = useCart();
-  const { t } = useLanguage();
-
+  const { t, language } = useLanguage();
   const handleClick = async () => {
     setPending(true);
     try {
@@ -51,17 +51,22 @@ function AddToCartButton({
         selectedColor,
         selectedAgeGroup
       );
-      toast({
-        title: "პროდუქტი დაემატა",
-        description: "პროდუქტი წარმატებით დაემატა კალათაში",
-      });
+
+      // Show success message
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000); // Hide after 3 seconds
+
+      console.log("Success message shown"); // Debug log
     } catch (error) {
+      console.error("Add to cart error:", error); // Debug log
       toast({
-        title: "Error",
+        title: language === "en" ? "Error" : "შეცდომა",
         description:
           error instanceof Error
             ? error.message
-            : "Failed to add product to cart",
+            : language === "en"
+            ? "Failed to add product to cart"
+            : "პროდუქტის კალათაში დამატება ვერ მოხერხდა",
         variant: "destructive",
       });
     } finally {
@@ -79,19 +84,59 @@ function AddToCartButton({
       </button>
     );
   }
-
   return (
-    <button
-      className={`add-to-cart-button ${className}`}
-      onClick={handleClick}
-      disabled={pending}
-    >
-      {pending ? (
-        <Loader2 className="animate-spin" />
-      ) : (
-        t("cart.addToCart") || "კალათაში დამატება"
+    <>
+      {/* Success Message */}
+      {showSuccessMessage && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            padding: "15px 20px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            zIndex: 9999,
+            fontSize: "16px",
+            fontWeight: "500",
+            animation: "slideIn 0.3s ease-out",
+          }}
+        >
+          ✅{" "}
+          {language === "en"
+            ? "Product successfully added to cart!"
+            : "პროდუქტი წარმატებით დაემატა კალათაში!"}
+        </div>
       )}
-    </button>
+
+      <button
+        className={`add-to-cart-button ${className}`}
+        onClick={handleClick}
+        disabled={pending}
+      >
+        {pending ? (
+          <Loader2 className="animate-spin" />
+        ) : (
+          t("cart.addToCart") || "კალათაში დამატება"
+        )}
+      </button>
+
+      {/* Add CSS animation */}
+      <style jsx>{`
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
+    </>
   );
 }
 
@@ -277,17 +322,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
         {/* Right Column - Product Info */}
         <div className="product-info-details">
-          <h1 className="product-title">{displayName}</h1>
-
+          <h1 className="product-title">{displayName}</h1>{" "}
           <div className="price-section">
-            <span className="price">{product.price} ლარი </span>
+            <span className="price">
+              {product.price} {language === "en" ? "GEL" : "ლარი"}{" "}
+            </span>
           </div>
-
           <ShareButtons
             url={typeof window !== "undefined" ? window.location.href : ""}
             title={`Check out ${displayName} by ${product.brand} on Russana`}
           />
-
           {!isOutOfStock && (
             <div className="product-options-container">
               {" "}
@@ -383,7 +427,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
             </div>
           )}
-
           <div className="tabs">
             <h3>{t("product.details") || "აღწერა"} : </h3>
             <p>{displayDescription}</p>
@@ -408,7 +451,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               }
             />
           </div>
-
           {/* Fullscreen Image Modal */}
           {isFullscreenOpen && (
             <div className="fullscreen-modal" onClick={closeFullscreen}>

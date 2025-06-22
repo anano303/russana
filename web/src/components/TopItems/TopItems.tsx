@@ -9,8 +9,10 @@ import { Product } from "@/types";
 // import LoadingAnim from "../loadingAnim/loadingAnim";
 import { ProductCard } from "@/modules/products/components/product-card";
 import HeartLoading from "../HeartLoading/HeartLoading";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 const TopItems: React.FC = () => {
+  const { t } = useLanguage();
   const [isScrolling, setIsScrolling] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -76,10 +78,10 @@ const TopItems: React.FC = () => {
 
   return (
     <div className="top-items-container">
+      {" "}
       <div className="top-items-title-container">
-        <h2 className="top-items-title">ყველაზე პოპულარული</h2>
+        <h2 className="top-items-title">{t("home.mostPopular")}</h2>
       </div>
-
       <div
         ref={gridRef}
         className={`top-items-grid ${isScrolling ? "scrolling" : ""}`}
