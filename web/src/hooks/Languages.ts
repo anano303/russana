@@ -525,7 +525,6 @@ export const TRANSLATIONS: Translations = {
       soulartDelivery: "SoulArt-ის კურიერი",
     },
 
-    // Admin Products
     adminProducts: {
       products: "პროდუქტები",
       users: "მომხმარებლები",
@@ -550,6 +549,53 @@ export const TRANSLATIONS: Translations = {
       next: "შემდეგი",
       page: "გვერდი",
       of: "-დან",
+      // Product form translations
+      productName: "პროდუქტის სახელი",
+      productNameGe: "პროდუქტის სახელი (ქართულად)",
+      productNameEn: "პროდუქტის სახელი (ინგლისურად)",
+      description: "აღწერა",
+      descriptionGe: "აღწერა (ქართულად)",
+      descriptionEn: "აღწერა (ინგლისურად)",
+      price: "ფასი",
+      category: "კატეგორია",
+      subcategory: "ქვეკატეგორია",
+      selectCategory: "აირჩიეთ კატეგორია",
+      selectSubcategory: "აირჩიეთ ქვეკატეგორია",
+      ageGroups: "ასაკობრივი ჯგუფები",
+      sizes: "ზომები",
+      colors: "ფერები",
+      stock: "რაოდენობა მარაგში",
+      brand: "ბრენდი",
+      images: "პროდუქტის სურათები",
+      brandLogo: "ბრენდის ლოგო (არასავალდებულო)",
+      createProduct: "პროდუქტის დამატება",
+      updateProduct: "პროდუქტის განახლება",
+      productCreated: "პროდუქტი წარმატებით დაემატა!",
+      productUpdated: "პროდუქტი წარმატებით განახლდა!",
+      loading: "იტვირთება...",
+      selectAtLeastOneImage: "გთხოვთ აირჩიოთ მინიმუმ ერთი სურათი",
+      enterBrandName: "შეიყვანეთ ბრენდის სახელი",
+      productNameEnPlaceholder: "Product name in English (optional)",
+      descriptionEnPlaceholder: "Product description in English (optional)",
+      // Error messages
+      selectCategoryError: "გთხოვთ აირჩიოთ კატეგორია",
+      selectSubcategoryError: "გთხოვთ აირჩიოთ ქვეკატეგორია",
+      invalidImageFormat:
+        "მხოლოდ JPG, JPEG და PNG ფორმატის სურათებია დაშვებული",
+      noImageSelected: "მინიმუმ ერთი სურათი მაინც უნდა აიტვირთოს",
+      deliveryDaysRequired:
+        "გთხოვთ მიუთითოთ მიწოდების დრო თუ გამყიდველი ასრულებს მიწოდებას.",
+      authError: "ავტორიზაცია ვერ მოხერხდა. გთხოვთ, შეხვიდეთ თავიდან.",
+      createUpdateError: "ნამუშევრის დამატება/განახლება ვერ მოხერხდა", // Success messages
+      productAddedSuccess: "პროდუქტი წარმატებით დაემატა!",
+      productUpdatedSuccess: "პროდუქტი წარმატებით განახლდა!",
+      productCreatedToast: "პროდუქტი დაემატა",
+      productUpdatedToast: "პროდუქტი განახლდა",
+      successTitle: "წარმატებით!", // Buttons and actions
+      removeImage: "✕",
+      uploadReminder: "გთხოვთ აირჩიოთ მინიმუმ ერთი სურათი",
+      fixErrorsBeforeSubmit: "გასწორეთ შეცდომები გაგზავნამდე",
+      requiredFields: "სავალდებულო ველები",
     },
   },
 
@@ -986,9 +1032,7 @@ export const TRANSLATIONS: Translations = {
       total: "Total",
       sellerDelivery: "Ships by Author",
       soulartDelivery: "SoulArt Courier",
-    },
-
-    // Admin Products
+    }, // Admin Products
     adminProducts: {
       products: "Products",
       users: "Users",
@@ -1016,7 +1060,6 @@ export const TRANSLATIONS: Translations = {
       confirmDeleteUser: "Are you sure you want to delete this user?",
       searchUsers: "Search users...",
       noUsersFound: "No users found",
-      loading: "Loading...",
       totalUsers: "Total Users",
       activeUsers: "Active Users",
       status: "Status",
@@ -1035,6 +1078,52 @@ export const TRANSLATIONS: Translations = {
       deleteSelected: "Delete Selected",
       activateSelected: "Activate Selected",
       deactivateSelected: "Deactivate Selected",
+      // Product form translations
+      productName: "Product Name",
+      productNameGe: "Product Name (Georgian)",
+      productNameEn: "Product Name (English)",
+      description: "Description",
+      descriptionGe: "Description (Georgian)",
+      descriptionEn: "Description (English)",
+      price: "Price",
+      category: "Category",
+      subcategory: "Subcategory",
+      selectCategory: "Select Category",
+      selectSubcategory: "Select Subcategory",
+      ageGroups: "Age Groups",
+      sizes: "Sizes",
+      colors: "Colors",
+      stock: "Stock Quantity",
+      brand: "Brand",
+      images: "Product Images",
+      brandLogo: "Brand Logo (Optional)",
+      createProduct: "Create Product",
+      updateProduct: "Update Product",
+      productCreated: "Product created successfully!",
+      productUpdated: "Product updated successfully!",
+      loading: "Loading...",
+      selectAtLeastOneImage: "Please select at least one image",
+      enterBrandName: "Enter brand name",
+      productNameEnPlaceholder: "Product name in English (optional)",
+      descriptionEnPlaceholder: "Product description in English (optional)",
+      // Error messages
+      selectCategoryError: "Please select a category",
+      selectSubcategoryError: "Please select a subcategory",
+      invalidImageFormat: "Only JPG, JPEG and PNG image formats are allowed",
+      noImageSelected: "At least one image must be uploaded",
+      deliveryDaysRequired:
+        "Please specify delivery time if seller handles delivery.",
+      authError: "Authorization failed. Please log in again.",
+      createUpdateError: "Failed to add/update product", // Success messages
+      productAddedSuccess: "Product added successfully!",
+      productUpdatedSuccess: "Product updated successfully!",
+      productCreatedToast: "Product Created",
+      productUpdatedToast: "Product Updated",
+      successTitle: "Success!", // Buttons and actions
+      removeImage: "✕",
+      uploadReminder: "Please select at least one image",
+      fixErrorsBeforeSubmit: "Fix errors before submitting",
+      requiredFields: "Required fields",
     },
 
     // Admin Categories

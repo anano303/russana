@@ -51,7 +51,7 @@ export function CreateProductForm({
   onSuccess,
   isEdit = !!initialData?._id,
 }: CreateProductFormProps) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const router = useRouter();
   const { user } = useUser();
   const isSeller = user?.role?.toLowerCase() === "seller";
@@ -429,13 +429,13 @@ export function CreateProductForm({
 
       // Validate required fields
       if (!selectedCategory) {
-        setServerError("გთხოვთ აირჩიოთ კატეგორია");
+        setServerError(t("adminProducts.selectCategoryError"));
         setPending(false);
         return;
       }
 
       if (!selectedSubcategory) {
-        setServerError("გთხოვთ აირჩიოთ ქვეკატეგორია");
+        setServerError(t("adminProducts.selectSubcategoryError"));
         setPending(false);
         return;
       }
@@ -448,33 +448,29 @@ export function CreateProductForm({
       ) {
         setErrors((prev) => ({
           ...prev,
-          images: "მხოლოდ JPG, JPEG და PNG ფორმატის სურათებია დაშვებული",
+          images: t("adminProducts.invalidImageFormat"),
         }));
         setPending(false);
         return;
-      }
-
-      // Verify we have at least one image
+      } // Verify we have at least one image
       if (formData.images.length === 0) {
         setErrors((prev) => ({
           ...prev,
-          images: "მინიმუმ ერთი სურათი მაინც უნდა აიტვირთოს",
+          images: t("adminProducts.noImageSelected"),
         }));
         setPending(false);
         return;
       }
 
       if (deliveryType === "SELLER" && (!minDeliveryDays || !maxDeliveryDays)) {
-        setServerError(
-          "გთხოვთ მიუთითოთ მიწოდების დრო თუ გამყიდველი ასრულებს მიწოდებას."
-        );
+        setServerError(t("adminProducts.deliveryDaysRequired"));
         setPending(false);
         return;
       }
 
       const token = getAccessToken();
       if (!token) {
-        setServerError("ავტორიზაცია ვერ მოხერხდა. გთხოვთ, შეხვიდეთ თავიდან.");
+        setServerError(t("adminProducts.authError"));
         setPending(false);
         setTimeout(() => {
           window.location.href = "/login?redirect=/admin/products";
@@ -573,7 +569,7 @@ export function CreateProductForm({
         // If no images are provided at all, throw an error
         setErrors((prev) => ({
           ...prev,
-          images: "მინიმუმ ერთი სურათი მაინც უნდა აიტვირთოს",
+          images: t("adminProducts.noImageSelected"),
         }));
         setPending(false);
         return;
@@ -585,11 +581,10 @@ export function CreateProductForm({
           JSON.parse(formDataToSend.get("existingImages") as string).length >
             0) ||
         formDataToSend.getAll("images").length > 0;
-
       if (!hasImages) {
         setErrors((prev) => ({
           ...prev,
-          images: "მინიმუმ ერთი სურათი მაინც უნდა აიტვირთოს",
+          images: t("adminProducts.noImageSelected"),
         }));
         setPending(false);
         return;
@@ -610,7 +605,7 @@ export function CreateProductForm({
       );
 
       if (!response.ok) {
-        let errorMessage = "ნამუშევრის დამატება/განახლება ვერ მოხერხდა";
+        let errorMessage = t("adminProducts.createUpdateError");
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
@@ -622,13 +617,15 @@ export function CreateProductForm({
 
       const data = await response.json();
       const successMessage = isEdit
-        ? "პროდუქტი წარმატებით განახლდა!"
-        : "პროდუქტი წარმატებით დაემატა!";
+        ? t("adminProducts.productUpdatedSuccess")
+        : t("adminProducts.productAddedSuccess");
       setSuccess(successMessage);
 
       toast({
-        title: isEdit ? "პროდუქტი განახლდა" : "პროდუქტი დაემატა",
-        description: "წარმატებით!",
+        title: isEdit
+          ? t("adminProducts.productUpdatedToast")
+          : t("adminProducts.productCreatedToast"),
+        description: t("adminProducts.successTitle"),
       });
 
       if (!isEdit) {
@@ -725,9 +722,9 @@ export function CreateProductForm({
           <div className="server-error">
             <p className="create-product-error text-center">{serverError}</p>
           </div>
-        )}
+        )}{" "}
         <div>
-          <label htmlFor="name">პროდუქტის სახელი (ქართულად)</label>
+          <label htmlFor="name">{t("adminProducts.productNameGe")}</label>
           <input
             id="name"
             name="name"
@@ -737,25 +734,25 @@ export function CreateProductForm({
             required
           />
           {errors.name && <p className="create-product-error">{errors.name}</p>}
-        </div>
-
+        </div>{" "}
         <div>
-          <label htmlFor="nameEn">პროდუქტის სახელი (ინგლისურად)</label>
+          <label htmlFor="nameEn">{t("adminProducts.productNameEn")}</label>
           <input
             id="nameEn"
             name="nameEn"
             value={formData.nameEn}
             onChange={handleChange}
             className="create-product-input"
-            placeholder="Product name in English (optional)"
+            placeholder={t("adminProducts.productNameEnPlaceholder")}
           />
           {errors.nameEn && (
             <p className="create-product-error">{errors.nameEn}</p>
           )}
-        </div>
-
+        </div>{" "}
         <div>
-          <label htmlFor="description">აღწერა (ქართულად)</label>
+          <label htmlFor="description">
+            {t("adminProducts.descriptionGe")}
+          </label>
           <textarea
             id="description"
             name="description"
@@ -767,25 +764,25 @@ export function CreateProductForm({
           {errors.description && (
             <p className="create-product-error">{errors.description}</p>
           )}
-        </div>
-
+        </div>{" "}
         <div>
-          <label htmlFor="descriptionEn">აღწერა (ინგლისურად)</label>
+          <label htmlFor="descriptionEn">
+            {t("adminProducts.descriptionEn")}
+          </label>
           <textarea
             id="descriptionEn"
             name="descriptionEn"
             value={formData.descriptionEn}
             onChange={handleChange}
             className="create-product-textarea"
-            placeholder="Product description in English (optional)"
+            placeholder={t("adminProducts.descriptionEnPlaceholder")}
           />
           {errors.descriptionEn && (
             <p className="create-product-error">{errors.descriptionEn}</p>
           )}
-        </div>
-
+        </div>{" "}
         <div>
-          <label htmlFor="price">ფასი</label>
+          <label htmlFor="price">{t("adminProducts.price")}</label>
           <input
             id="price"
             name="price"
@@ -799,10 +796,9 @@ export function CreateProductForm({
             <p className="create-product-error">{errors.price}</p>
           )}
         </div>
-
-        {/* New Category Structure */}
+        {/* New Category Structure */}{" "}
         <div>
-          <label htmlFor="category">კატეგორია</label>
+          <label htmlFor="category">{t("adminProducts.category")}</label>
           <select
             id="category"
             name="category"
@@ -814,7 +810,9 @@ export function CreateProductForm({
           >
             {" "}
             <option value="">
-              {isCategoriesLoading ? "Loading..." : "აირჩიეთ კატეგორია"}
+              {isCategoriesLoading
+                ? t("adminProducts.loading")
+                : t("adminProducts.selectCategory")}
             </option>
             {categories?.map((category) => (
               <option key={category.id} value={category.id}>
@@ -824,10 +822,9 @@ export function CreateProductForm({
               </option>
             ))}
           </select>
-        </div>
-
+        </div>{" "}
         <div>
-          <label htmlFor="subcategory">ქვეკატეგორია</label>
+          <label htmlFor="subcategory">{t("adminProducts.subcategory")}</label>
           <select
             id="subcategory"
             name="subcategory"
@@ -837,7 +834,7 @@ export function CreateProductForm({
             required
             disabled={!selectedCategory || isSubcategoriesLoading}
           >
-            <option value="">აირჩიეთ ქვეკატეგორია</option>
+            <option value="">{t("adminProducts.selectSubcategory")}</option>
             {subcategories?.map((subcategory) => (
               <option key={subcategory.id} value={subcategory.id}>
                 {language === "en" && subcategory.nameEn
@@ -847,13 +844,12 @@ export function CreateProductForm({
             ))}
           </select>
         </div>
-
         {/* Attributes Section */}
         {selectedSubcategory && (
           <div className="attributes-section">
             {availableAgeGroups.length > 0 && (
               <div className="attribute-group">
-                <h3>ასაკობრივი ჯგუფები</h3>
+                <h3>{t("adminProducts.ageGroups")}</h3>
                 <div className="attribute-options">
                   {availableAgeGroups.map((ageGroup) => (
                     <label key={ageGroup} className="attribute-checkbox">
@@ -873,7 +869,7 @@ export function CreateProductForm({
 
             {availableSizes.length > 0 && (
               <div className="attribute-group">
-                <h3>ზომები</h3>
+                <h3>{t("adminProducts.sizes")}</h3>
                 <div className="attribute-options">
                   {availableSizes.map((size) => (
                     <label key={size} className="attribute-checkbox">
@@ -891,7 +887,7 @@ export function CreateProductForm({
 
             {availableColors.length > 0 && (
               <div className="attribute-group">
-                <h3>ფერები</h3>
+                <h3>{t("adminProducts.colors")}</h3>
                 <div className="attribute-options">
                   {availableColors.map((color) => (
                     <label key={color} className="attribute-checkbox">
@@ -908,7 +904,6 @@ export function CreateProductForm({
             )}
           </div>
         )}
-
         {stocks &&
           stocks.map((stock) => (
             <div
@@ -931,10 +926,9 @@ export function CreateProductForm({
                 required
               />
             </div>
-          ))}
-
+          ))}{" "}
         <div>
-          <label htmlFor="countInStock">რაოდენობა მარაგში</label>
+          <label htmlFor="countInStock">{t("adminProducts.stock")}</label>
           <input
             id="countInStock"
             name="countInStock"
@@ -949,7 +943,6 @@ export function CreateProductForm({
             <p className="create-product-error">{errors.countInStock}</p>
           )}
         </div>
-
         {/* Delivery Section
         <div className="delivery-section">
           <h3>მიწოდების ტიპი</h3>
@@ -1003,24 +996,22 @@ export function CreateProductForm({
             </div>
           )}
         </div> */}
-
         <div>
-          <label htmlFor="brand">ბრენდი</label>
+          <label htmlFor="brand">{t("adminProducts.brand")}</label>
           <input
             id="brand"
             name="brand"
             value={formData.brand}
             onChange={handleChange}
-            placeholder="Enter brand name"
+            placeholder={t("adminProducts.enterBrandName")}
             className={"create-product-input"}
           />
           {errors.brand && (
             <p className="create-product-error">{errors.brand}</p>
           )}
         </div>
-
         <div>
-          <label htmlFor="images">პროდუქტის სურათები</label>
+          <label htmlFor="images">{t("adminProducts.images")}</label>
           <input
             id="images"
             name="images"
@@ -1032,7 +1023,7 @@ export function CreateProductForm({
           />
           {formData.images.length === 0 && (
             <p className="upload-reminder">
-              გთხოვთ აირჩიოთ მინიმუმ ერთი სურათი
+              {t("adminProducts.uploadReminder")}
             </p>
           )}
           <div className="image-preview-container">
@@ -1065,10 +1056,8 @@ export function CreateProductForm({
             <p className="create-product-error">{errors.images}</p>
           )}
         </div>
-
         <div>
-          <label htmlFor="brandLogo">ბრენდის ლოგო (არასავალდებულო)</label>
-
+          <label htmlFor="brandLogo">{t("adminProducts.brandLogo")}</label>
           <div className="brand-logo-container">
             {(user?.storeLogo || typeof formData.brandLogo === "string") && (
               <div className="image-preview">
@@ -1106,16 +1095,143 @@ export function CreateProductForm({
           </div>
           {errors.brandLogo && (
             <p className="create-product-error">{errors.brandLogo}</p>
-          )}
-        </div>
-
+          )}{" "}
+        </div>{" "}
+        {/* General Error Display */}
+        {Object.keys(errors).length > 0 && (
+          <div
+            className="general-errors-display"
+            style={{
+              backgroundColor: "#fef2f2",
+              border: "2px solid #ef4444",
+              borderRadius: "8px",
+              padding: "16px",
+              marginBottom: "16px",
+            }}
+          >
+            <h4
+              className="text-red-600 font-semibold mb-2"
+              style={{
+                color: "#dc2626",
+                fontWeight: "bold",
+                marginBottom: "8px",
+              }}
+            >
+              {t("adminProducts.fixErrorsBeforeSubmit")}:
+            </h4>
+            <ul className="text-red-600 text-sm space-y-1">
+              {Object.entries(errors).map(([field, error]) => (
+                <li
+                  key={field}
+                  style={{
+                    color: "#dc2626",
+                    fontSize: "14px",
+                    marginBottom: "4px",
+                  }}
+                >
+                  • {error}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {/* Validation Errors Display */}
+        {(!selectedCategory ||
+          !selectedSubcategory ||
+          formData.images.length === 0) && (
+          <div
+            className="validation-errors-display"
+            style={{
+              backgroundColor: "#fefce8",
+              border: "2px solid #eab308",
+              borderRadius: "8px",
+              padding: "16px",
+              marginBottom: "16px",
+            }}
+          >
+            <h4
+              className="text-yellow-600 font-semibold mb-2"
+              style={{
+                color: "#ca8a04",
+                fontWeight: "bold",
+                marginBottom: "8px",
+              }}
+            >
+              {t("adminProducts.requiredFields")}:
+            </h4>
+            <ul className="text-yellow-600 text-sm space-y-1">
+              {!selectedCategory && (
+                <li
+                  style={{
+                    color: "#ca8a04",
+                    fontSize: "14px",
+                    marginBottom: "4px",
+                  }}
+                >
+                  • {t("adminProducts.selectCategoryError")}
+                </li>
+              )}
+              {!selectedSubcategory && (
+                <li
+                  style={{
+                    color: "#ca8a04",
+                    fontSize: "14px",
+                    marginBottom: "4px",
+                  }}
+                >
+                  • {t("adminProducts.selectSubcategoryError")}
+                </li>
+              )}
+              {formData.images.length === 0 && (
+                <li
+                  style={{
+                    color: "#ca8a04",
+                    fontSize: "14px",
+                    marginBottom: "4px",
+                  }}
+                >
+                  • {t("adminProducts.noImageSelected")}
+                </li>
+              )}
+            </ul>
+          </div>
+        )}{" "}
         <button
           type="submit"
           className="create-product-button"
-          disabled={pending || !formData.name}
+          disabled={
+            pending ||
+            !formData.name ||
+            !selectedCategory ||
+            !selectedSubcategory ||
+            formData.images.length === 0 ||
+            Object.keys(errors).length > 0
+          }
+          style={{
+            opacity:
+              pending ||
+              !formData.name ||
+              !selectedCategory ||
+              !selectedSubcategory ||
+              formData.images.length === 0 ||
+              Object.keys(errors).length > 0
+                ? 0.5
+                : 1,
+            cursor:
+              pending ||
+              !formData.name ||
+              !selectedCategory ||
+              !selectedSubcategory ||
+              formData.images.length === 0 ||
+              Object.keys(errors).length > 0
+                ? "not-allowed"
+                : "pointer",
+          }}
         >
           {pending && <Loader2 className="loader" />}
-          {isEdit ? "პროდუქტის განახლება" : "პროდუქტის დამატება"}
+          {isEdit
+            ? t("adminProducts.updateProduct")
+            : t("adminProducts.createProduct")}
         </button>
       </form>
     </div>
