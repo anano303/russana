@@ -48,6 +48,16 @@ export class AgeGroupService {
   }
 
   async create(createAgeGroupDto: CreateAgeGroupDto): Promise<AgeGroup> {
+    console.log('=== AGE GROUP SERVICE CREATE DEBUG ===');
+    console.log('Service received DTO:', createAgeGroupDto);
+    console.log('DTO validation:', {
+      name: createAgeGroupDto.name,
+      nameType: typeof createAgeGroupDto.name,
+      nameEn: createAgeGroupDto.nameEn,
+      nameEnType: typeof createAgeGroupDto.nameEn,
+    });
+    console.log('================');
+
     const existingAgeGroup = await this.ageGroupModel
       .findOne({ name: createAgeGroupDto.name })
       .exec();

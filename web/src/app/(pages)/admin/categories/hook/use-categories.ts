@@ -659,11 +659,21 @@ export const useCreateAgeGroup = () => {
 
   return useMutation({
     mutationFn: async (data: AttributeInput) => {
-      // Transform data to match backend DTO
-      const ageGroupData = {
-        name: data.value || data.name,
-        nameEn: data.nameEn,
+      // Ensure we only send valid, non-undefined values
+      const ageGroupData: { name: string; nameEn?: string } = {
+        name: data.value || data.name || "",
       };
+
+      // Only add nameEn if it exists and is not empty
+      if (data.nameEn && data.nameEn.trim() !== "") {
+        ageGroupData.nameEn = data.nameEn.trim();
+      }
+
+      console.log("Creating age group with cleaned data:", {
+        input: data,
+        payload: ageGroupData,
+      });
+
       const response = await apiClient.post(
         "/categories/attributes/age-groups",
         ageGroupData
@@ -676,7 +686,10 @@ export const useCreateAgeGroup = () => {
       toast.success("ასაკობრივი ჯგუფი წარმატებით დაემატა");
     },
     onError: (error: unknown) => {
+      console.error("Create age group error:", error);
       const err = error as ApiError;
+      console.error("Error response:", err.response);
+      console.error("Error data:", err.response?.data);
       toast.error(
         err.response?.data?.message || "ასაკობრივი ჯგუფის დამატება ვერ მოხერხდა"
       );
@@ -686,7 +699,6 @@ export const useCreateAgeGroup = () => {
 
 export const useUpdateAgeGroup = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({
       ageGroup,
@@ -695,11 +707,25 @@ export const useUpdateAgeGroup = () => {
       ageGroup: string;
       data: AttributeInput;
     }) => {
-      // Transform data to match backend DTO
-      const ageGroupData = {
-        name: data.value || data.name,
-        nameEn: data.nameEn,
-      };
+      // Ensure we only send valid, non-undefined values
+      const ageGroupData: { name?: string; nameEn?: string } = {};
+
+      // Only add name if it exists and is not empty
+      if (data.value || data.name) {
+        ageGroupData.name = (data.value || data.name || "").trim();
+      }
+
+      // Only add nameEn if it exists and is not empty
+      if (data.nameEn && data.nameEn.trim() !== "") {
+        ageGroupData.nameEn = data.nameEn.trim();
+      }
+
+      console.log("Updating age group with cleaned data:", {
+        input: data,
+        payload: ageGroupData,
+        ageGroup,
+      });
+
       const response = await apiClient.put(
         `/categories/attributes/age-groups/${ageGroup}`,
         ageGroupData
@@ -712,7 +738,10 @@ export const useUpdateAgeGroup = () => {
       toast.success("ასაკობრივი ჯგუფი წარმატებით განახლდა");
     },
     onError: (error: unknown) => {
+      console.error("Update age group error:", error);
       const err = error as ApiError;
+      console.error("Error response:", err.response);
+      console.error("Error data:", err.response?.data);
       toast.error(
         err.response?.data?.message ||
           "ასაკობრივი ჯგუფის განახლება ვერ მოხერხდა"
