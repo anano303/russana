@@ -1,3 +1,34 @@
+/* Fix for image positioning issues on product details page only */
+.container img {
+  position: static !important;
+}
+
+.container .image-wrapper img {
+  position: relative !important;
+}
+
+.container .details-image {
+  position: relative !important;
+}
+
+/* Override any global img position absolute for this page */
+.container .similar-products-section img {
+  position: static !important;
+}
+
+.container .product-card img {
+  position: static !important;
+}
+
+/* Specific fix for Next.js Image component positioning */
+.container [data-nextjs-image] {
+  position: static !important;
+}
+
+.container .image-container img {
+  position: static !important;
+}
+
 /* Modern Product Details Page Styling - Improved layout */
 
 .container {
@@ -677,9 +708,90 @@ select:focus {
   .tabs-list {
     flex-wrap: wrap;
   }
-
   .tabs-trigger {
     flex: 1 0 auto;
     text-align: center;
+  }
+}
+
+/* Similar Products Section - using main product grid design */
+.similar-products-section {
+  margin-top: 4rem;
+  padding: 2rem 0;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 24px;
+}
+
+.similar-products-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-family: "ALK Katerina", sans-serif;
+}
+
+/* Use the same grid design as main product grid */
+.similar-products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  width: 90%;
+  max-width: 1200px;
+  padding: 0 15px;
+  justify-content: center;
+  justify-items: center;
+  overflow-x: hidden;
+  padding-bottom: 50px;
+  margin-bottom: 50px;
+  padding-left: 0px;
+}
+
+.similar-products-loading,
+.similar-products-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.similar-products-empty p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments - matching main product grid */
+@media (max-width: 1200px) {
+  .similar-products-grid {
+    width: 95%;
+    gap: 25px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .similar-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 777px) {
+  .similar-products-section {
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+  }
+
+  .similar-products-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .similar-products-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 25px;
   }
 }

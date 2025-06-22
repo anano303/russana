@@ -15,6 +15,7 @@ import { Color, AgeGroupItem } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useCart } from "@/modules/cart/context/cart-context";
+import { ProductCard } from "./product-card";
 
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
@@ -39,7 +40,7 @@ function AddToCartButton({
   const [pending, setPending] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const { addToCart } = useCart();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const handleClick = async () => {
     setPending(true);
     try {
@@ -50,9 +51,7 @@ function AddToCartButton({
         selectedSize,
         selectedColor,
         selectedAgeGroup
-      );
-
-      // Show success message
+      ); // Show success message
       setShowSuccessMessage(true);
       setTimeout(() => setShowSuccessMessage(false), 3000); // Hide after 3 seconds
 
@@ -60,13 +59,9 @@ function AddToCartButton({
     } catch (error) {
       console.error("Add to cart error:", error); // Debug log
       toast({
-        title: language === "en" ? "Error" : "შეცდომა",
+        title: t("product.errorTitle"),
         description:
-          error instanceof Error
-            ? error.message
-            : language === "en"
-            ? "Failed to add product to cart"
-            : "პროდუქტის კალათაში დამატება ვერ მოხერხდა",
+          error instanceof Error ? error.message : t("product.addToCartError"),
         variant: "destructive",
       });
     } finally {
@@ -104,10 +99,7 @@ function AddToCartButton({
             animation: "slideIn 0.3s ease-out",
           }}
         >
-          ✅{" "}
-          {language === "en"
-            ? "Product successfully added to cart!"
-            : "პროდუქტი წარმატებით დაემატა კალათაში!"}
+          ✅ {t("product.addToCartSuccess")}
         </div>
       )}
 
@@ -137,6 +129,89 @@ function AddToCartButton({
         }
       `}</style>
     </>
+  );
+}
+
+// Similar Products Component
+function SimilarProducts({
+  currentProductId,
+  subCategoryId,
+}: {
+  currentProductId: string;
+  subCategoryId: string;
+}) {
+  const { t } = useLanguage();
+
+  // Fetch products filtered by subcategory using the same API as the shop page
+  const { data: productsResponse, isLoading } = useQuery({
+    queryKey: ["similarProducts", subCategoryId],
+    queryFn: async () => {
+      try {
+        if (!subCategoryId) {
+          return { items: [] };
+        }
+
+        // Use the same getProducts API that the shop page uses
+        const searchParams = new URLSearchParams({
+          page: "1",
+          limit: "10", // Fetch more than 3 in case current product is included
+          subCategory: subCategoryId,
+        });
+
+        const response = await fetchWithAuth(
+          `/products?${searchParams.toString()}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error fetching similar products:", error);
+        return { items: [] };
+      }
+    },
+    enabled: !!subCategoryId, // Only run query if subCategoryId exists
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Filter out current product and take only 3
+  const allProducts = productsResponse?.items || [];
+  const similarProducts = allProducts
+    .filter((product: Product) => product._id !== currentProductId)
+    .slice(0, 3);
+
+  // Don't render if loading
+  if (isLoading) {
+    return (
+      <div className="similar-products-section">
+        <h2 className="similar-products-title">
+          {t("product.similarProducts")}
+        </h2>
+        <div className="similar-products-loading">
+          <p>{t("shop.loading")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if no subcategory or no similar products found
+  if (!subCategoryId || similarProducts.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="similar-products-section">
+      <h2 className="similar-products-title">{t("product.similarProducts")}</h2>{" "}
+      <div className="similar-products-grid">
+        {similarProducts.map((product: Product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -241,6 +316,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
   const isOutOfStock = product.countInStock === 0;
 
+  // Debug: Log current product subcategory structure
+  console.log("Current product subCategory:", {
+    type: typeof product.subCategory,
+    value: product.subCategory,
+    extracted:
+      typeof product.subCategory === "string"
+        ? product.subCategory
+        : product.subCategory?.id || product.subCategory?._id || "",
+  });
+
   // Initialize default selections based on product data
   useEffect(() => {
     // Set default size if sizes array exists
@@ -344,11 +429,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     onChange={(e) => setSelectedAgeGroup(e.target.value)}
                     disabled={isOutOfStock || product.ageGroups.length === 0}
                   >
-                    <option value="">
-                      {language === "en"
-                        ? "Select age group"
-                        : "აირჩიეთ ასაკობრივი ჯგუფი"}
-                    </option>
+                    {" "}
+                    <option value="">{t("product.selectAgeGroup")}</option>
                     {product.ageGroups.map((ageGroup) => (
                       <option key={ageGroup} value={ageGroup}>
                         {getLocalizedAgeGroupName(ageGroup)}
@@ -367,9 +449,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     onChange={(e) => setSelectedSize(e.target.value)}
                     disabled={isOutOfStock || product.sizes.length === 0}
                   >
-                    <option value="">
-                      {language === "en" ? "Select size" : "აირჩიეთ ზომა"}
-                    </option>
+                    {" "}
+                    <option value="">{t("product.selectSize")}</option>
                     {product.sizes.map((size) => (
                       <option key={size} value={size}>
                         {size}
@@ -388,9 +469,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     onChange={(e) => setSelectedColor(e.target.value)}
                     disabled={isOutOfStock || product.colors.length === 0}
                   >
-                    <option value="">
-                      {language === "en" ? "Select color" : "აირჩიეთ ფერი"}
-                    </option>
+                    {" "}
+                    <option value="">{t("product.selectColor")}</option>
                     {product.colors.map((color) => (
                       <option key={color} value={color}>
                         {getLocalizedColorName(color)}
@@ -479,7 +559,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
           )}
         </div>
-      </div>
+      </div>{" "}
+      {/* Similar Products Section */}
+      <SimilarProducts
+        currentProductId={product._id}
+        subCategoryId={
+          typeof product.subCategory === "string"
+            ? product.subCategory
+            : product.subCategory?.id || product.subCategory?._id || ""
+        }
+      />
     </div>
   );
 }

@@ -76,9 +76,7 @@ export const TRANSLATIONS: Translations = {
       // Error messages
       errorLoadingCategories: "კატეგორიების ჩატვირთვა ვერ მოხერხდა",
       errorLoadingSubcategories: "ქვეკატეგორიების ჩატვირთვა ვერ მოხერხდა",
-    },
-
-    // Product Details
+    }, // Product Details
     product: {
       ref: "Ref:",
       reviews: "შეფასებები",
@@ -89,6 +87,13 @@ export const TRANSLATIONS: Translations = {
       quantity: "რაოდენობა",
       details: "აღწერა",
       author: "ავტორი",
+      similarProducts: "მსგავსი პროდუქტები",
+      selectAgeGroup: "აირჩიეთ ასაკობრივი ჯგუფი",
+      selectSize: "აირჩიეთ ზომა",
+      selectColor: "აირჩიეთ ფერი",
+      addToCartSuccess: "პროდუქტი წარმატებით დაემატა კალათაში!",
+      addToCartError: "პროდუქტის კალათაში დამატება ვერ მოხერხდა",
+      errorTitle: "შეცდომა",
     },
 
     // Room Viewer
@@ -708,9 +713,7 @@ export const TRANSLATIONS: Translations = {
       // Error messages
       errorLoadingCategories: "Failed to load categories",
       errorLoadingSubcategories: "Failed to load subcategories",
-    },
-
-    // Product Details
+    }, // Product Details
     product: {
       ref: "Ref:",
       reviews: "Reviews",
@@ -722,6 +725,13 @@ export const TRANSLATIONS: Translations = {
       quantity: "Quantity",
       details: "Description",
       author: "Author",
+      similarProducts: "Similar Products",
+      selectAgeGroup: "Select age group",
+      selectSize: "Select size",
+      selectColor: "Select color",
+      addToCartSuccess: "Product successfully added to cart!",
+      addToCartError: "Failed to add product to cart",
+      errorTitle: "Error",
     },
 
     // Room Viewer
