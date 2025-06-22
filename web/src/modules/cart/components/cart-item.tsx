@@ -116,17 +116,22 @@ export function CartItem({
           {/* Display variant information if available */}
           {(item.size || item.color || item.ageGroup) && (
             <div className="cart-item-variants">
+              {" "}
               {item.size && (
-                <span className="variant-tag">Size: {item.size}</span>
-              )}
-              {item.color && (
                 <span className="variant-tag">
-                  Color: {getLocalizedColorName(item.color)}
+                  {t("cart.size")}: {item.size}
                 </span>
               )}
+              <br />
+              {item.color && (
+                <span className="variant-tag">
+                  {t("cart.color")}: {getLocalizedColorName(item.color)}
+                </span>
+              )}
+              <br />
               {item.ageGroup && (
                 <span className="variant-tag">
-                  Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                  {t("cart.age")}: {getLocalizedAgeGroupName(item.ageGroup)}
                 </span>
               )}
             </div>

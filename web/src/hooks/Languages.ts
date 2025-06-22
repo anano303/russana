@@ -129,6 +129,9 @@ export const TRANSLATIONS: Translations = {
       title: "კალათა",
       emptyDescription:
         "თქვენი კალათა ცარიელია. დაამატეთ პროდუქტები, რომ დაიწყოთ შოპინგი.",
+      size: "ზომა",
+      color: "ფერი",
+      age: "ასაკი",
     },
 
     // About page
@@ -669,6 +672,9 @@ export const TRANSLATIONS: Translations = {
       outOfStock: "Out of Stock",
       title: "Shopping Cart",
       emptyDescription: "Your cart is empty. Add products to start shopping.",
+      size: "Size",
+      color: "Color",
+      age: "Age",
     },
 
     // About page

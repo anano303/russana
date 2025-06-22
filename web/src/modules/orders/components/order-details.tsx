@@ -193,23 +193,25 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                         className="order-item-link"
                       >
                         {getDisplayName(item)}
-                      </Link>
+                      </Link>{" "}
                       {/* Display variant information if available */}
                       {(item.size || item.color || item.ageGroup) && (
                         <div className="variant-info">
                           {item.size && (
                             <span className="variant-tag">
-                              Size: {item.size}
+                              {t("cart.size")}: {item.size}
                             </span>
                           )}
                           {item.color && (
                             <span className="variant-tag">
-                              Color: {getLocalizedColorName(item.color)}
+                              {t("cart.color")}:{" "}
+                              {getLocalizedColorName(item.color)}
                             </span>
                           )}
                           {item.ageGroup && (
                             <span className="variant-tag">
-                              Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                              {t("cart.age")}:{" "}
+                              {getLocalizedAgeGroupName(item.ageGroup)}
                             </span>
                           )}
                         </div>
@@ -258,23 +260,25 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                         className="order-item-link"
                       >
                         {getDisplayName(item)}
-                      </Link>
+                      </Link>{" "}
                       {/* Display variant information if available */}
                       {(item.size || item.color || item.ageGroup) && (
                         <div className="variant-info">
                           {item.size && (
                             <span className="variant-tag">
-                              Size: {item.size}
+                              {t("cart.size")}: {item.size}
                             </span>
                           )}
                           {item.color && (
                             <span className="variant-tag">
-                              Color: {getLocalizedColorName(item.color)}
+                              {t("cart.color")}:{" "}
+                              {getLocalizedColorName(item.color)}
                             </span>
                           )}
                           {item.ageGroup && (
                             <span className="variant-tag">
-                              Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                              {t("cart.age")}:{" "}
+                              {getLocalizedAgeGroupName(item.ageGroup)}
                             </span>
                           )}
                         </div>
