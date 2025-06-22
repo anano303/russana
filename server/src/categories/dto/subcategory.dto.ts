@@ -13,6 +13,15 @@ export class CreateSubCategoryDto {
   name: string;
 
   @ApiProperty({
+    description: 'Subcategory name in English',
+    example: 'T-shirts',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
+
+  @ApiProperty({
     description: 'Parent category ID',
     example: '60d21b4667d0d8992e610c85',
   })
@@ -48,7 +57,6 @@ export class CreateSubCategoryDto {
   @IsString({ each: true })
   @IsOptional()
   colors?: string[];
-
   @ApiProperty({
     description: 'Subcategory description',
     required: false,
@@ -57,6 +65,15 @@ export class CreateSubCategoryDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({
+    description: 'Subcategory description in English',
+    required: false,
+    example: 'T-shirts for all seasons',
+  })
+  @IsString()
+  @IsOptional()
+  descriptionEn?: string;
 
   @ApiProperty({
     description: 'Is subcategory active',
@@ -77,6 +94,15 @@ export class UpdateSubCategoryDto {
   @IsString()
   @IsOptional()
   name?: string;
+
+  @ApiProperty({
+    description: 'Subcategory name in English',
+    required: false,
+    example: 'T-shirts',
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
 
   @ApiProperty({
     description: 'Parent category ID',
@@ -116,7 +142,6 @@ export class UpdateSubCategoryDto {
   @IsString({ each: true })
   @IsOptional()
   colors?: string[];
-
   @ApiProperty({
     description: 'Subcategory description',
     required: false,
@@ -125,6 +150,15 @@ export class UpdateSubCategoryDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({
+    description: 'Subcategory description in English',
+    required: false,
+    example: 'T-shirts for all seasons',
+  })
+  @IsString()
+  @IsOptional()
+  descriptionEn?: string;
 
   @ApiProperty({ description: 'Is subcategory active', required: false })
   @IsBoolean()

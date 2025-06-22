@@ -127,7 +127,8 @@ export const TRANSLATIONS: Translations = {
       adding: "ემატება...",
       outOfStock: "არ არის მარაგში",
       title: "კალათა",
-      emptyDescription:"თქვენი კალათა ცარიელია. დაამატეთ პროდუქტები, რომ დაიწყოთ შოპინგი.",
+      emptyDescription:
+        "თქვენი კალათა ცარიელია. დაამატეთ პროდუქტები, რომ დაიწყოთ შოპინგი.",
     },
 
     // About page
@@ -446,6 +447,40 @@ export const TRANSLATIONS: Translations = {
 
       // Swimwear subcategories
       "საცურაო კოსტუმები": "საცურაო კოსტუმები",
+    },
+
+    // Admin Categories
+    adminCategories: {
+      categories: "კატეგორიები",
+      subcategories: "ქვეკატეგორიები",
+      add: "დამატება",
+      edit: "რედაქტირება",
+      delete: "წაშლა",
+      cancel: "გაუქმება",
+      update: "განახლება",
+      showInactive: "არააქტიურების ჩვენება",
+      active: "აქტიური",
+      inactive: "არააქტიური",
+      nameGe: "დასახელება (ქართულად)",
+      nameEn: "დასახელება (ინგლისურად)",
+      descriptionGe: "აღწერა (ქართულად)",
+      descriptionEn: "აღწერა (ინგლისურად)",
+      addNewCategory: "ახალი კატეგორიის დამატება",
+      addNewSubcategory: "ახალი ქვეკატეგორიის დამატება",
+      noCategoriesFound: "კატეგორიები არ მოიძებნა",
+      noSubcategoriesFound: "ქვეკატეგორიები არ მოიძებნა",
+      loading: "იტვირთება",
+      colors: "ფერები",
+      sizes: "ზომები",
+      ageGroups: "ასაკობრივი ჯგუფები",
+      attributes: "ატრიბუტები",
+      confirmDeleteCategory: "დარწმუნებული ხართ, რომ გსურთ კატეგორიის წაშლა?",
+      confirmDeleteSubcategory:
+        "დარწმუნებული ხართ, რომ გსურთ ქვეკატეგორიის წაშლა?",
+      createError: "ქვეკატეგორიის შექმნა ვერ მოხერხდა",
+      updateError: "ქვეკატეგორიის განახლება ვერ მოხერხდა",
+      deleteError: "ქვეკატეგორიის წაშლა ვერ მოხერხდა",
+      retry: "ხელახლა ცდა",
     },
   },
 
@@ -852,6 +887,40 @@ export const TRANSLATIONS: Translations = {
 
       // Swimwear subcategories
       "საცურაო კოსტუმები": "Swimsuits",
+    },
+
+    // Admin Categories
+    adminCategories: {
+      categories: "Categories",
+      subcategories: "Subcategories",
+      add: "Add",
+      edit: "Edit",
+      delete: "Delete",
+      cancel: "Cancel",
+      update: "Update",
+      showInactive: "Show Inactive",
+      active: "Active",
+      inactive: "Inactive",
+      nameGe: "Name (Georgian)",
+      nameEn: "Name (English)",
+      descriptionGe: "Description (Georgian)",
+      descriptionEn: "Description (English)",
+      addNewCategory: "Add New Category",
+      addNewSubcategory: "Add New Subcategory",
+      noCategoriesFound: "No categories found",
+      noSubcategoriesFound: "No subcategories found",
+      loading: "Loading",
+      colors: "Colors",
+      sizes: "Sizes",
+      ageGroups: "Age Groups",
+      attributes: "Attributes",
+      confirmDeleteCategory: "Are you sure you want to delete this category?",
+      confirmDeleteSubcategory:
+        "Are you sure you want to delete this subcategory?",
+      createError: "Failed to create subcategory",
+      updateError: "Failed to update subcategory",
+      deleteError: "Failed to delete subcategory",
+      retry: "Retry",
     },
   },
 };

@@ -62,7 +62,9 @@ export default function AdminLayout({
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg" style={{ color: "red" }}><HeartLoading size="medium" /></p>
+        <div className="text-lg" style={{ color: "red" }}>
+          <HeartLoading size="medium" inline={true} />
+        </div>
       </div>
     );
   }

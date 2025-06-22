@@ -6,7 +6,9 @@ import { toast } from "react-hot-toast";
 export interface Category {
   id: string;
   name: string;
+  nameEn?: string;
   description?: string;
+  descriptionEn?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -15,30 +17,38 @@ export interface Category {
 export interface SubCategory {
   id: string;
   name: string;
+  nameEn?: string;
   categoryId: string | Category;
   ageGroups: string[];
   sizes: string[];
   colors: string[];
   description?: string;
+  descriptionEn?: string;
   isActive: boolean;
 }
 
 export interface CategoryCreateInput {
   name: string;
+  nameEn?: string;
   description?: string;
+  descriptionEn?: string;
   isActive?: boolean;
 }
 
 export interface CategoryUpdateInput {
   name?: string;
+  nameEn?: string;
   description?: string;
+  descriptionEn?: string;
   isActive?: boolean;
 }
 
 export interface SubCategoryCreateInput {
   name: string;
+  nameEn?: string;
   categoryId: string;
   description?: string;
+  descriptionEn?: string;
   ageGroups?: string[];
   sizes?: string[];
   colors?: string[];
@@ -47,8 +57,10 @@ export interface SubCategoryCreateInput {
 
 export interface SubCategoryUpdateInput {
   name?: string;
+  nameEn?: string;
   categoryId?: string;
   description?: string;
+  descriptionEn?: string;
   ageGroups?: string[];
   sizes?: string[];
   colors?: string[];
@@ -57,6 +69,7 @@ export interface SubCategoryUpdateInput {
 
 export interface AttributeInput {
   value: string;
+  valueEn?: string;
 }
 
 // Error interface to properly type error responses
@@ -392,9 +405,20 @@ export const useAttributes = () => {
   });
 };
 
+// Color interface
+export interface Color {
+  _id?: string;
+  id?: string;
+  name: string;
+  nameEn?: string;
+  hexCode?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
 // Colors
 export const useColors = () => {
-  return useQuery<string[]>({
+  return useQuery<Color[]>({
     queryKey: ["colors"],
     queryFn: async () => {
       const response = await apiClient.get("/categories/attributes/colors");

@@ -4,14 +4,37 @@ import {
   useCreateCategory,
   useUpdateCategory,
   useDeleteCategory,
-  Category,
-  CategoryCreateInput,
-  CategoryUpdateInput,
 } from "../hook/use-categories";
 import { SubcategoriesList } from "./subcategories-list";
+import HeartLoading from "@/components/HeartLoading/HeartLoading";
 import { Loader } from "lucide-react";
 import "./styles/categories-list.css";
-import HeartLoading from "@/components/HeartLoading/HeartLoading";
+import { useLanguage } from "@/hooks/LanguageContext";
+
+interface Category {
+  id: string;
+  name: string;
+  nameEn?: string;
+  description?: string;
+  descriptionEn?: string;
+  isActive: boolean;
+}
+
+interface CategoryCreateInput {
+  name: string;
+  nameEn?: string;
+  description?: string;
+  descriptionEn?: string;
+  isActive?: boolean;
+}
+
+interface CategoryUpdateInput {
+  name?: string;
+  nameEn?: string;
+  description?: string;
+  descriptionEn?: string;
+  isActive?: boolean;
+}
 
 export const CategoriesList = () => {
   const [isCreating, setIsCreating] = useState(false);
@@ -22,21 +45,30 @@ export const CategoriesList = () => {
     CategoryCreateInput | CategoryUpdateInput
   >({
     name: "",
+    nameEn: "",
     description: "",
+    descriptionEn: "",
     isActive: true,
   });
+
+  const { t, language } = useLanguage();
 
   const { data: categories, isLoading } = useCategories(showInactive);
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
-
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await createCategory.mutateAsync(formData as CategoryCreateInput);
       setIsCreating(false);
-      setFormData({ name: "", description: "", isActive: true });
+      setFormData({
+        name: "",
+        nameEn: "",
+        description: "",
+        descriptionEn: "",
+        isActive: true,
+      });
     } catch (error) {
       console.error("Create category error:", error);
     }
@@ -54,8 +86,16 @@ export const CategoriesList = () => {
           updatedFields.name = formData.name.trim();
         }
 
+        if (formData.nameEn !== undefined) {
+          updatedFields.nameEn = formData.nameEn.trim();
+        }
+
         if (formData.description !== undefined) {
           updatedFields.description = formData.description;
+        }
+
+        if (formData.descriptionEn !== undefined) {
+          updatedFields.descriptionEn = formData.descriptionEn;
         }
 
         if (formData.isActive !== undefined) {
@@ -70,24 +110,30 @@ export const CategoriesList = () => {
         });
 
         setIsEditing(null);
-        setFormData({ name: "", description: "", isActive: true });
+        setFormData({
+          name: "",
+          nameEn: "",
+          description: "",
+          descriptionEn: "",
+          isActive: true,
+        });
       } catch (error) {
         console.error("Update category error:", error);
       }
     }
   };
-
   const startEditing = (category: Category) => {
     setIsEditing(category.id);
     setFormData({
       name: category.name,
+      nameEn: category.nameEn || "",
       description: category.description || "",
+      descriptionEn: category.descriptionEn || "",
       isActive: category.isActive,
     });
   };
-
   const handleDelete = async (id: string) => {
-    if (window.confirm("დარწმუნებული ხართ, რომ გსურთ კატეგორიის წაშლა?")) {
+    if (window.confirm(t("adminCategories.confirmDeleteCategory"))) {
       try {
         await deleteCategory.mutateAsync(id);
         if (selectedCategory === id) {
@@ -102,7 +148,7 @@ export const CategoriesList = () => {
   return (
     <div className="categories-container">
       <div className="categories-header">
-        <h2 className="categories-title">კატეგორიები</h2>
+        <h2 className="categories-title">{t("adminCategories.categories")}</h2>
         <div className="categories-actions">
           <button
             className="btn-add"
@@ -111,7 +157,7 @@ export const CategoriesList = () => {
               setIsEditing(null);
             }}
           >
-            + დამატება
+            + {t("adminCategories.add")}
           </button>
           <label className="show-inactive">
             <input
@@ -119,17 +165,16 @@ export const CategoriesList = () => {
               checked={showInactive}
               onChange={() => setShowInactive(!showInactive)}
             />
-            არააქტიურების ჩვენება
+            {t("adminCategories.showInactive")}
           </label>
         </div>
-      </div>
-
+      </div>{" "}
       {isCreating && (
         <div className="category-form-container">
-          <h3>ახალი კატეგორიის დამატება</h3>
+          <h3>{t("adminCategories.addNewCategory")}</h3>
           <form onSubmit={handleCreateSubmit} className="category-form">
             <div className="form-group">
-              <label htmlFor="name">დასახელება*</label>
+              <label htmlFor="name">{t("adminCategories.nameGe")}*</label>
               <input
                 type="text"
                 id="name"
@@ -141,12 +186,37 @@ export const CategoriesList = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="description">აღწერა</label>
+              <label htmlFor="nameEn">{t("adminCategories.nameEn")}</label>
+              <input
+                type="text"
+                id="nameEn"
+                value={formData.nameEn}
+                onChange={(e) =>
+                  setFormData({ ...formData, nameEn: e.target.value })
+                }
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">
+                {t("adminCategories.descriptionGe")}
+              </label>
               <textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
+                }
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="descriptionEn">
+                {t("adminCategories.descriptionEn")}
+              </label>
+              <textarea
+                id="descriptionEn"
+                value={formData.descriptionEn}
+                onChange={(e) =>
+                  setFormData({ ...formData, descriptionEn: e.target.value })
                 }
               />
             </div>
@@ -159,32 +229,41 @@ export const CategoriesList = () => {
                     setFormData({ ...formData, isActive: e.target.checked })
                   }
                 />
-                აქტიური
+                {t("adminCategories.active")}
               </label>
-            </div>
+            </div>{" "}
             <div className="form-actions">
               <button
                 type="submit"
                 className="btn-submit"
                 disabled={createCategory.isPending}
               >
-                {createCategory.isPending ?<HeartLoading size="medium" /> : "დამატება"}
+                {createCategory.isPending ? (
+                  <HeartLoading size="medium" inline={true} />
+                ) : (
+                  t("adminCategories.add")
+                )}
               </button>
               <button
                 type="button"
                 className="btn-cancel"
                 onClick={() => {
                   setIsCreating(false);
-                  setFormData({ name: "", description: "", isActive: true });
+                  setFormData({
+                    name: "",
+                    nameEn: "",
+                    description: "",
+                    descriptionEn: "",
+                    isActive: true,
+                  });
                 }}
               >
-                გაუქმება
+                {t("adminCategories.cancel")}
               </button>
             </div>
           </form>
         </div>
-      )}
-
+      )}{" "}
       {isLoading ? (
         <div className="loading-container">
           <Loader />
@@ -192,7 +271,7 @@ export const CategoriesList = () => {
       ) : (
         <div className="categories-list">
           {categories && categories.length > 0 ? (
-            categories.map((category) => (
+            categories.map((category: Category) => (
               <div
                 key={category.id}
                 className={`category-item ${
@@ -203,7 +282,7 @@ export const CategoriesList = () => {
                   <form onSubmit={handleUpdateSubmit} className="category-form">
                     <div className="form-group">
                       <label htmlFor={`edit-name-${category.id}`}>
-                        დასახელება*
+                        {t("adminCategories.nameGe")}*
                       </label>
                       <input
                         type="text"
@@ -216,8 +295,21 @@ export const CategoriesList = () => {
                       />
                     </div>
                     <div className="form-group">
+                      <label htmlFor={`edit-nameEn-${category.id}`}>
+                        {t("adminCategories.nameEn")}
+                      </label>
+                      <input
+                        type="text"
+                        id={`edit-nameEn-${category.id}`}
+                        value={formData.nameEn}
+                        onChange={(e) =>
+                          setFormData({ ...formData, nameEn: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
                       <label htmlFor={`edit-description-${category.id}`}>
-                        აღწერა
+                        {t("adminCategories.descriptionGe")}
                       </label>
                       <textarea
                         id={`edit-description-${category.id}`}
@@ -226,6 +318,21 @@ export const CategoriesList = () => {
                           setFormData({
                             ...formData,
                             description: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor={`edit-descriptionEn-${category.id}`}>
+                        {t("adminCategories.descriptionEn")}
+                      </label>
+                      <textarea
+                        id={`edit-descriptionEn-${category.id}`}
+                        value={formData.descriptionEn}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            descriptionEn: e.target.value,
                           })
                         }
                       />
@@ -242,18 +349,20 @@ export const CategoriesList = () => {
                             })
                           }
                         />
-                        აქტიური
+                        {t("adminCategories.active")}
                       </label>
-                    </div>
+                    </div>{" "}
                     <div className="form-actions">
                       <button
                         type="submit"
                         className="btn-submit"
                         disabled={updateCategory.isPending}
                       >
-                        {updateCategory.isPending
-                          ? <HeartLoading size="medium" />
-                          : "განახლება"}
+                        {updateCategory.isPending ? (
+                          <HeartLoading size="medium" inline={true} />
+                        ) : (
+                          t("adminCategories.update")
+                        )}
                       </button>
                       <button
                         type="button"
@@ -262,22 +371,33 @@ export const CategoriesList = () => {
                           setIsEditing(null);
                           setFormData({
                             name: "",
+                            nameEn: "",
                             description: "",
+                            descriptionEn: "",
                             isActive: true,
                           });
                         }}
                       >
-                        გაუქმება
+                        {t("adminCategories.cancel")}
                       </button>
                     </div>
                   </form>
                 ) : (
                   <>
+                    {" "}
                     <div className="category-header">
                       <h3 className="category-name">
-                        {category.name}
+                        {language === "en" && category.nameEn
+                          ? category.nameEn
+                          : category.name}
+                        {language === "ge" && category.nameEn && (
+                          <span className="name-en"> ({category.nameEn})</span>
+                        )}{" "}
                         {!category.isActive && (
-                          <span className="inactive-label"> (არააქტიური)</span>
+                          <span className="inactive-label">
+                            {" "}
+                            ({t("adminCategories.inactive")})
+                          </span>
                         )}
                       </h3>
                       <div className="category-actions">
@@ -288,7 +408,7 @@ export const CategoriesList = () => {
                             startEditing(category);
                           }}
                         >
-                          რედაქტირება
+                          {t("adminCategories.edit")}
                         </button>
                         <button
                           className="btn-delete"
@@ -297,16 +417,24 @@ export const CategoriesList = () => {
                             handleDelete(category.id);
                           }}
                         >
-                          წაშლა
+                          {t("adminCategories.delete")}
                         </button>
                       </div>
-                    </div>
-                    {category.description && (
+                    </div>{" "}
+                    {(category.description || category.descriptionEn) && (
                       <p className="category-description">
-                        {category.description}
+                        {language === "en" && category.descriptionEn
+                          ? category.descriptionEn
+                          : category.description}
+                        {language === "ge" &&
+                          category.descriptionEn &&
+                          category.description && (
+                            <span className="description-en">
+                              ({category.descriptionEn})
+                            </span>
+                          )}
                       </p>
                     )}
-
                     {/* Always show subcategories */}
                     <div className="subcategories-container">
                       <SubcategoriesList categoryId={category.id} />
@@ -317,7 +445,7 @@ export const CategoriesList = () => {
             ))
           ) : (
             <div className="no-categories">
-              <p>კატეგორიები არ მოიძებნა</p>
+              <p>{t("adminCategories.noCategoriesFound")}</p>
             </div>
           )}
         </div>
@@ -325,3 +453,8 @@ export const CategoriesList = () => {
     </div>
   );
 };
+
+// The component now uses the language context to dynamically switch between displaying
+// Georgian and English content based on the user's selected language.
+// When language is "en", it prioritizes showing nameEn and descriptionEn
+// When language is "ge", it shows the Georgian name/description and only shows English in parentheses

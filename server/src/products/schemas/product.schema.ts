@@ -53,9 +53,11 @@ export enum AgeGroup {
 export interface CategoryStructure {
   main: MainCategory;
   sub: string;
+  subEn?: string;
   ageGroup?: AgeGroup;
   size?: string;
   color?: string;
+  colorEn?: string;
 }
 
 // New variant schema for tracking inventory by size/color
@@ -66,6 +68,9 @@ export class ProductVariant {
 
   @Prop({ required: false })
   color?: string;
+
+  @Prop({ required: false })
+  colorEn?: string;
 
   @Prop({ required: false })
   ageGroup?: string;
@@ -113,11 +118,17 @@ export class Product {
   })
   mainCategory?: mongoose.Types.ObjectId | string;
 
+  @Prop()
+  mainCategoryEn?: string;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SubCategory',
   })
   subCategory?: mongoose.Types.ObjectId | string;
+
+  @Prop()
+  subCategoryEn?: string;
 
   // Product attributes based on subcategory
   @Prop({ type: [String], default: [] })
@@ -128,6 +139,9 @@ export class Product {
 
   @Prop({ type: [String], default: [] })
   colors?: string[];
+
+  @Prop({ type: [String], default: [] })
+  colorsEn?: string[];
 
   // Add categoryStructure field
   @Prop({ type: Object })

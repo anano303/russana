@@ -11,11 +11,20 @@ export class CategoryResponseDto {
   @ApiProperty({ description: 'Category name', example: 'ტანსაცმელი' })
   name: string;
 
+  @ApiProperty({ description: 'Category name in English', example: 'Clothing' })
+  nameEn?: string;
+
   @ApiProperty({
     description: 'Category description',
     example: 'სხვადასხვა ტიპის ტანსაცმელი',
   })
   description?: string;
+
+  @ApiProperty({
+    description: 'Category description in English',
+    example: 'Various types of clothing',
+  })
+  descriptionEn?: string;
 
   @ApiProperty({ description: 'Is category active', default: true })
   isActive: boolean;
@@ -39,6 +48,15 @@ export class CreateCategoryDto {
   name: string;
 
   @ApiProperty({
+    description: 'Category name in English',
+    example: 'Clothing',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
+
+  @ApiProperty({
     description: 'Category description',
     required: false,
     example: 'სხვადასხვა ტიპის ტანსაცმელი',
@@ -46,6 +64,15 @@ export class CreateCategoryDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({
+    description: 'Category description in English',
+    required: false,
+    example: 'Various types of clothing',
+  })
+  @IsString()
+  @IsOptional()
+  descriptionEn?: string;
 
   @ApiProperty({
     description: 'Is category active',
@@ -68,6 +95,15 @@ export class UpdateCategoryDto {
   name?: string;
 
   @ApiProperty({
+    description: 'Category name in English',
+    required: false,
+    example: 'Clothing',
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
+
+  @ApiProperty({
     description: 'Category description',
     required: false,
     example: 'სხვადასხვა ტიპის ტანსაცმელი',
@@ -75,6 +111,15 @@ export class UpdateCategoryDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({
+    description: 'Category description in English',
+    required: false,
+    example: 'Various types of clothing',
+  })
+  @IsString()
+  @IsOptional()
+  descriptionEn?: string;
 
   @ApiProperty({ description: 'Is category active', required: false })
   @IsBoolean()

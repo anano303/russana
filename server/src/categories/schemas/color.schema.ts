@@ -19,6 +19,10 @@ export class Color {
   })
   name: string;
 
+  @ApiProperty({ description: 'Color name in English', example: 'Red' })
+  @Prop()
+  nameEn?: string;
+
   @ApiProperty({ description: 'Color hex code', example: '#FF0000' })
   @Prop()
   hexCode?: string;

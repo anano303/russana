@@ -7,6 +7,15 @@ export class CreateColorDto {
   name: string;
 
   @ApiProperty({
+    description: 'Color name in English',
+    example: 'Red',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
+
+  @ApiProperty({
     description: 'Color hex code',
     example: '#FF0000',
     required: false,
@@ -45,6 +54,15 @@ export class UpdateColorDto {
   name?: string;
 
   @ApiProperty({
+    description: 'Color name in English',
+    example: 'Red',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
+
+  @ApiProperty({
     description: 'Color hex code',
     example: '#FF0000',
     required: false,
@@ -62,7 +80,11 @@ export class UpdateColorDto {
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ description: 'Is color active', required: false })
+  @ApiProperty({
+    description: 'Is color active',
+    default: true,
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;

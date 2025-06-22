@@ -23,6 +23,10 @@ class CategoryStructureDto {
   @IsString()
   sub: string;
 
+  @IsString()
+  @IsOptional()
+  subEn?: string;
+
   @IsEnum(AgeGroup)
   @IsOptional()
   ageGroup?: AgeGroup;
@@ -34,6 +38,10 @@ class CategoryStructureDto {
   @IsString()
   @IsOptional()
   color?: string;
+
+  @IsString()
+  @IsOptional()
+  colorEn?: string;
 }
 
 class ProductVariantDto {
@@ -42,6 +50,10 @@ class ProductVariantDto {
 
   @IsString()
   color: string;
+
+  @IsString()
+  @IsOptional()
+  colorEn?: string;
 
   @IsNumber()
   stock: number;
@@ -86,9 +98,17 @@ export class ProductDto {
   @IsOptional()
   mainCategory?: string;
 
+  @IsString()
+  @IsOptional()
+  mainCategoryEn?: string;
+
   @IsMongoId()
   @IsOptional()
   subCategory?: string;
+
+  @IsString()
+  @IsOptional()
+  subCategoryEn?: string;
 
   // Product attributes
   @IsArray()
@@ -102,6 +122,10 @@ export class ProductDto {
   @IsArray()
   @IsOptional()
   colors?: string[];
+
+  @IsArray()
+  @IsOptional()
+  colorsEn?: string[];
 
   @IsOptional()
   @IsObject()

@@ -4,7 +4,15 @@ import { useEffect, useState } from "react";
 import "./heartLoading.css";
 import Image from "next/image";
 
-export default function HeartLoading({ size = "small" }) {
+type HeartLoadingProps = {
+  size?: "small" | "medium" | "large";
+  inline?: boolean;
+};
+
+export default function HeartLoading({
+  size = "small",
+  inline = false,
+}: HeartLoadingProps) {
   const [dots, setDots] = useState("");
 
   useEffect(() => {
@@ -18,8 +26,8 @@ export default function HeartLoading({ size = "small" }) {
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <div className={`heart-loading ${size}`}>
+  const content = (
+    <>
       <div className="heart-spin">
         <Image
           src="/heart-icon.png"
@@ -33,6 +41,12 @@ export default function HeartLoading({ size = "small" }) {
         იტვირთება
         <span className="dots">{dots}</span>
       </div>
-    </div>
+    </>
+  );
+
+  return inline ? (
+    <span className={`heart-loading ${size} inline`}>{content}</span>
+  ) : (
+    <div className={`heart-loading ${size}`}>{content}</div>
   );
 }

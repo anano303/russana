@@ -13,6 +13,7 @@ import {
   useUpdateAgeGroup,
   useDeleteAgeGroup,
   AttributeInput,
+  Color,
 } from "../hook/use-categories";
 import { Loader } from "lucide-react";
 import "./styles/attributes-manager.css";
@@ -20,11 +21,16 @@ import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 type AttributeType = "color" | "size" | "ageGroup";
 
+interface AttributeInputExtended extends AttributeInput {
+  valueEn?: string;
+}
+
 export const AttributesManager = () => {
   const [activeTab, setActiveTab] = useState<AttributeType>("color");
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
+  const [inputValueEn, setInputValueEn] = useState("");
 
   // Colors
   const { data: colors, isLoading: isLoadingColors } = useColors();
@@ -49,7 +55,13 @@ export const AttributesManager = () => {
 
     if (!inputValue.trim()) return;
 
-    const data: AttributeInput = { value: inputValue.trim() };
+    // Only include English translation for colors
+    const data: AttributeInputExtended = {
+      value: inputValue.trim(),
+      ...(activeTab === "color" && inputValueEn.trim()
+        ? { valueEn: inputValueEn.trim() }
+        : {}),
+    };
 
     try {
       if (isEditing) {
@@ -75,15 +87,17 @@ export const AttributesManager = () => {
       }
 
       setInputValue("");
+      setInputValueEn("");
     } catch (error) {
       console.error("Error submitting attribute:", error);
     }
   };
 
-  const startEditing = (value: string) => {
+  const startEditing = (value: string, valueEn?: string) => {
     setIsAdding(false);
     setIsEditing(value);
     setInputValue(value);
+    setInputValueEn(valueEn || "");
   };
 
   const handleDelete = async (value: string) => {
@@ -113,11 +127,30 @@ export const AttributesManager = () => {
     createAgeGroup.isPending ||
     updateAgeGroup.isPending ||
     deleteAgeGroup.isPending;
-
-  let attributeItems: string[] = [];
-  if (activeTab === "color" && colors) attributeItems = colors;
-  else if (activeTab === "size" && sizes) attributeItems = sizes;
-  else if (activeTab === "ageGroup" && ageGroups) attributeItems = ageGroups;
+  interface AttributeItem {
+    value: string;
+    valueEn?: string;
+  }
+  let attributeItems: AttributeItem[] = [];
+  if (activeTab === "color" && colors) {
+    // For colors, we need both Georgian and English values
+    attributeItems = colors.map((color) => {
+      // Check if color is an object with name and nameEn properties
+      if (typeof color === "object" && color !== null && "name" in color) {
+        return {
+          value: (color as Color).name,
+          valueEn: (color as Color).nameEn,
+        };
+      }
+      // Fallback for backward compatibility
+      return { value: color as string, valueEn: "" };
+    });
+  } else if (activeTab === "size" && sizes)
+    attributeItems = sizes.map((size) => ({ value: size as string }));
+  else if (activeTab === "ageGroup" && ageGroups)
+    attributeItems = ageGroups.map((ageGroup) => ({
+      value: ageGroup as string,
+    }));
 
   return (
     <div className="attributes-manager">
@@ -129,6 +162,7 @@ export const AttributesManager = () => {
             setIsAdding(false);
             setIsEditing(null);
             setInputValue("");
+            setInputValueEn("");
           }}
         >
           ფერები
@@ -140,6 +174,7 @@ export const AttributesManager = () => {
             setIsAdding(false);
             setIsEditing(null);
             setInputValue("");
+            setInputValueEn("");
           }}
         >
           ზომები
@@ -151,6 +186,7 @@ export const AttributesManager = () => {
             setIsAdding(false);
             setIsEditing(null);
             setInputValue("");
+            setInputValueEn("");
           }}
         >
           ასაკობრივი ჯგუფები
@@ -177,7 +213,7 @@ export const AttributesManager = () => {
           <form onSubmit={handleSubmit} className="attribute-form">
             <div className="form-group">
               <label htmlFor="attributeValue">
-                {isEditing ? "რედაქტირება" : "ახალი მნიშვნელობა"}
+                {isEditing ? "რედაქტირება" : "ახალი მნიშვნელობა"} (ქართულად)
               </label>
               <input
                 type="text"
@@ -194,17 +230,36 @@ export const AttributesManager = () => {
                 required
               />
             </div>
+
+            {/* Only show English input field for colors */}
+            {activeTab === "color" && (
+              <div className="form-group">
+                <label htmlFor="attributeValueEn">
+                  {isEditing ? "რედაქტირება" : "ახალი მნიშვნელობა"} (ინგლისურად)
+                </label>
+                <input
+                  type="text"
+                  id="attributeValueEn"
+                  value={inputValueEn}
+                  onChange={(e) => setInputValueEn(e.target.value)}
+                  placeholder="Enter color in English..."
+                />
+              </div>
+            )}
+
             <div className="form-actions">
               <button
                 type="submit"
                 className="btn-submit"
                 disabled={isPending || !inputValue.trim()}
               >
-                {isPending
-                  ? <HeartLoading size="medium" />
-                  : isEditing
-                  ? "განახლება"
-                  : "დამატება"}
+                {isPending ? (
+                  <HeartLoading size="medium" inline={true} />
+                ) : isEditing ? (
+                  "განახლება"
+                ) : (
+                  "დამატება"
+                )}
               </button>
               <button
                 type="button"
@@ -213,6 +268,7 @@ export const AttributesManager = () => {
                   setIsAdding(false);
                   setIsEditing(null);
                   setInputValue("");
+                  setInputValueEn("");
                 }}
               >
                 გაუქმება
@@ -228,21 +284,27 @@ export const AttributesManager = () => {
         ) : (
           <div className="attributes-list">
             {attributeItems.length > 0 ? (
-              attributeItems.map((item) => (
-                <div key={item} className="attribute-item">
-                  <span className="attribute-value">{item}</span>
+              attributeItems.map((item, index) => (
+                <div key={`${item.value}-${index}`} className="attribute-item">
+                  <div className="attribute-value-container">
+                    <span className="attribute-value">{item.value}</span>
+                    {activeTab === "color" && item.valueEn && (
+                      <span className="attribute-value-en">
+                        ({item.valueEn})
+                      </span>
+                    )}
+                  </div>
                   <div className="attribute-actions">
                     <button
                       className="btn-edit"
-                      onClick={() => startEditing(item)}
-                      disabled={isEditing === item}
+                      onClick={() => startEditing(item.value, item.valueEn)}
+                      disabled={isEditing === item.value}
                     >
                       რედაქტირება
                     </button>
                     <button
                       className="btn-delete"
-                      onClick={() => handleDelete(item)}
-                      disabled={isPending}
+                      onClick={() => handleDelete(item.value)}
                     >
                       წაშლა
                     </button>

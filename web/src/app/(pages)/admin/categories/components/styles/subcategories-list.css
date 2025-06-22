@@ -5,6 +5,13 @@
   box-sizing: border-box;
 }
 
+.name-en,
+.description-en {
+  color: #666;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
 .subcategories-header {
   display: flex;
   justify-content: space-between;

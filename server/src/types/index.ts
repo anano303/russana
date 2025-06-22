@@ -15,14 +15,17 @@ export enum AgeGroup {
 export interface CategoryStructure {
   main: MainCategory;
   sub: string;
+  subEn?: string; // English translation of sub category
   ageGroup?: string;
   size?: string;
   color?: string;
+  colorEn?: string; // English translation of color
 }
 
 export interface ProductVariant {
   size: string;
   color: string;
+  colorEn?: string; // English translation of color
   stock: number;
   sku?: string;
 }
@@ -37,13 +40,15 @@ export interface Product {
   descriptionEn?: string;
   brand?: string;
   brandLogo: string;
-  category: string; // Legacy field
-  // New category system fields
+  category: string; // Legacy field  // New category system fields
   mainCategory?: string | any; // Reference to Category
+  mainCategoryEn?: string | any; // English translation of mainCategory
   subCategory?: string | any; // Reference to SubCategory
+  subCategoryEn?: string | any; // English translation of subCategory
   ageGroup?: string;
   size?: string;
   color?: string;
+  colorEn?: string; // English translation of color
   categoryStructure?: CategoryStructure; // Legacy field
   price: number;
   countInStock: number; // Legacy field

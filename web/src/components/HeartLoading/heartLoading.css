@@ -1,10 +1,13 @@
-
 .heart-loading {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  color: #CF0A0A;
+  color: #cf0a0a;
+}
+
+.heart-loading.inline {
+  display: inline-flex;
 }
 
 .heart-loading.small {
@@ -26,13 +29,13 @@
 .heart-icon {
   width: 1.5em;
   height: 1.5em;
-  color: #CF0A0A;
+  color: #cf0a0a;
 }
 
 .loading-text {
-  font-family: 'ALK Katerina', sans-serif;
+  font-family: "ALK Katerina", sans-serif;
   font-weight: 400;
-  color: #CF0A0A;
+  color: #cf0a0a;
 }
 
 .dots {
@@ -50,7 +53,8 @@
 }
 
 @keyframes heart-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
