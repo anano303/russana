@@ -603,7 +603,7 @@ export const TRANSLATIONS: Translations = {
       priceRequired: "ფასის მითითება აუცილებელია",
       priceInvalid: "ფასი უნდა იყოს დადებითი რიცხვი",
       descriptionRequired: "აღწერა აუცილებელია",
-      descriptionInvalid: "აღწერა არასწორია",
+      descriptionInvalid: "აღწერა არასწორია,უნდა იყოს მინიმუმ 5 სიმბოლო",
       brandRequired: "ბრენდის მითითება აუცილებელია",
       brandInvalid: "ბრენდის სახელი არასწორია",
     },
@@ -1135,7 +1135,8 @@ export const TRANSLATIONS: Translations = {
       priceRequired: "Price is required",
       priceInvalid: "Price must be a positive number",
       descriptionRequired: "Description is required",
-      descriptionInvalid: "Description is invalid",
+      descriptionInvalid:
+        "Description is invalid, must be at least 5 characters",
       brandRequired: "Brand is required",
       brandInvalid: "Brand name is invalid",
     },
