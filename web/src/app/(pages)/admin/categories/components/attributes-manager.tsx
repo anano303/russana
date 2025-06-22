@@ -178,22 +178,46 @@ export const AttributesManager = () => {
     // For age groups, we need both Georgian and English values
     attributeItems = ageGroups.map((ageGroup, index) => {
       console.log(`Age group ${index}:`, ageGroup);
-      // Check if ageGroup is an object with name and nameEn properties
+
+      // Handle both cases: when ageGroup is an object OR just a string
       if (
         typeof ageGroup === "object" &&
         ageGroup !== null &&
         "name" in ageGroup
       ) {
+        // Case 1: Proper object with name and nameEn properties
         const result = {
           value: (ageGroup as AgeGroupItem).name,
-          nameEn: (ageGroup as AgeGroupItem).nameEn,
+          nameEn: (ageGroup as AgeGroupItem).nameEn || "",
         };
-        console.log(`Mapped age group ${index}:`, result);
+        console.log(`Mapped age group ${index} (object):`, result);
         return result;
+      } else if (typeof ageGroup === "string") {
+        // Case 2: Just a string (fallback for production issue)
+        console.log(`Age group ${index} is string:`, ageGroup);
+
+        // Map known Georgian names to English (temporary fix for production)
+        const ageGroupTranslations: Record<string, string> = {
+          ბავშვები: "Kids",
+          დიდები: "Adults",
+          ყრმები: "Toddlers",
+          მოზარდები: "Teenagers",
+        };
+
+        const result = {
+          value: ageGroup,
+          nameEn: ageGroupTranslations[ageGroup] || "",
+        };
+        console.log(
+          `Mapped age group ${index} (string with translation):`,
+          result
+        );
+        return result;
+      } else {
+        // Fallback for any other case
+        console.log(`Fallback for age group ${index}:`, ageGroup);
+        return { value: String(ageGroup), nameEn: "" };
       }
-      // Fallback for backward compatibility
-      console.log(`Fallback for age group ${index}:`, ageGroup);
-      return { value: ageGroup as string, nameEn: "" };
     });
     console.log("Final age group attributeItems:", attributeItems);
   }

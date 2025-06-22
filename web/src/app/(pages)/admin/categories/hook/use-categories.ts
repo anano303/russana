@@ -416,13 +416,30 @@ export const useAttributesWithTranslations = () => {
     queryKey: ["attributesWithTranslations"],
     queryFn: async () => {
       try {
-        console.log("Fetching all attributes with translations");
+        console.log("🔍 Fetching all attributes with translations");
         const [colorsResponse, sizesResponse, ageGroupsResponse] =
           await Promise.all([
             apiClient.get("/categories/attributes/colors"),
             apiClient.get("/categories/attributes/sizes"),
             apiClient.get("/categories/attributes/age-groups"),
           ]);
+
+        console.log(
+          "🔍 Attributes API - Colors response:",
+          colorsResponse.data?.slice(0, 2)
+        );
+        console.log(
+          "🔍 Attributes API - Sizes response:",
+          sizesResponse.data?.slice(0, 2)
+        );
+        console.log(
+          "🔍 Attributes API - Age groups response:",
+          ageGroupsResponse.data
+        );
+        console.log(
+          "🔍 Attributes API - Age groups first item:",
+          ageGroupsResponse.data?.[0]
+        );
 
         return {
           colors: colorsResponse.data,
@@ -648,7 +665,12 @@ export const useAgeGroups = () => {
   return useQuery<AgeGroupItem[]>({
     queryKey: ["ageGroups"],
     queryFn: async () => {
+      console.log(
+        "🔍 Fetching age groups from: /categories/attributes/age-groups"
+      );
       const response = await apiClient.get("/categories/attributes/age-groups");
+      console.log("🔍 Age groups API response:", response.data);
+      console.log("🔍 First age group structure:", response.data[0]);
       return response.data;
     },
   });
