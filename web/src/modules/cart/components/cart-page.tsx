@@ -6,12 +6,47 @@ import { CartItem } from "./cart-item";
 import { formatPrice } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./cart-page.css";
+import { Color } from "@/types";
+
+
 
 export function CartPage() {
   const { items, loading } = useCart();
   const router = useRouter();
   const { t, language } = useLanguage(); // Added language here
+
+  // Fetch all colors for proper nameEn support
+  const { data: availableColors = [] } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Get localized color name based on current language
+  const getLocalizedColorName = (colorName: string): string => {
+    if (language === "en") {
+      // Find the color in availableColors to get its English name
+      const colorObj = availableColors.find(
+        (color) => color.name === colorName
+      );
+      return colorObj?.nameEn || colorName;
+    }
+    return colorName;
+  };
 
   if (loading) {
     return <div>{t("shop.loading")}</div>;
@@ -36,13 +71,17 @@ export function CartPage() {
       </div>
 
       <div className="cart-content">
+        {" "}
         <div className="cart-items">
           {items.map((item) => {
-            // Prepare the item with proper display name based on language
+            // Prepare the item with proper display name and localized color based on language
             const itemWithDisplayName = {
               ...item,
               displayName:
                 language === "en" && item.nameEn ? item.nameEn : item.name,
+              color: item.color
+                ? getLocalizedColorName(item.color)
+                : item.color,
             };
 
             return (
@@ -55,7 +94,6 @@ export function CartPage() {
             );
           })}
         </div>
-
         <div className="order-summary">
           <div className="summary-card">
             <h2 className="summary-title">{t("cart.checkout")}</h2>

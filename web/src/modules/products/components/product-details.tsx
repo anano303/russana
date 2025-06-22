@@ -8,10 +8,19 @@ import "./productDetails.css";
 import { Product } from "@/types";
 import { ShareButtons } from "@/components/share-buttons/share-buttons";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
 
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useCart } from "@/modules/cart/context/cart-context";
+
+interface Color {
+  _id: string;
+  name: string;
+  nameEn?: string;
+  isActive: boolean;
+}
 
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
@@ -102,7 +111,35 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("");
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>(""); // Fetch all colors for proper nameEn support
+  const { data: availableColors = [] } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Get localized color name based on current language
+  const getLocalizedColorName = (colorName: string): string => {
+    if (language === "en") {
+      // Find the color in availableColors to get its English name
+      const colorObj = availableColors.find(
+        (color) => color.name === colorName
+      );
+      return colorObj?.nameEn || colorName;
+    }
+    return colorName;
+  };
 
   const availableQuantity = useMemo(() => {
     // Calculate available quantity based on selected attributes
@@ -246,7 +283,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   </select>
                 </div>
               )}
-
               {/* Size Selector - only show if product has sizes */}
               {product.sizes && product.sizes.length > 0 && (
                 <div className="select-container">
@@ -264,8 +300,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     ))}
                   </select>
                 </div>
-              )}
-
+              )}{" "}
               {/* Color selector - only show if product has colors */}
               {product.colors && product.colors.length > 0 && (
                 <div className="select-container">
@@ -278,13 +313,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     <option value="">აირჩიეთ ფერი</option>
                     {product.colors.map((color) => (
                       <option key={color} value={color}>
-                        {color}
+                        {getLocalizedColorName(color)}
                       </option>
                     ))}
                   </select>
                 </div>
               )}
-
               {/* Quantity Selector */}
               {availableQuantity > 0 && (
                 <div className="select-container">
@@ -305,7 +339,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   </select>
                 </div>
               )}
-
               {/* Stock Status */}
               {availableQuantity <= 0 && (
                 <div className="out-of-stock-message">
@@ -366,7 +399,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 />
               </div>
             </div>
-            
           )}
         </div>
       </div>
