@@ -18,14 +18,11 @@ export function useAuth() {
     queryFn: async () => {
       // If no token, don't make the request and immediately return null
       if (!isLoggedIn()) {
-        console.log("No token found, user is not logged in");
         return null;
       }
 
       try {
-        console.log("Fetching user profile...");
         const response = await apiClient.get("/auth/profile");
-        console.log("Successfully fetched user profile");
         return response.data;
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -35,14 +32,12 @@ export function useAuth() {
           (error as { response?: { status?: number } })?.response?.status ===
           401
         ) {
-          console.log("Received 401 from profile endpoint, clearing tokens");
           clearTokens();
           return null;
         }
 
         // Return locally stored user data as fallback only if we're not unauthorized
         const localUserData = getUserData();
-        console.log("Using local user data as fallback:", localUserData);
         return localUserData;
       }
     },
@@ -69,7 +64,6 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       if (data.success && data.user) {
-        console.log("Login successful, setting user data");
         // Make sure we're storing the profile image URL as well
         if (data.user.profileImage) {
           localStorage.setItem("userProfileImage", data.user.profileImage);
@@ -82,12 +76,10 @@ export function useAuth() {
       // Error will be available via loginMutation.error
     },
   });
-
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: logoutApi,
     onSuccess: () => {
-      console.log("Logout successful, clearing user data");
       queryClient.setQueryData(["user"], null);
       window.location.href = "/login"; // Force a full page refresh to reset all state
     },

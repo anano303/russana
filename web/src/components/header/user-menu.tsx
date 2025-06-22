@@ -25,9 +25,6 @@ export default function UserMenu() {
     } else {
       setProfileImage("/avatar.jpg");
     }
-
-    // დავამატოთ ლოგი დებაგისთვის
-    console.log("User profile updated:", user);
   }, [user]);
 
   useEffect(() => {

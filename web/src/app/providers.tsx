@@ -41,16 +41,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Initialize auth when the app starts
   useEffect(() => {
     const initAuth = async () => {
-      console.log("🚀 Initializing auth...");
       initializeAuth();
 
       // Check if we have tokens and potentially refresh them
       const isAuthed = await checkAndRefreshAuth();
-      console.log(
-        `🔒 Auth initialized, user is ${
-          isAuthed ? "authenticated" : "not authenticated"
-        }`
-      );
 
       // Update auth state in React Query
       if (isAuthed) {
