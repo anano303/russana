@@ -193,10 +193,6 @@ export const useSubCategories = (
   categoryId?: string,
   includeInactive = false
 ) => {
-  console.log(
-    `[useSubCategories] Hook called. categoryId: "${categoryId}", includeInactive: ${includeInactive}`
-  );
-
   return useQuery<SubCategory[], Error>({
     // Specify Error type for queryError
     queryKey: ["subcategories", { categoryId, includeInactive }],
@@ -394,9 +390,7 @@ export const useAttributes = () => {
     queryKey: ["attributes"],
     queryFn: async () => {
       try {
-        console.log("Fetching all attributes");
         const response = await apiClient.get("/categories/attributes/all");
-        console.log("Attributes fetched:", response.data);
         return response.data;
       } catch (error) {
         console.error("Error fetching attributes:", error);
@@ -416,30 +410,12 @@ export const useAttributesWithTranslations = () => {
     queryKey: ["attributesWithTranslations"],
     queryFn: async () => {
       try {
-        console.log("🔍 Fetching all attributes with translations");
         const [colorsResponse, sizesResponse, ageGroupsResponse] =
           await Promise.all([
             apiClient.get("/categories/attributes/colors"),
             apiClient.get("/categories/attributes/sizes"),
             apiClient.get("/categories/attributes/age-groups"),
           ]);
-
-        console.log(
-          "🔍 Attributes API - Colors response:",
-          colorsResponse.data?.slice(0, 2)
-        );
-        console.log(
-          "🔍 Attributes API - Sizes response:",
-          sizesResponse.data?.slice(0, 2)
-        );
-        console.log(
-          "🔍 Attributes API - Age groups response:",
-          ageGroupsResponse.data
-        );
-        console.log(
-          "🔍 Attributes API - Age groups first item:",
-          ageGroupsResponse.data?.[0]
-        );
 
         return {
           colors: colorsResponse.data,
@@ -665,12 +641,7 @@ export const useAgeGroups = () => {
   return useQuery<AgeGroupItem[]>({
     queryKey: ["ageGroups"],
     queryFn: async () => {
-      console.log(
-        "🔍 Fetching age groups from: /categories/attributes/age-groups"
-      );
       const response = await apiClient.get("/categories/attributes/age-groups");
-      console.log("🔍 Age groups API response:", response.data);
-      console.log("🔍 First age group structure:", response.data[0]);
       return response.data;
     },
   });
@@ -691,11 +662,6 @@ export const useCreateAgeGroup = () => {
         ageGroupData.nameEn = data.nameEn.trim();
       }
 
-      console.log("Creating age group with cleaned data:", {
-        input: data,
-        payload: ageGroupData,
-      });
-
       const response = await apiClient.post(
         "/categories/attributes/age-groups",
         ageGroupData
@@ -708,10 +674,7 @@ export const useCreateAgeGroup = () => {
       toast.success("ასაკობრივი ჯგუფი წარმატებით დაემატა");
     },
     onError: (error: unknown) => {
-      console.error("Create age group error:", error);
       const err = error as ApiError;
-      console.error("Error response:", err.response);
-      console.error("Error data:", err.response?.data);
       toast.error(
         err.response?.data?.message || "ასაკობრივი ჯგუფის დამატება ვერ მოხერხდა"
       );
@@ -735,18 +698,10 @@ export const useUpdateAgeGroup = () => {
       // Only add name if it exists and is not empty
       if (data.value || data.name) {
         ageGroupData.name = (data.value || data.name || "").trim();
-      }
-
-      // Only add nameEn if it exists and is not empty
+      } // Only add nameEn if it exists and is not empty
       if (data.nameEn && data.nameEn.trim() !== "") {
         ageGroupData.nameEn = data.nameEn.trim();
       }
-
-      console.log("Updating age group with cleaned data:", {
-        input: data,
-        payload: ageGroupData,
-        ageGroup,
-      });
 
       const response = await apiClient.put(
         `/categories/attributes/age-groups/${ageGroup}`,
@@ -760,10 +715,7 @@ export const useUpdateAgeGroup = () => {
       toast.success("ასაკობრივი ჯგუფი წარმატებით განახლდა");
     },
     onError: (error: unknown) => {
-      console.error("Update age group error:", error);
       const err = error as ApiError;
-      console.error("Error response:", err.response);
-      console.error("Error data:", err.response?.data);
       toast.error(
         err.response?.data?.message ||
           "ასაკობრივი ჯგუფის განახლება ვერ მოხერხდა"

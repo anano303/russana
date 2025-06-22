@@ -54,8 +54,6 @@ function AddToCartButton({
       ); // Show success message
       setShowSuccessMessage(true);
       setTimeout(() => setShowSuccessMessage(false), 3000); // Hide after 3 seconds
-
-      console.log("Success message shown"); // Debug log
     } catch (error) {
       console.error("Add to cart error:", error); // Debug log
       toast({
@@ -313,18 +311,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     language === "en" && product.descriptionEn
       ? product.descriptionEn
       : product.description;
-
   const isOutOfStock = product.countInStock === 0;
-
-  // Debug: Log current product subcategory structure
-  console.log("Current product subCategory:", {
-    type: typeof product.subCategory,
-    value: product.subCategory,
-    extracted:
-      typeof product.subCategory === "string"
-        ? product.subCategory
-        : product.subCategory?.id || product.subCategory?._id || "",
-  });
 
   // Initialize default selections based on product data
   useEffect(() => {

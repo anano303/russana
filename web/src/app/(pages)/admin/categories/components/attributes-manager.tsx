@@ -31,8 +31,6 @@ interface AttributeInputExtended extends AttributeInput {
 export const AttributesManager = () => {
   const { language, t } = useLanguage();
 
-  console.log("Current language in AttributesManager:", language);
-
   const [activeTab, setActiveTab] = useState<AttributeType>("color");
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -40,21 +38,6 @@ export const AttributesManager = () => {
   const [inputValueEn, setInputValueEn] = useState("");
   // Colors
   const { data: colors, isLoading: isLoadingColors } = useColors();
-
-  // Debug colors data
-  console.log("useColors data:", colors);
-  console.log("Is colors array?", Array.isArray(colors));
-  if (colors) {
-    colors.forEach((color, index) => {
-      console.log(`Color ${index} details:`, {
-        type: typeof color,
-        isObject: typeof color === "object",
-        hasName: color && typeof color === "object" && "name" in color,
-        hasNameEn: color && typeof color === "object" && "nameEn" in color,
-        raw: color,
-      });
-    });
-  }
 
   const createColor = useCreateColor();
   const updateColor = useUpdateColor();
@@ -153,32 +136,24 @@ export const AttributesManager = () => {
   }
   let attributeItems: AttributeItem[] = [];
   if (activeTab === "color" && colors) {
-    console.log("Raw colors from API:", colors);
     // For colors, we need both Georgian and English values
-    attributeItems = colors.map((color, index) => {
-      console.log(`Color ${index}:`, color);
+    attributeItems = colors.map((color) => {
       // Check if color is an object with name and nameEn properties
       if (typeof color === "object" && color !== null && "name" in color) {
         const result = {
           value: (color as Color).name,
           nameEn: (color as Color).nameEn,
         };
-        console.log(`Mapped color ${index}:`, result);
         return result;
       }
       // Fallback for backward compatibility
-      console.log(`Fallback for color ${index}:`, color);
       return { value: color as string, nameEn: "" };
     });
-    console.log("Final attributeItems:", attributeItems);
   } else if (activeTab === "size" && sizes)
     attributeItems = sizes.map((size) => ({ value: size as string }));
   else if (activeTab === "ageGroup" && ageGroups) {
-    console.log("Raw age groups from API:", ageGroups);
     // For age groups, we need both Georgian and English values
-    attributeItems = ageGroups.map((ageGroup, index) => {
-      console.log(`Age group ${index}:`, ageGroup);
-
+    attributeItems = ageGroups.map((ageGroup) => {
       // Handle both cases: when ageGroup is an object OR just a string
       if (
         typeof ageGroup === "object" &&
@@ -190,12 +165,9 @@ export const AttributesManager = () => {
           value: (ageGroup as AgeGroupItem).name,
           nameEn: (ageGroup as AgeGroupItem).nameEn || "",
         };
-        console.log(`Mapped age group ${index} (object):`, result);
         return result;
       } else if (typeof ageGroup === "string") {
         // Case 2: Just a string (fallback for production issue)
-        console.log(`Age group ${index} is string:`, ageGroup);
-
         // Map known Georgian names to English (temporary fix for production)
         const ageGroupTranslations: Record<string, string> = {
           ბავშვები: "Kids",
@@ -208,18 +180,12 @@ export const AttributesManager = () => {
           value: ageGroup,
           nameEn: ageGroupTranslations[ageGroup] || "",
         };
-        console.log(
-          `Mapped age group ${index} (string with translation):`,
-          result
-        );
         return result;
       } else {
         // Fallback for any other case
-        console.log(`Fallback for age group ${index}:`, ageGroup);
         return { value: String(ageGroup), nameEn: "" };
       }
     });
-    console.log("Final age group attributeItems:", attributeItems);
   }
 
   return (
@@ -365,22 +331,9 @@ export const AttributesManager = () => {
           </div>
         ) : (
           <div className="attributes-list">
+            {" "}
             {attributeItems.length > 0 ? (
               attributeItems.map((item, index) => {
-                console.log(`Rendering item ${index}:`, {
-                  item,
-                  language,
-                  isColor: activeTab === "color",
-                  isAgeGroup: activeTab === "ageGroup",
-                  shouldShowEnglish:
-                    (activeTab === "color" || activeTab === "ageGroup") &&
-                    language === "en" &&
-                    item.nameEn,
-                  shouldShowGeorgianWithEnglish:
-                    (activeTab === "color" || activeTab === "ageGroup") &&
-                    language === "ge" &&
-                    item.nameEn,
-                });
                 return (
                   <div
                     key={`${item.value}-${index}`}

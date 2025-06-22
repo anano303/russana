@@ -240,12 +240,6 @@ export class AttributesController {
   @ApiOperation({ summary: 'Create a new age group' })
   @ApiResponse({ status: 201, description: 'The age group has been created' })
   createAgeGroup(@Body() createAgeGroupDto: CreateAgeGroupDto) {
-    console.log('=== CREATE AGE GROUP DEBUG ===');
-    console.log('Received DTO:', createAgeGroupDto);
-    console.log('DTO type:', typeof createAgeGroupDto);
-    console.log('DTO keys:', Object.keys(createAgeGroupDto));
-    console.log('DTO values:', Object.values(createAgeGroupDto));
-    console.log('================');
     return this.ageGroupService.create(createAgeGroupDto);
   }
   @Put('age-groups/:ageGroup')

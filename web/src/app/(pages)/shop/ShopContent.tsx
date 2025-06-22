@@ -80,11 +80,11 @@ const ShopContent = () => {
     setPriceRange([minPriceParam, maxPriceParam]);
     setSorting({ field: sortByParam, direction: sortDirectionParam });
 
-    console.log("Initial setup with URL params:", {
-      page: pageParam,
-      mainCategory: mainCategoryParam,
-      subCategory: subCategoryParam,
-    });
+    // console.log("Initial setup with URL params:", {
+    //   page: pageParam,
+    //   mainCategory: mainCategoryParam,
+    //   subCategory: subCategoryParam,
+    // });
   }, [searchParams]);
 
   // Fetch products based on filters

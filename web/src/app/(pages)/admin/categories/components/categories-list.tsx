@@ -102,7 +102,7 @@ export const CategoriesList = () => {
           updatedFields.isActive = formData.isActive;
         }
 
-        console.log("Updating with:", updatedFields);
+      
 
         await updateCategory.mutateAsync({
           id: isEditing,

@@ -52,39 +52,21 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
   const createSubCategory = useCreateSubCategory();
   const updateSubCategory = useUpdateSubCategory();
   const deleteSubCategory = useDeleteSubCategory();
-
   useEffect(() => {
-    console.log(`SubcategoriesList mounted with categoryId: ${categoryId}`);
-
     // Clear any previous errors when the categoryId changes
     setError(null);
-
-    return () => {
-      console.log(`SubcategoriesList unmounted for categoryId: ${categoryId}`);
-    };
   }, [categoryId]);
-
   useEffect(() => {
     if (isError) {
-      console.error("Error fetching subcategories:", queryError);
       setError(t("adminCategories.noSubcategoriesFound"));
     } else {
       setError(null);
     }
-
-    if (subcategories) {
-      console.log(
-        `Successfully loaded ${subcategories.length} subcategories for category: ${categoryId}`
-      );
-    }
   }, [isError, queryError, subcategories, categoryId, t]);
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validation before submission
+    e.preventDefault(); // Validation before submission
     if (!formData.name || !formData.name.trim()) {
-      console.error("Subcategory name is required");
       return;
     }
 
@@ -94,8 +76,6 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
       categoryId: categoryId, // Ensure categoryId is explicitly set to the selected category
       name: (formData.name || "").trim(), // Trim whitespace with null check
     };
-
-    console.log("Creating subcategory with data:", dataToSubmit);
 
     try {
       await createSubCategory.mutateAsync(
@@ -113,20 +93,15 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
         colors: [],
         isActive: true,
       });
-      console.log("Subcategory created successfully");
-    } catch (error) {
-      console.error("Failed to create subcategory:", error);
+    } catch {
       setError(t("adminCategories.createError"));
     }
   };
 
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isEditing) return;
-
-    // Validation before submission
+    if (!isEditing) return; // Validation before submission
     if (!formData.name || !formData.name.trim()) {
-      console.error("Subcategory name is required");
       return;
     }
 
@@ -137,8 +112,6 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
         categoryId, // Make sure categoryId is always set
         name: (formData.name || "").trim(), // Trim whitespace with null check
       };
-
-      console.log("Updating subcategory with data:", updateData);
 
       await updateSubCategory.mutateAsync({
         id: isEditing,
@@ -156,9 +129,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
         colors: [],
         isActive: true,
       });
-      console.log("Subcategory updated successfully");
-    } catch (error) {
-      console.error("Failed to update subcategory:", error);
+    } catch {
       setError(t("adminCategories.updateError"));
     }
   };
@@ -183,12 +154,9 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     if (!window.confirm(t("adminCategories.confirmDeleteSubcategory"))) {
       return;
     }
-
     try {
       await deleteSubCategory.mutateAsync(id);
-      console.log("Subcategory deleted successfully");
-    } catch (error) {
-      console.error("Failed to delete subcategory:", error);
+    } catch {
       setError(t("adminCategories.deleteError"));
     }
   };
