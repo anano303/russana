@@ -18,22 +18,47 @@ import {
 import { Loader } from "lucide-react";
 import "./styles/attributes-manager.css";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
+import { useLanguage } from "@/hooks/LanguageContext";
 
 type AttributeType = "color" | "size" | "ageGroup";
 
 interface AttributeInputExtended extends AttributeInput {
-  valueEn?: string;
+  value?: string;
+  nameEn?: string;
 }
 
 export const AttributesManager = () => {
+  const { language } = useLanguage(); // Add language context
+
+  // Debug the language value
+  console.log("Current language in AttributesManager:", language);
+  // For testing - force English to see if it works
+  const testLanguage: string = "en"; // Change this to "ge" to test Georgian
+  console.log("Using test language:", testLanguage);
+
   const [activeTab, setActiveTab] = useState<AttributeType>("color");
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [inputValueEn, setInputValueEn] = useState("");
-
   // Colors
   const { data: colors, isLoading: isLoadingColors } = useColors();
+
+  // Debug colors data
+  console.log("useColors data:", colors);
+  console.log("Is colors array?", Array.isArray(colors));
+  if (colors) {
+    colors.forEach((color, index) => {
+      console.log(`Color ${index} details:`, {
+        type: typeof color,
+        isObject: typeof color === "object",
+        hasName: color && typeof color === "object" && "name" in color,
+        hasNameEn: color && typeof color === "object" && "nameEn" in color,
+        raw: color,
+      });
+    });
+  }
+
   const createColor = useCreateColor();
   const updateColor = useUpdateColor();
   const deleteColor = useDeleteColor();
@@ -53,13 +78,11 @@ export const AttributesManager = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!inputValue.trim()) return;
-
-    // Only include English translation for colors
+    if (!inputValue.trim()) return; // Only include English translation for colors
     const data: AttributeInputExtended = {
       value: inputValue.trim(),
       ...(activeTab === "color" && inputValueEn.trim()
-        ? { valueEn: inputValueEn.trim() }
+        ? { nameEn: inputValueEn.trim() }
         : {}),
     };
 
@@ -92,12 +115,11 @@ export const AttributesManager = () => {
       console.error("Error submitting attribute:", error);
     }
   };
-
-  const startEditing = (value: string, valueEn?: string) => {
+  const startEditing = (value: string, nameEn?: string) => {
     setIsAdding(false);
     setIsEditing(value);
     setInputValue(value);
-    setInputValueEn(valueEn || "");
+    setInputValueEn(nameEn || "");
   };
 
   const handleDelete = async (value: string) => {
@@ -129,22 +151,28 @@ export const AttributesManager = () => {
     deleteAgeGroup.isPending;
   interface AttributeItem {
     value: string;
-    valueEn?: string;
+    nameEn?: string;
   }
   let attributeItems: AttributeItem[] = [];
   if (activeTab === "color" && colors) {
+    console.log("Raw colors from API:", colors);
     // For colors, we need both Georgian and English values
-    attributeItems = colors.map((color) => {
+    attributeItems = colors.map((color, index) => {
+      console.log(`Color ${index}:`, color);
       // Check if color is an object with name and nameEn properties
       if (typeof color === "object" && color !== null && "name" in color) {
-        return {
+        const result = {
           value: (color as Color).name,
-          valueEn: (color as Color).nameEn,
+          nameEn: (color as Color).nameEn,
         };
+        console.log(`Mapped color ${index}:`, result);
+        return result;
       }
       // Fallback for backward compatibility
-      return { value: color as string, valueEn: "" };
+      console.log(`Fallback for color ${index}:`, color);
+      return { value: color as string, nameEn: "" };
     });
+    console.log("Final attributeItems:", attributeItems);
   } else if (activeTab === "size" && sizes)
     attributeItems = sizes.map((size) => ({ value: size as string }));
   else if (activeTab === "ageGroup" && ageGroups)
@@ -284,33 +312,56 @@ export const AttributesManager = () => {
         ) : (
           <div className="attributes-list">
             {attributeItems.length > 0 ? (
-              attributeItems.map((item, index) => (
-                <div key={`${item.value}-${index}`} className="attribute-item">
-                  <div className="attribute-value-container">
-                    <span className="attribute-value">{item.value}</span>
-                    {activeTab === "color" && item.valueEn && (
-                      <span className="attribute-value-en">
-                        ({item.valueEn})
+              attributeItems.map((item, index) => {
+                console.log(`Rendering item ${index}:`, {
+                  item,
+                  language,
+                  isColor: activeTab === "color",
+                  shouldShowEnglish:
+                    activeTab === "color" && language === "en" && item.nameEn,
+                  shouldShowGeorgianWithEnglish:
+                    activeTab === "color" && language === "ge" && item.nameEn,
+                });
+                return (
+                  <div
+                    key={`${item.value}-${index}`}
+                    className="attribute-item"
+                  >
+                    <div className="attribute-value-container">
+                      {" "}
+                      <span className="attribute-value">
+                        {activeTab === "color" &&
+                        testLanguage === "en" &&
+                        item.nameEn
+                          ? item.nameEn
+                          : item.value}
                       </span>
-                    )}
+                      {activeTab === "color" &&
+                        testLanguage === "ge" &&
+                        item.nameEn && (
+                          <span className="attribute-value-en">
+                            ({item.nameEn})
+                          </span>
+                        )}
+                    </div>
+                    <div className="attribute-actions">
+                      <button
+                        className="btn-edit"
+                        onClick={() => startEditing(item.value, item.nameEn)}
+                        disabled={isEditing === item.value}
+                      >
+                        რედაქტირება
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleDelete(item.value)}
+                      >
+                        წაშლა
+                      </button>
+                    </div>
                   </div>
-                  <div className="attribute-actions">
-                    <button
-                      className="btn-edit"
-                      onClick={() => startEditing(item.value, item.valueEn)}
-                      disabled={isEditing === item.value}
-                    >
-                      რედაქტირება
-                    </button>
-                    <button
-                      className="btn-delete"
-                      onClick={() => handleDelete(item.value)}
-                    >
-                      წაშლა
-                    </button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="no-attributes">
                 <p>მონაცემები არ მოიძებნა</p>

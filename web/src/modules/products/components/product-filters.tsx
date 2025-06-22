@@ -8,6 +8,13 @@ import { useLanguage } from "@/hooks/LanguageContext";
 import { Category, SubCategory } from "@/types";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
+interface Color {
+  _id: string;
+  name: string;
+  nameEn?: string;
+  isActive: boolean;
+}
+
 interface FilterProps {
   onCategoryChange: (categoryId: string) => void;
   onSubCategoryChange: (subcategoryId: string) => void;
@@ -112,7 +119,6 @@ export function ProductFilters({
     retry: 2,
     refetchOnWindowFocus: false,
   });
-
   // Fetch all available brands for filtering with error handling
   const {
     data: availableBrands = [],
@@ -135,6 +141,27 @@ export function ProductFilters({
     retry: 1,
     refetchOnWindowFocus: false,
   });
+  // Fetch all colors for filtering with proper nameEn support
+  const { data: availableColors = [] } = useQuery<
+    Color[]
+  >({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          console.error("Failed to fetch colors:", response.status);
+          return [];
+        }
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch colors:", err);
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
 
   // Get available attributes based on selected subcategory
   const getAvailableAttributes = (
@@ -151,6 +178,17 @@ export function ProductFilters({
     if (!selectedSubCategory) return [];
 
     return selectedSubCategory[attributeType] || [];
+  };
+  // Get localized color name based on current language
+  const getLocalizedColorName = (colorName: string): string => {
+    if (language === "en") {
+      // Find the color in availableColors to get its English name
+      const colorObj = availableColors.find(
+        (color) => color.name === colorName
+      );
+      return colorObj?.nameEn || colorName;
+    }
+    return colorName;
   };
 
   // Handle price range changes with validation
@@ -325,7 +363,6 @@ export function ProductFilters({
               ✕
             </button>
           </div>
-
           {/* Age Group Filter */}
           {selectedSubCategoryId &&
             getAvailableAttributes("ageGroups").length > 0 && (
@@ -373,7 +410,6 @@ export function ProductFilters({
                 </div>
               </div>
             )}
-
           {/* Size Filter */}
           {selectedSubCategoryId &&
             getAvailableAttributes("sizes").length > 0 && (
@@ -408,8 +444,7 @@ export function ProductFilters({
                   </div>
                 </div>
               </div>
-            )}
-
+            )}{" "}
           {/* Color Filter */}
           {selectedSubCategoryId &&
             getAvailableAttributes("colors").length > 0 && (
@@ -438,14 +473,13 @@ export function ProductFilters({
                           onColorChange(color === selectedColor ? "" : color)
                         }
                       >
-                        {color}
+                        {getLocalizedColorName(color)}
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
             )}
-
           {/* Brand Filter */}
           {!isBrandsLoading &&
             availableBrands &&
@@ -482,7 +516,6 @@ export function ProductFilters({
                 </div>
               </div>
             )}
-
           {/* Price Range Filter */}
           <div className="filter-section">
             <h3 className="filter-title">ფასის დიაპაზონი</h3>
@@ -521,7 +554,6 @@ export function ProductFilters({
               </div>
             </div>
           </div>
-
           {/* Sort Options */}
           <div className="filter-section">
             <h3 className="filter-title">სორტირება</h3>
@@ -546,7 +578,6 @@ export function ProductFilters({
               </select>
             </div>
           </div>
-
           {/* Clear All Filters Button */}
           {(selectedCategoryId ||
             selectedSubCategoryId ||

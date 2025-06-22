@@ -68,8 +68,9 @@ export interface SubCategoryUpdateInput {
 }
 
 export interface AttributeInput {
-  value: string;
-  valueEn?: string;
+  value?: string;
+  name?: string;
+  nameEn?: string;
 }
 
 // Error interface to properly type error responses
@@ -432,9 +433,14 @@ export const useCreateColor = () => {
 
   return useMutation({
     mutationFn: async (data: AttributeInput) => {
+      // Convert to the format expected by the backend
+      const colorData = {
+        name: data.value,
+        nameEn: data.nameEn,
+      };
       const response = await apiClient.post(
         "/categories/attributes/colors",
-        data
+        colorData
       );
       return response.data;
     },
@@ -461,9 +467,14 @@ export const useUpdateColor = () => {
       color: string;
       data: AttributeInput;
     }) => {
+      // Convert to the format expected by the backend
+      const colorData = {
+        name: data.value,
+        nameEn: data.nameEn,
+      };
       const response = await apiClient.put(
         `/categories/attributes/colors/${color}`,
-        data
+        colorData
       );
       return response.data;
     },

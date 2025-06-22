@@ -50,6 +50,12 @@ export interface ProductVariant {
   stock: number;
 }
 
+export interface Color {
+  _id: string;
+  name: string;
+  nameEn?: string;
+  isActive: boolean;
+}
 export interface Product {
   _id: string;
   user: User;

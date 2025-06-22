@@ -171,6 +171,15 @@ export class AttributeDto {
   @ApiProperty({ description: 'Attribute value', example: 'წითელი' })
   @IsString()
   value: string;
+
+  @ApiProperty({
+    description: 'Attribute value in English',
+    example: 'Red',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
 }
 
 export class AttributesArrayDto {

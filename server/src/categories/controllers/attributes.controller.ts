@@ -10,7 +10,10 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { SubCategoryService } from '../services/subCategory.service';
+import { CreateColorDto, UpdateColorDto } from '../dto/color.dto';
 import { AttributeDto } from '../dto/subcategory.dto';
+
+// ...existing imports...
 import { JwtAuthGuard } from '@/guards/jwt-auth.guard';
 import { RolesGuard } from '@/guards/roles.guard';
 import { Role } from '@/types/role.enum';
@@ -22,11 +25,15 @@ import {
   ApiParam,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+import { ColorService } from '../services/color.service';
 
 @ApiTags('attributes')
 @Controller('categories/attributes')
 export class AttributesController {
-  constructor(private readonly subCategoryService: SubCategoryService) {}
+  constructor(
+    private readonly subCategoryService: SubCategoryService,
+    private readonly colorService: ColorService, // Add this
+  ) {}
 
   @Get('all')
   @ApiOperation({ summary: 'Get attribute options for categories' })
@@ -40,19 +47,15 @@ export class AttributesController {
 
   // Color management
   @Get('colors')
-  @ApiOperation({ summary: 'Get all available colors from subcategories' })
+  @ApiOperation({ summary: 'Get all available colors from Color collection' })
   @ApiResponse({
     status: 200,
-    description: 'Returns all available colors',
-    schema: {
-      type: 'array',
-      items: { type: 'string' },
-    },
+    description: 'Returns all available colors with nameEn',
   })
   async getAllColors() {
     try {
-      console.log('Fetching all colors');
-      const colors = await this.subCategoryService.getAllColors();
+      console.log('Fetching all colors from Color collection');
+      const colors = await this.colorService.findAll();
       console.log('Colors fetched:', colors);
       return colors;
     } catch (error) {
@@ -60,39 +63,93 @@ export class AttributesController {
       throw new BadRequestException('Failed to fetch colors: ' + error.message);
     }
   }
-
   @Post('colors')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new color' })
   @ApiResponse({ status: 201, description: 'The color has been created' })
-  createColor(@Body() { value }: AttributeDto) {
-    return this.subCategoryService.createColor(value);
+  createColor(@Body() createColorDto: CreateColorDto) {
+    return this.colorService.create(createColorDto);
   }
-
   @Put('colors/:color')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a color name' })
-  @ApiParam({ name: 'color', description: 'Color to update' })
+  @ApiParam({ name: 'color', description: 'Color name to update' })
   @ApiResponse({ status: 200, description: 'The color has been updated' })
   @ApiResponse({ status: 404, description: 'Color not found' })
-  updateColor(@Param('color') color: string, @Body() { value }: AttributeDto) {
-    return this.subCategoryService.updateColor(color, value);
-  }
+  async updateColor(
+    @Param('color') colorName: string,
+    @Body() updateColorDto: UpdateColorDto,
+  ) {
+    try {
+      // Decode URL-encoded Georgian text
+      const decodedColorName = decodeURIComponent(colorName);
+      console.log('Updating color:', {
+        original: colorName,
+        decoded: decodedColorName,
+      });
 
+      // Find the color by name first
+      const colors = await this.colorService.findAll();
+      const existingColor = colors.find((c) => c.name === decodedColorName);
+
+      if (!existingColor) {
+        throw new BadRequestException(
+          `Color with name "${decodedColorName}" not found`,
+        );
+      }
+      console.log('Found existing color:', existingColor);
+
+      // Update using the ObjectId (convert to string)
+      return await this.colorService.update(
+        existingColor._id.toString(),
+        updateColorDto,
+      );
+    } catch (error) {
+      console.error('Error updating color:', error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Failed to update color: ' + error.message);
+    }
+  }
   @Delete('colors/:color')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a color' })
-  @ApiParam({ name: 'color', description: 'Color to delete' })
+  @ApiParam({ name: 'color', description: 'Color name to delete' })
   @ApiResponse({ status: 200, description: 'The color has been deleted' })
   @ApiResponse({ status: 404, description: 'Color not found' })
-  deleteColor(@Param('color') color: string) {
-    return this.subCategoryService.deleteColor(color);
+  async deleteColor(@Param('color') colorName: string) {
+    try {
+      // Decode URL-encoded Georgian text
+      const decodedColorName = decodeURIComponent(colorName);
+      console.log('Deleting color:', {
+        original: colorName,
+        decoded: decodedColorName,
+      });
+
+      // Find the color by name first
+      const colors = await this.colorService.findAll();
+      const existingColor = colors.find((c) => c.name === decodedColorName);
+
+      if (!existingColor) {
+        throw new BadRequestException(
+          `Color with name "${decodedColorName}" not found`,
+        );
+      } // Delete using the ObjectId (convert to string)
+      return await this.colorService.remove(existingColor._id.toString());
+    } catch (error) {
+      console.error('Error deleting color:', error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Failed to delete color: ' + error.message);
+    }
   }
 
   // Size management

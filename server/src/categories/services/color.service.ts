@@ -50,8 +50,12 @@ export class ColorService {
     const newColor = new this.colorModel(createColorDto);
     return newColor.save();
   }
-
   async update(id: string, updateColorDto: UpdateColorDto): Promise<Color> {
+    // Validate that id is a valid MongoDB ObjectId
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+      throw new NotFoundException(`Invalid color ID format: ${id}`);
+    }
+
     if (updateColorDto.name) {
       const existingColor = await this.colorModel
         .findOne({
@@ -77,8 +81,12 @@ export class ColorService {
 
     return updatedColor;
   }
-
   async remove(id: string): Promise<void> {
+    // Validate that id is a valid MongoDB ObjectId
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+      throw new NotFoundException(`Invalid color ID format: ${id}`);
+    }
+
     const result = await this.colorModel.findByIdAndDelete(id).exec();
     if (!result) {
       throw new NotFoundException(`Color with ID ${id} not found`);
