@@ -29,7 +29,7 @@ export const TRANSLATIONS: Translations = {
 
     // Shop
     shop: {
-      allArtworks: "ყველა პროდუქტი",
+      allartworks: "ყველა პროდუქტი",
       artistWorks: "-ის პროდუქტები",
       loading: "იტვირთება...",
       filters: "ფილტრები",
@@ -60,7 +60,7 @@ export const TRANSLATIONS: Translations = {
     product: {
       ref: "Ref:",
       reviews: "შეფასებები",
-      dimensions: "ნამუშევრის ზომები",
+      dimensions: "პროდუქტის ზომები",
       deliveryTime: "მიწოდების ვადა",
       days: "დღე",
       tryInRoom: "მოარგე ოთახს",
@@ -77,7 +77,7 @@ export const TRANSLATIONS: Translations = {
       bedroom: "საძინებელი",
       kitchen: "სამზარეულო",
       hall: "დერეფანი",
-      artworkSize: "ნამუშევრის ზომა",
+      artworkSize: "პროდუქტის ზომა",
       wallColor: "კედლის ფერი",
       instructions:
         "გადაიტანეთ არჩეული პროდუქტი კედელზე სასურველ პოზიციაზე. გამოიყენეთ ზომის რეგულატორი.",
@@ -586,7 +586,8 @@ export const TRANSLATIONS: Translations = {
       deliveryDaysRequired:
         "გთხოვთ მიუთითოთ მიწოდების დრო თუ გამყიდველი ასრულებს მიწოდებას.",
       authError: "ავტორიზაცია ვერ მოხერხდა. გთხოვთ, შეხვიდეთ თავიდან.",
-      createUpdateError: "ნამუშევრის დამატება/განახლება ვერ მოხერხდა", // Success messages
+      createUpdateError: "პროდუქტის დამატება/განახლება ვერ მოხერხდა",
+      generalError: "რაღაც შეცდომა მოხდა", // Success messages
       productAddedSuccess: "პროდუქტი წარმატებით დაემატა!",
       productUpdatedSuccess: "პროდუქტი წარმატებით განახლდა!",
       productCreatedToast: "პროდუქტი დაემატა",
@@ -596,6 +597,15 @@ export const TRANSLATIONS: Translations = {
       uploadReminder: "გთხოვთ აირჩიოთ მინიმუმ ერთი სურათი",
       fixErrorsBeforeSubmit: "გასწორეთ შეცდომები გაგზავნამდე",
       requiredFields: "სავალდებულო ველები",
+      // Validation error messages
+      productNameRequired: "პროდუქტის სახელი აუცილებელია",
+      productNameInvalid: "პროდუქტის სახელი არასწორია",
+      priceRequired: "ფასის მითითება აუცილებელია",
+      priceInvalid: "ფასი უნდა იყოს დადებითი რიცხვი",
+      descriptionRequired: "აღწერა აუცილებელია",
+      descriptionInvalid: "აღწერა არასწორია",
+      brandRequired: "ბრენდის მითითება აუცილებელია",
+      brandInvalid: "ბრენდის სახელი არასწორია",
     },
   },
 
@@ -636,7 +646,7 @@ export const TRANSLATIONS: Translations = {
       defaultSort: "Default",
       priceLowToHigh: "Price: Low to High",
       priceHighToLow: "Price: High to Low",
-      emptyDescription: "Browse our platform to find unique artworks",
+      emptyDescription: "Browse our platform to find unique products",
       seeAll: "See All",
       allAges: "All Ages",
       adults: "Adults",
@@ -667,7 +677,7 @@ export const TRANSLATIONS: Translations = {
       bedroom: "Bedroom",
       kitchen: "Kitchen",
       hall: "Hall",
-      artworkSize: "Artwork Size",
+      artworkSize: "product Size",
       wallColor: "Wall Color",
       instructions:
         "Drag the selected product to the desired position on the wall. Use the size regulator.",
@@ -749,10 +759,10 @@ export const TRANSLATIONS: Translations = {
           "There is no similar platform in Georgia. We create a unique opportunity where art and technology meet.",
       },
       buyUnique: {
-        title: "Buy Unique Artworks",
+        title: "Buy Unique products",
         description:
           "Looking for unique art pieces? Browse our platform and find artwork that matches your taste.",
-        button: "Browse Artworks",
+        button: "Browse products",
       },
     },
 
@@ -774,12 +784,6 @@ export const TRANSLATIONS: Translations = {
       subscribePrompt: "Subscribe to our newsletter for updates",
       subscribe: "Subscribe",
       emailPlaceholder: "Enter your email",
-    },
-
-    // Home page
-    home: {
-      heroTitle: "Discover artworks by artists or sell your own 🖌️",
-      heroSubtitle: "Personalized and handmade creations by Georgian artists",
     },
 
     // Timer translations
@@ -1114,7 +1118,8 @@ export const TRANSLATIONS: Translations = {
       deliveryDaysRequired:
         "Please specify delivery time if seller handles delivery.",
       authError: "Authorization failed. Please log in again.",
-      createUpdateError: "Failed to add/update product", // Success messages
+      createUpdateError: "Failed to add/update product",
+      generalError: "Something went wrong", // Success messages
       productAddedSuccess: "Product added successfully!",
       productUpdatedSuccess: "Product updated successfully!",
       productCreatedToast: "Product Created",
@@ -1124,6 +1129,15 @@ export const TRANSLATIONS: Translations = {
       uploadReminder: "Please select at least one image",
       fixErrorsBeforeSubmit: "Fix errors before submitting",
       requiredFields: "Required fields",
+      // Validation error messages
+      productNameRequired: "Product name is required",
+      productNameInvalid: "Product name is invalid",
+      priceRequired: "Price is required",
+      priceInvalid: "Price must be a positive number",
+      descriptionRequired: "Description is required",
+      descriptionInvalid: "Description is invalid",
+      brandRequired: "Brand is required",
+      brandInvalid: "Brand name is invalid",
     },
 
     // Admin Categories

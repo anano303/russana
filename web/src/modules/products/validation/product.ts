@@ -32,36 +32,26 @@ export interface ProductFormData {
 }
 
 export const productSchema = z.object({
-  name: z.string().min(1, "პროდუქტის სახელი სავალდებულოა"),
+  name: z.string().min(1),
   nameEn: z.string().optional(),
-  description: z.string().min(5, "აღწერა უნდა იყოს მინიმუმ 5 სიმბოლო"),
+  description: z.string().min(5),
   descriptionEn: z.string().optional(),
-  brand: z.string().min(1, "ბრენდის სახელი სავალდებულოა"),
-  category: z.string().min(1, "კატეგორია სავალდებულოა"),
+  brand: z.string().min(1),
+  category: z.string().min(1),
   subcategory: z
     .string()
     .refine(
-      (value) => value !== "" && value !== "default" && value !== undefined,
-      {
-        message: "გთხოვთ აირჩიოთ ქვეკატეგორია",
-      }
+      (value) => value !== "" && value !== "default" && value !== undefined
     ),
   categoryId: z.string().optional(),
   ageGroups: z.array(z.string()).optional(),
   sizes: z.array(z.string()).optional(),
   colors: z.array(z.string()).optional(),
-  price: z.coerce.number().positive("ფასი უნდა იყოს დადებითი რიცხვი"),
-  countInStock: z.coerce
-    .number()
-    .min(0, "მარაგის რაოდენობა არ შეიძლება იყოს უარყოფითი"),
-  images: z.array(fileSchema).min(1, "მინიმუმ ერთი სურათი სავალდებულოა"),
+  price: z.coerce.number().positive(),
+  countInStock: z.coerce.number().min(0),
+  images: z.array(fileSchema).min(1),
   brandLogo: fileSchema.optional().nullable().or(z.literal("")),
-  deliveryType: z
-    .enum(["SELLER", "SoulArt"], {
-      errorMap: () => ({ message: "მიწოდების ტიპი სავალდებულოა" }),
-    })
-    .optional()
-    .nullable(),
+  deliveryType: z.enum(["SELLER", "SoulArt"]).optional().nullable(),
   minDeliveryDays: z.number().optional().nullable(),
   maxDeliveryDays: z.number().optional().nullable(),
 });

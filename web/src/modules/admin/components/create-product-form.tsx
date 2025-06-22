@@ -4,8 +4,6 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
-import { productSchema } from "@/modules/products/validation/product";
-import { ZodError } from "zod";
 import { ProductFormData as BaseProductFormData } from "@/modules/products/validation/product";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -311,36 +309,81 @@ export function CreateProductForm({
     setMinDeliveryDays("");
     setMaxDeliveryDays("");
   };
-
   const validateField = (field: keyof ProductFormData, value: unknown) => {
-    try {
-      // Check if the field exists in productSchema before validating
-      if (field in productSchema.shape) {
-        const shape = productSchema.shape as Record<
-          string,
-          { parse(value: unknown): unknown }
-        >;
-        shape[field].parse(value);
-      }
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-      return true;
-    } catch (error) {
-      if (error instanceof ZodError) {
-        setErrors((prev) => ({ ...prev, [field]: error.errors[0].message }));
-      }
+    // All validation is handled with translation keys for consistent language support
+    let translatedError: string | null = null;
+
+    switch (field) {
+      case "name":
+        if (!value || String(value).trim() === "") {
+          translatedError = t("adminProducts.productNameRequired");
+        } else if (String(value).length < 2) {
+          translatedError = t("adminProducts.productNameInvalid");
+        }
+        break;
+      case "price":
+        if (!value || value === "" || value === 0) {
+          translatedError = t("adminProducts.priceRequired");
+        } else if (Number(value) <= 0 || isNaN(Number(value))) {
+          translatedError = t("adminProducts.priceInvalid");
+        }
+        break;
+      case "description":
+        if (!value || String(value).trim() === "") {
+          translatedError = t("adminProducts.descriptionRequired");
+        } else if (String(value).length < 10) {
+          translatedError = t("adminProducts.descriptionInvalid");
+        }
+        break;
+      case "brand":
+        if (!value || String(value).trim() === "") {
+          translatedError = t("adminProducts.brandRequired");
+        } else if (String(value).length < 2) {
+          translatedError = t("adminProducts.brandInvalid");
+        }
+        break;
+      case "countInStock":
+        if (value !== undefined && value !== null && value !== "") {
+          const numValue = Number(value);
+          if (isNaN(numValue) || numValue < 0) {
+            translatedError = t("adminProducts.priceInvalid"); // Reuse price validation message for now
+          }
+        }
+        break;
+      // Note: Other fields don't need explicit validation here as they're handled elsewhere
+      // or don't require complex validation
+    }
+    if (translatedError) {
+      setErrors((prev) => ({ ...prev, [field]: translatedError }));
       return false;
+    } else {
+      // Remove the error from the errors object completely
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+      return true;
     }
   };
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    const processedValue =
+      name === "price" || name === "countInStock" ? Number(value) : value;
+
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        name === "price" || name === "countInStock" ? Number(value) : value,
+      [name]: processedValue,
     }));
+
+    // Validate the field in real-time to clear errors as user types
+    if (
+      name in { name: 1, price: 1, description: 1, brand: 1, countInStock: 1 }
+    ) {
+      validateField(name as keyof ProductFormData, processedValue);
+    }
   };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -646,7 +689,7 @@ export function CreateProductForm({
     } catch (error) {
       console.error("Error:", error);
       setServerError(
-        error instanceof Error ? error.message : "Something went wrong"
+        error instanceof Error ? error.message : t("adminProducts.generalError")
       );
     } finally {
       setPending(false);
@@ -1205,7 +1248,9 @@ export function CreateProductForm({
             !selectedCategory ||
             !selectedSubcategory ||
             formData.images.length === 0 ||
-            Object.keys(errors).length > 0
+            Object.values(errors).some(
+              (error) => error !== undefined && error !== null && error !== ""
+            )
           }
           style={{
             opacity:
