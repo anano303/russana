@@ -20,7 +20,7 @@ interface AdminOrderDetailsProps {
 export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Fetch all colors for proper nameEn support
   const { data: availableColors = [] } = useQuery<Color[]>({
@@ -116,14 +116,17 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
   return (
     <div className="admin-order-details">
       <div className="header">
-        <h1>Order #{order._id}</h1>
+        {" "}
+        <h1>{t("adminOrders.orderNumber", { id: order._id })}</h1>
         <div className="status">
           <span className={`badge ${order.isPaid ? "paid" : "pending"}`}>
-            {order.isPaid ? "Paid" : "Pending Payment"}
+            {order.isPaid
+              ? t("adminOrders.paid")
+              : t("adminOrders.pendingPayment")}
           </span>
           {order.isPaid && !order.isDelivered && (
             <button className="deliver-btn" onClick={markAsDelivered}>
-              Mark as Delivered
+              {t("adminOrders.markAsDelivered")}
             </button>
           )}
         </div>
@@ -131,48 +134,50 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
 
       <div className="grid-container">
         <div className="left-section">
-          {/* Shipping Info */}
+          {/* Shipping Info */}{" "}
           <div className="card">
-            <h2>Shipping</h2>
+            <h2>{t("adminOrders.shipping")}</h2>
             <p>
-              <strong>Customer:</strong> {order.user.name} ({order.user.email})
+              <strong>{t("adminOrders.customer")}:</strong> {order.user.name} (
+              {order.user.email})
             </p>
             <p>
-              <strong>Address:</strong> {order.shippingDetails.address},{" "}
-              {order.shippingDetails.city}, {order.shippingDetails.postalCode},{" "}
+              <strong>{t("adminOrders.address")}:</strong>{" "}
+              {order.shippingDetails.address}, {order.shippingDetails.city},{" "}
+              {order.shippingDetails.postalCode},{" "}
               {order.shippingDetails.country}
             </p>
             <div className={`alert ${order.isDelivered ? "success" : "error"}`}>
               {order.isDelivered ? <CheckCircle2 /> : <XCircle />}
               <span>
                 {order.isDelivered
-                  ? `Delivered on ${new Date(
-                      order.deliveredAt!
-                    ).toLocaleDateString()}`
-                  : "Not Delivered"}
+                  ? t("adminOrders.deliveredOn", {
+                      date: new Date(order.deliveredAt!).toLocaleDateString(),
+                    })
+                  : t("adminOrders.notDelivered")}
               </span>
             </div>
           </div>
-
-          {/* Payment Info */}
+          {/* Payment Info */}{" "}
           <div className="card">
-            <h2>Payment</h2>
+            <h2>{t("adminOrders.payment")}</h2>
             <p>
-              <strong>Method:</strong> {order.paymentMethod}
+              <strong>{t("adminOrders.method")}:</strong> {order.paymentMethod}
             </p>
             <div className={`alert ${order.isPaid ? "success" : "error"}`}>
               {order.isPaid ? <CheckCircle2 /> : <XCircle />}
               <span>
                 {order.isPaid
-                  ? `Paid on ${new Date(order.paidAt!).toLocaleDateString()}`
-                  : "Not Paid"}
+                  ? t("adminOrders.paidOn", {
+                      date: new Date(order.paidAt!).toLocaleDateString(),
+                    })
+                  : t("adminOrders.notPaid")}
               </span>
             </div>
           </div>
-
-          {/* Order Items - Now grouped by delivery type with fixed logic */}
+          {/* Order Items - Now grouped by delivery type with fixed logic */}{" "}
           <div className="card">
-            <h2>Order Items</h2>
+            <h2>{t("adminOrders.orderItems")}</h2>
             {sellerDeliveryItems.length > 0 && (
               <div className="delivery-group">
                 <div className="delivery-group-header">
@@ -200,17 +205,19 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                         <div className="variant-info">
                           {item.size && (
                             <span className="variant-tag">
-                              Size: {item.size}
+                              {t("adminOrders.size")}: {item.size}
                             </span>
                           )}
                           {item.color && (
                             <span className="variant-tag">
-                              Color: {getLocalizedColorName(item.color)}
+                              {t("adminOrders.color")}:{" "}
+                              {getLocalizedColorName(item.color)}
                             </span>
                           )}
                           {item.ageGroup && (
                             <span className="variant-tag">
-                              Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                              {t("adminOrders.age")}:{" "}
+                              {getLocalizedAgeGroupName(item.ageGroup)}
                             </span>
                           )}
                         </div>
@@ -222,8 +229,10 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                       {item.product?.minDeliveryDays &&
                         item.product?.maxDeliveryDays && (
                           <p className="delivery-time">
-                            მიწოდების ვადა: {item.product.minDeliveryDays}-
-                            {item.product.maxDeliveryDays} დღე
+                            {t("adminOrders.deliveryTime")}:{" "}
+                            {item.product.minDeliveryDays}-
+                            {item.product.maxDeliveryDays}{" "}
+                            {t("adminOrders.days")}
                           </p>
                         )}
                     </div>
@@ -258,17 +267,19 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                         <div className="variant-info">
                           {item.size && (
                             <span className="variant-tag">
-                              Size: {item.size}
+                              {t("adminOrders.size")}: {item.size}
                             </span>
                           )}
                           {item.color && (
                             <span className="variant-tag">
-                              Color: {getLocalizedColorName(item.color)}
+                              {t("adminOrders.color")}:{" "}
+                              {getLocalizedColorName(item.color)}
                             </span>
                           )}
                           {item.ageGroup && (
                             <span className="variant-tag">
-                              Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                              {t("adminOrders.age")}:{" "}
+                              {getLocalizedAgeGroupName(item.ageGroup)}
                             </span>
                           )}
                         </div>
@@ -305,16 +316,20 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                     {(item.size || item.color || item.ageGroup) && (
                       <div className="variant-info">
                         {item.size && (
-                          <span className="variant-tag">Size: {item.size}</span>
+                          <span className="variant-tag">
+                            {t("adminOrders.size")}: {item.size}
+                          </span>
                         )}
                         {item.color && (
                           <span className="variant-tag">
-                            Color: {getLocalizedColorName(item.color)}
+                            {t("adminOrders.color")}:{" "}
+                            {getLocalizedColorName(item.color)}
                           </span>
                         )}
                         {item.ageGroup && (
                           <span className="variant-tag">
-                            Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                            {t("adminOrders.age")}:{" "}
+                            {getLocalizedAgeGroupName(item.ageGroup)}
                           </span>
                         )}
                       </div>
@@ -332,26 +347,26 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
         {/* Order Summary */}
         <div className="right-section">
           <div className="card">
-            <h2>Order Summary</h2>
+            <h2>{t("adminOrders.orderSummary")}</h2>
             <div className="summary-item">
-              <span>Items</span>
+              <span>{t("adminOrders.items")}</span>
               <span>₾{order.itemsPrice.toFixed(2)}</span>
             </div>
             <div className="summary-item">
-              <span>Shipping</span>
+              <span>{t("adminOrders.shipping")}</span>
               <span>
                 {order.shippingPrice === 0
-                  ? "Free"
+                  ? t("cart.free")
                   : `₾${order.shippingPrice.toFixed(2)}`}
               </span>
             </div>
             <div className="summary-item">
-              <span>Tax</span>
+              <span>{t("adminOrders.tax")}</span>
               <span>₾{order.taxPrice.toFixed(2)}</span>
             </div>
             <hr />
             <div className="summary-total">
-              <span>Total</span>
+              <span>{t("adminOrders.total")}</span>
               <span>₾{order.totalPrice.toFixed(2)}</span>
             </div>
           </div>
