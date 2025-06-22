@@ -5,15 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./product-filters.css";
 import { useLanguage } from "@/hooks/LanguageContext";
-import { Category, SubCategory } from "@/types";
+import { Category, SubCategory, Color, AgeGroupItem } from "@/types";
 import HeartLoading from "@/components/HeartLoading/HeartLoading";
-
-interface Color {
-  _id: string;
-  name: string;
-  nameEn?: string;
-  isActive: boolean;
-}
 
 interface FilterProps {
   onCategoryChange: (categoryId: string) => void;
@@ -142,9 +135,7 @@ export function ProductFilters({
     refetchOnWindowFocus: false,
   });
   // Fetch all colors for filtering with proper nameEn support
-  const { data: availableColors = [] } = useQuery<
-    Color[]
-  >({
+  const { data: availableColors = [] } = useQuery<Color[]>({
     queryKey: ["colors"],
     queryFn: async () => {
       try {
@@ -156,6 +147,27 @@ export function ProductFilters({
         return response.json();
       } catch (err) {
         console.error("Failed to fetch colors:", err);
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  // Fetch all age groups for filtering with proper nameEn support
+  const { data: availableAgeGroups = [] } = useQuery<AgeGroupItem[]>({
+    queryKey: ["ageGroups"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories/attributes/age-groups"
+        );
+        if (!response.ok) {
+          console.error("Failed to fetch age groups:", response.status);
+          return [];
+        }
+        return response.json();
+      } catch (err) {
+        console.error("Failed to fetch age groups:", err);
         return [];
       }
     },
@@ -178,8 +190,7 @@ export function ProductFilters({
     if (!selectedSubCategory) return [];
 
     return selectedSubCategory[attributeType] || [];
-  };
-  // Get localized color name based on current language
+  }; // Get localized color name based on current language
   const getLocalizedColorName = (colorName: string): string => {
     if (language === "en") {
       // Find the color in availableColors to get its English name
@@ -189,6 +200,18 @@ export function ProductFilters({
       return colorObj?.nameEn || colorName;
     }
     return colorName;
+  };
+
+  // Get localized age group name based on current language
+  const getLocalizedAgeGroupName = (ageGroupName: string): string => {
+    if (language === "en") {
+      // Find the age group in availableAgeGroups to get its English name
+      const ageGroupObj = availableAgeGroups.find(
+        (ageGroup) => ageGroup.name === ageGroupName
+      );
+      return ageGroupObj?.nameEn || ageGroupName;
+    }
+    return ageGroupName;
   };
 
   // Handle price range changes with validation
@@ -272,14 +295,14 @@ export function ProductFilters({
 
         <div className="filter-section">
           <div className="filter-header">
-            {/* <h3 className="filter-title">კატეგორიები</h3> */}
+            {/* <h3 className="filter-title">კატეგორიები</h3> */}{" "}
             {selectedCategoryId && (
               <button
                 className="filter-clear-btn"
                 onClick={clearCategoryFilter}
                 aria-label="Clear category filter"
               >
-                გასუფთავება
+                {language === "en" ? "Clear" : "გასუფთავება"}
               </button>
             )}
           </div>
@@ -347,7 +370,7 @@ export function ProductFilters({
           className="filter-toggle-btn"
           onClick={() => setShowFilters(true)}
         >
-          ფილტრი
+          {language === "en" ? "Filters" : "ფილტრი"}
         </button>
       )}
 
@@ -368,14 +391,16 @@ export function ProductFilters({
             getAvailableAttributes("ageGroups").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">ასაკობრივი ჯგუფი</h3>
+                  <h3 className="filter-title">
+                    {language === "en" ? "Age Group" : "ასაკობრივი ჯგუფი"}
+                  </h3>
                   {selectedAgeGroup && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onAgeGroupChange("")}
                       aria-label="Clear age group filter"
                     >
-                      გასუფთავება
+                      {language === "en" ? "Clear" : "გასუფთავება"}
                     </button>
                   )}
                 </div>
@@ -393,17 +418,8 @@ export function ProductFilters({
                           )
                         }
                       >
-                        {language === "en"
-                          ? ageGroup === "ADULTS"
-                            ? "Adults"
-                            : ageGroup === "KIDS"
-                            ? "Kids"
-                            : ageGroup
-                          : ageGroup === "ADULTS"
-                          ? "უფროსები"
-                          : ageGroup === "KIDS"
-                          ? "ბავშვები"
-                          : ageGroup}
+                        {" "}
+                        {getLocalizedAgeGroupName(ageGroup)}
                       </div>
                     ))}
                   </div>
@@ -415,14 +431,16 @@ export function ProductFilters({
             getAvailableAttributes("sizes").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">ზომები</h3>
+                  <h3 className="filter-title">
+                    {language === "en" ? "Sizes" : "ზომები"}
+                  </h3>
                   {selectedSize && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onSizeChange("")}
                       aria-label="Clear size filter"
                     >
-                      გასუფთავება
+                      {language === "en" ? "Clear" : "გასუფთავება"}
                     </button>
                   )}
                 </div>
@@ -450,14 +468,16 @@ export function ProductFilters({
             getAvailableAttributes("colors").length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">ფერები</h3>
+                  <h3 className="filter-title">
+                    {language === "en" ? "Colors" : "ფერები"}
+                  </h3>
                   {selectedColor && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onColorChange("")}
                       aria-label="Clear color filter"
                     >
-                      გასუფთავება
+                      {language === "en" ? "Clear" : "გასუფთავება"}
                     </button>
                   )}
                 </div>
@@ -486,14 +506,16 @@ export function ProductFilters({
             availableBrands.length > 0 && (
               <div className="filter-section">
                 <div className="filter-header">
-                  <h3 className="filter-title">ბრენდები</h3>
+                  <h3 className="filter-title">
+                    {language === "en" ? "Brands" : "ბრენდები"}
+                  </h3>
                   {selectedBrand && (
                     <button
                       className="filter-clear-btn"
                       onClick={() => onBrandChange("")}
                       aria-label="Clear brand filter"
                     >
-                      გასუფთავება
+                      {language === "en" ? "Clear" : "გასუფთავება"}
                     </button>
                   )}
                 </div>
@@ -515,10 +537,12 @@ export function ProductFilters({
                   </div>
                 </div>
               </div>
-            )}
+            )}{" "}
           {/* Price Range Filter */}
           <div className="filter-section">
-            <h3 className="filter-title">ფასის დიაპაზონი</h3>
+            <h3 className="filter-title">
+              {language === "en" ? "Price Range" : "ფასის დიაპაზონი"}
+            </h3>
             <div className="price-range">
               <div className="price-inputs">
                 <input
@@ -529,7 +553,7 @@ export function ProductFilters({
                     const value = Number(e.target.value);
                     setMinPrice(value >= 0 ? value : 0);
                   }}
-                  placeholder="მინ"
+                  placeholder={language === "en" ? "Min" : "მინ"}
                   className="price-input"
                 />
                 <span className="price-separator">-</span>
@@ -541,7 +565,7 @@ export function ProductFilters({
                     const value = Number(e.target.value);
                     setMaxPrice(value >= minPrice ? value : minPrice);
                   }}
-                  placeholder="მაქს"
+                  placeholder={language === "en" ? "Max" : "მაქს"}
                   className="price-input"
                 />
                 <button
@@ -553,10 +577,12 @@ export function ProductFilters({
                 </button>
               </div>
             </div>
-          </div>
+          </div>{" "}
           {/* Sort Options */}
           <div className="filter-section">
-            <h3 className="filter-title">სორტირება</h3>
+            <h3 className="filter-title">
+              {language === "en" ? "Sort By" : "სორტირება"}
+            </h3>
             <div className="sort-options">
               <select
                 className="sort-select"
@@ -569,12 +595,28 @@ export function ProductFilters({
                   });
                 }}
               >
-                <option value="createdAt-desc">უახლესი</option>
-                <option value="price-asc">ფასი: დაბლიდან მაღლა</option>
-                <option value="price-desc">ფასი: მაღლიდან დაბლა</option>
-                <option value="name-asc">სახელი: ა-ჰ</option>
-                <option value="name-desc">სახელი: ჰ-ა</option>
-                <option value="rating-desc">რეიტინგი: მაღალი</option>
+                <option value="createdAt-desc">
+                  {language === "en" ? "Newest" : "უახლესი"}
+                </option>
+                <option value="price-asc">
+                  {language === "en"
+                    ? "Price: Low to High"
+                    : "ფასი: დაბლიდან მაღლა"}
+                </option>
+                <option value="price-desc">
+                  {language === "en"
+                    ? "Price: High to Low"
+                    : "ფასი: მაღლიდან დაბლა"}
+                </option>
+                <option value="name-asc">
+                  {language === "en" ? "Name: A-Z" : "სახელი: ა-ჰ"}
+                </option>
+                <option value="name-desc">
+                  {language === "en" ? "Name: Z-A" : "სახელი: ჰ-ა"}
+                </option>
+                <option value="rating-desc">
+                  {language === "en" ? "Rating: High" : "რეიტინგი: მაღალი"}
+                </option>
               </select>
             </div>
           </div>
@@ -593,7 +635,9 @@ export function ProductFilters({
                 onClick={resetAllFilters}
                 aria-label="Clear all filters"
               >
-                ფილტრების გასუფთავება
+                {language === "en"
+                  ? "Clear All Filters"
+                  : "ფილტრების გასუფთავება"}
               </button>
             </div>
           )}

@@ -14,6 +14,7 @@ import {
   useDeleteAgeGroup,
   AttributeInput,
   Color,
+  AgeGroupItem,
 } from "../hook/use-categories";
 import { Loader } from "lucide-react";
 import "./styles/attributes-manager.css";
@@ -28,13 +29,9 @@ interface AttributeInputExtended extends AttributeInput {
 }
 
 export const AttributesManager = () => {
-  const { language } = useLanguage(); // Add language context
+  const { language, t } = useLanguage();
 
-  // Debug the language value
   console.log("Current language in AttributesManager:", language);
-  // For testing - force English to see if it works
-  const testLanguage: string = "en"; // Change this to "ge" to test Georgian
-  console.log("Using test language:", testLanguage);
 
   const [activeTab, setActiveTab] = useState<AttributeType>("color");
   const [isAdding, setIsAdding] = useState(false);
@@ -77,11 +74,13 @@ export const AttributesManager = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!inputValue.trim()) return;
 
-    if (!inputValue.trim()) return; // Only include English translation for colors
+    // Include English translation for colors and age groups
     const data: AttributeInputExtended = {
       value: inputValue.trim(),
-      ...(activeTab === "color" && inputValueEn.trim()
+      ...((activeTab === "color" || activeTab === "ageGroup") &&
+      inputValueEn.trim()
         ? { nameEn: inputValueEn.trim() }
         : {}),
     };
@@ -121,9 +120,8 @@ export const AttributesManager = () => {
     setInputValue(value);
     setInputValueEn(nameEn || "");
   };
-
   const handleDelete = async (value: string) => {
-    if (!window.confirm(`დარწმუნებული ხართ, რომ გსურთ წაშლა?`)) return;
+    if (!window.confirm(t("adminCategories.confirmDelete"))) return;
 
     try {
       if (activeTab === "color") {
@@ -175,10 +173,30 @@ export const AttributesManager = () => {
     console.log("Final attributeItems:", attributeItems);
   } else if (activeTab === "size" && sizes)
     attributeItems = sizes.map((size) => ({ value: size as string }));
-  else if (activeTab === "ageGroup" && ageGroups)
-    attributeItems = ageGroups.map((ageGroup) => ({
-      value: ageGroup as string,
-    }));
+  else if (activeTab === "ageGroup" && ageGroups) {
+    console.log("Raw age groups from API:", ageGroups);
+    // For age groups, we need both Georgian and English values
+    attributeItems = ageGroups.map((ageGroup, index) => {
+      console.log(`Age group ${index}:`, ageGroup);
+      // Check if ageGroup is an object with name and nameEn properties
+      if (
+        typeof ageGroup === "object" &&
+        ageGroup !== null &&
+        "name" in ageGroup
+      ) {
+        const result = {
+          value: (ageGroup as AgeGroupItem).name,
+          nameEn: (ageGroup as AgeGroupItem).nameEn,
+        };
+        console.log(`Mapped age group ${index}:`, result);
+        return result;
+      }
+      // Fallback for backward compatibility
+      console.log(`Fallback for age group ${index}:`, ageGroup);
+      return { value: ageGroup as string, nameEn: "" };
+    });
+    console.log("Final age group attributeItems:", attributeItems);
+  }
 
   return (
     <div className="attributes-manager">
@@ -193,7 +211,7 @@ export const AttributesManager = () => {
             setInputValueEn("");
           }}
         >
-          ფერები
+          {t("adminCategories.colors")}
         </button>
         <button
           className={`tab-button ${activeTab === "size" ? "active" : ""}`}
@@ -205,7 +223,7 @@ export const AttributesManager = () => {
             setInputValueEn("");
           }}
         >
-          ზომები
+          {t("adminCategories.sizes")}
         </button>
         <button
           className={`tab-button ${activeTab === "ageGroup" ? "active" : ""}`}
@@ -217,22 +235,23 @@ export const AttributesManager = () => {
             setInputValueEn("");
           }}
         >
-          ასაკობრივი ჯგუფები
+          {t("adminCategories.ageGroups")}
         </button>
       </div>
 
       <div className="attributes-content">
         <div className="attributes-header">
+          {" "}
           <h3 className="attributes-title">
             {activeTab === "color"
-              ? "ფერები"
+              ? t("adminCategories.colors")
               : activeTab === "size"
-              ? "ზომები"
-              : "ასაკობრივი ჯგუფები"}
+              ? t("adminCategories.sizes")
+              : t("adminCategories.ageGroups")}
           </h3>
           {!isAdding && !isEditing && (
             <button className="btn-add" onClick={() => setIsAdding(true)}>
-              + დამატება
+              + {t("adminCategories.add")}
             </button>
           )}
         </div>
@@ -240,8 +259,12 @@ export const AttributesManager = () => {
         {(isAdding || isEditing) && (
           <form onSubmit={handleSubmit} className="attribute-form">
             <div className="form-group">
+              {" "}
               <label htmlFor="attributeValue">
-                {isEditing ? "რედაქტირება" : "ახალი მნიშვნელობა"} (ქართულად)
+                {isEditing
+                  ? t("adminCategories.editValue")
+                  : t("adminCategories.newValue")}{" "}
+                ({t("adminCategories.georgian")})
               </label>
               <input
                 type="text"
@@ -250,43 +273,50 @@ export const AttributesManager = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={
                   activeTab === "color"
-                    ? "შეიყვანეთ ფერი..."
+                    ? t("adminCategories.enterColor")
                     : activeTab === "size"
-                    ? "შეიყვანეთ ზომა..."
-                    : "შეიყვანეთ ასაკობრივი ჯგუფი..."
+                    ? t("adminCategories.enterSize")
+                    : t("adminCategories.enterAgeGroup")
                 }
                 required
               />
-            </div>
-
-            {/* Only show English input field for colors */}
-            {activeTab === "color" && (
+            </div>{" "}
+            {/* Show English input field for colors and age groups */}
+            {(activeTab === "color" || activeTab === "ageGroup") && (
               <div className="form-group">
+                {" "}
                 <label htmlFor="attributeValueEn">
-                  {isEditing ? "რედაქტირება" : "ახალი მნიშვნელობა"} (ინგლისურად)
+                  {isEditing
+                    ? t("adminCategories.editValue")
+                    : t("adminCategories.newValue")}{" "}
+                  ({t("adminCategories.english")})
                 </label>
                 <input
                   type="text"
                   id="attributeValueEn"
                   value={inputValueEn}
                   onChange={(e) => setInputValueEn(e.target.value)}
-                  placeholder="Enter color in English..."
+                  placeholder={
+                    activeTab === "color"
+                      ? t("adminCategories.enterColorEnglish")
+                      : t("adminCategories.enterAgeGroupEnglish")
+                  }
                 />
               </div>
             )}
-
             <div className="form-actions">
               <button
                 type="submit"
                 className="btn-submit"
                 disabled={isPending || !inputValue.trim()}
               >
+                {" "}
                 {isPending ? (
                   <HeartLoading size="medium" inline={true} />
                 ) : isEditing ? (
-                  "განახლება"
+                  t("adminCategories.update")
                 ) : (
-                  "დამატება"
+                  t("adminCategories.add")
                 )}
               </button>
               <button
@@ -299,7 +329,7 @@ export const AttributesManager = () => {
                   setInputValueEn("");
                 }}
               >
-                გაუქმება
+                {t("adminCategories.cancel")}
               </button>
             </div>
           </form>
@@ -317,10 +347,15 @@ export const AttributesManager = () => {
                   item,
                   language,
                   isColor: activeTab === "color",
+                  isAgeGroup: activeTab === "ageGroup",
                   shouldShowEnglish:
-                    activeTab === "color" && language === "en" && item.nameEn,
+                    (activeTab === "color" || activeTab === "ageGroup") &&
+                    language === "en" &&
+                    item.nameEn,
                   shouldShowGeorgianWithEnglish:
-                    activeTab === "color" && language === "ge" && item.nameEn,
+                    (activeTab === "color" || activeTab === "ageGroup") &&
+                    language === "ge" &&
+                    item.nameEn,
                 });
                 return (
                   <div
@@ -330,14 +365,14 @@ export const AttributesManager = () => {
                     <div className="attribute-value-container">
                       {" "}
                       <span className="attribute-value">
-                        {activeTab === "color" &&
-                        testLanguage === "en" &&
+                        {(activeTab === "color" || activeTab === "ageGroup") &&
+                        language === "en" &&
                         item.nameEn
                           ? item.nameEn
                           : item.value}
                       </span>
-                      {activeTab === "color" &&
-                        testLanguage === "ge" &&
+                      {(activeTab === "color" || activeTab === "ageGroup") &&
+                        language === "ge" &&
                         item.nameEn && (
                           <span className="attribute-value-en">
                             ({item.nameEn})
@@ -350,13 +385,13 @@ export const AttributesManager = () => {
                         onClick={() => startEditing(item.value, item.nameEn)}
                         disabled={isEditing === item.value}
                       >
-                        რედაქტირება
+                        {t("adminCategories.edit")}
                       </button>
                       <button
                         className="btn-delete"
                         onClick={() => handleDelete(item.value)}
                       >
-                        წაშლა
+                        {t("adminCategories.delete")}
                       </button>
                     </div>
                   </div>
@@ -364,7 +399,7 @@ export const AttributesManager = () => {
               })
             ) : (
               <div className="no-attributes">
-                <p>მონაცემები არ მოიძებნა</p>
+                <p>{t("adminCategories.noDataFound")}</p>
               </div>
             )}
           </div>

@@ -5,6 +5,7 @@ import {
   useUpdateSubCategory,
   useDeleteSubCategory,
   useAttributes,
+  useAttributesWithTranslations,
   SubCategory,
   SubCategoryCreateInput,
   SubCategoryUpdateInput,
@@ -47,6 +48,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
     error: queryError,
   } = useSubCategories(categoryId, showInactive);
   const { data: attributes, isLoading: isLoadingAttributes } = useAttributes();
+  const { data: attributesWithTranslations } = useAttributesWithTranslations();
   const createSubCategory = useCreateSubCategory();
   const updateSubCategory = useUpdateSubCategory();
   const deleteSubCategory = useDeleteSubCategory();
@@ -217,7 +219,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
         <h5>{t("adminCategories.attributes")}</h5>
 
         <div className="attribute-group">
-          <h6>{t("adminCategories.ageGroups")}</h6>
+          <h6>{t("adminCategories.ageGroups")}</h6>{" "}
           <div className="attribute-options">
             {attributes.ageGroups.map((ageGroup) => (
               <label key={ageGroup} className="attribute-option">
@@ -228,7 +230,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                     handleAttributeSelection("ageGroups", ageGroup)
                   }
                 />
-                {ageGroup}
+                {translateAgeGroup(ageGroup)}
               </label>
             ))}
           </div>
@@ -251,7 +253,7 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
         </div>
 
         <div className="attribute-group">
-          <h6>{t("adminCategories.colors")}</h6>
+          <h6>{t("adminCategories.colors")}</h6>{" "}
           <div className="attribute-options">
             {attributes.colors.map((color) => (
               <label key={color} className="attribute-option">
@@ -260,13 +262,51 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                   checked={(formData.colors || []).includes(color)}
                   onChange={() => handleAttributeSelection("colors", color)}
                 />
-                {color}
+                {translateColor(color)}
               </label>
             ))}
           </div>
         </div>
       </div>
     );
+  };
+
+  // Helper function to translate color names
+  const translateColor = (colorName: string): string => {
+    if (!attributesWithTranslations?.colors) return colorName;
+
+    const colorObj = attributesWithTranslations.colors.find(
+      (c) => c.name === colorName
+    );
+    if (!colorObj) return colorName;
+
+    if (language === "en" && colorObj.nameEn) {
+      return colorObj.nameEn;
+    }
+    return colorObj.name;
+  };
+
+  // Helper function to translate age group names
+  const translateAgeGroup = (ageGroupName: string): string => {
+    if (!attributesWithTranslations?.ageGroups) return ageGroupName;
+
+    const ageGroupObj = attributesWithTranslations.ageGroups.find(
+      (ag) => ag.name === ageGroupName
+    );
+    if (!ageGroupObj) return ageGroupName;
+
+    if (language === "en" && ageGroupObj.nameEn) {
+      return ageGroupObj.nameEn;
+    }
+    return ageGroupObj.name;
+  };
+
+  // Helper function to get translated attribute display text
+  const getTranslatedAttributes = (
+    attributeList: string[],
+    translateFn: (name: string) => string
+  ): string => {
+    return attributeList.map(translateFn).join(", ");
   };
 
   if (isLoading || isLoadingAttributes) {
@@ -590,25 +630,30 @@ export const SubcategoriesList = ({ categoryId }: SubcategoriesListProps) => {
                     </p>
                   )}{" "}
                   <div className="subcategory-attributes">
+                    {" "}
                     {subcategory.ageGroups &&
                       subcategory.ageGroups.length > 0 && (
                         <div className="attribute-list">
                           <strong>{t("adminCategories.ageGroups")}:</strong>{" "}
-                          {subcategory.ageGroups.join(", ")}
+                          {getTranslatedAttributes(
+                            subcategory.ageGroups,
+                            translateAgeGroup
+                          )}
                         </div>
                       )}
-
                     {subcategory.sizes && subcategory.sizes.length > 0 && (
                       <div className="attribute-list">
                         <strong>{t("adminCategories.sizes")}:</strong>{" "}
                         {subcategory.sizes.join(", ")}
                       </div>
                     )}
-
                     {subcategory.colors && subcategory.colors.length > 0 && (
                       <div className="attribute-list">
                         <strong>{t("adminCategories.colors")}:</strong>{" "}
-                        {subcategory.colors.join(", ")}
+                        {getTranslatedAttributes(
+                          subcategory.colors,
+                          translateColor
+                        )}
                       </div>
                     )}
                   </div>

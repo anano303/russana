@@ -11,13 +11,19 @@ export class AgeGroup {
     example: '60d21b4667d0d8992e610c89',
   })
   _id: string;
-
   @ApiProperty({ description: 'Age group name', example: 'ბავშვები' })
   @Prop({
     required: true,
     unique: true,
   })
   name: string;
+
+  @ApiProperty({
+    description: 'Age group name in English',
+    example: 'Children',
+  })
+  @Prop()
+  nameEn?: string;
 
   @ApiProperty({ description: 'Age range description', example: '3-12 წელი' })
   @Prop()

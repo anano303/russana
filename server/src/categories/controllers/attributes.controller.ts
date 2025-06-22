@@ -26,6 +26,8 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ColorService } from '../services/color.service';
+import { AgeGroupService } from '../services/age-group.service';
+import { CreateAgeGroupDto, UpdateAgeGroupDto } from '../dto/age-group.dto';
 
 @ApiTags('attributes')
 @Controller('categories/attributes')
@@ -33,6 +35,7 @@ export class AttributesController {
   constructor(
     private readonly subCategoryService: SubCategoryService,
     private readonly colorService: ColorService, // Add this
+    private readonly ageGroupService: AgeGroupService, // Add age group service
   ) {}
 
   @Get('all')
@@ -208,22 +211,19 @@ export class AttributesController {
   deleteSize(@Param('size') size: string) {
     return this.subCategoryService.deleteSize(size);
   }
-
   // Age group management
   @Get('age-groups')
-  @ApiOperation({ summary: 'Get all available age groups from subcategories' })
+  @ApiOperation({
+    summary: 'Get all available age groups from AgeGroup collection',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Returns all available age groups',
-    schema: {
-      type: 'array',
-      items: { type: 'string' },
-    },
+    description: 'Returns all available age groups with nameEn',
   })
   async getAllAgeGroups() {
     try {
-      console.log('Fetching all age groups');
-      const ageGroups = await this.subCategoryService.getAllAgeGroups();
+      console.log('Fetching all age groups from AgeGroup collection');
+      const ageGroups = await this.ageGroupService.findAll();
       console.log('Age groups fetched:', ageGroups);
       return ageGroups;
     } catch (error) {
@@ -233,17 +233,15 @@ export class AttributesController {
       );
     }
   }
-
   @Post('age-groups')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new age group' })
   @ApiResponse({ status: 201, description: 'The age group has been created' })
-  createAgeGroup(@Body() { value }: AttributeDto) {
-    return this.subCategoryService.createAgeGroup(value);
+  createAgeGroup(@Body() createAgeGroupDto: CreateAgeGroupDto) {
+    return this.ageGroupService.create(createAgeGroupDto);
   }
-
   @Put('age-groups/:ageGroup')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
@@ -252,13 +250,46 @@ export class AttributesController {
   @ApiParam({ name: 'ageGroup', description: 'Age group to update' })
   @ApiResponse({ status: 200, description: 'The age group has been updated' })
   @ApiResponse({ status: 404, description: 'Age group not found' })
-  updateAgeGroup(
-    @Param('ageGroup') ageGroup: string,
-    @Body() { value }: AttributeDto,
+  async updateAgeGroup(
+    @Param('ageGroup') ageGroupName: string,
+    @Body() updateAgeGroupDto: UpdateAgeGroupDto,
   ) {
-    return this.subCategoryService.updateAgeGroup(ageGroup, value);
-  }
+    try {
+      // Decode URL-encoded Georgian text
+      const decodedAgeGroupName = decodeURIComponent(ageGroupName);
+      console.log('Updating age group:', {
+        original: ageGroupName,
+        decoded: decodedAgeGroupName,
+      });
 
+      // Find the age group by name first
+      const ageGroups = await this.ageGroupService.findAll();
+      const existingAgeGroup = ageGroups.find(
+        (ag) => ag.name === decodedAgeGroupName,
+      );
+
+      if (!existingAgeGroup) {
+        throw new BadRequestException(
+          `Age group with name "${decodedAgeGroupName}" not found`,
+        );
+      }
+      console.log('Found existing age group:', existingAgeGroup);
+
+      // Update using the ObjectId (convert to string)
+      return await this.ageGroupService.update(
+        existingAgeGroup._id.toString(),
+        updateAgeGroupDto,
+      );
+    } catch (error) {
+      console.error('Error updating age group:', error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException(
+        'Failed to update age group: ' + error.message,
+      );
+    }
+  }
   @Delete('age-groups/:ageGroup')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
@@ -267,7 +298,37 @@ export class AttributesController {
   @ApiParam({ name: 'ageGroup', description: 'Age group to delete' })
   @ApiResponse({ status: 200, description: 'The age group has been deleted' })
   @ApiResponse({ status: 404, description: 'Age group not found' })
-  deleteAgeGroup(@Param('ageGroup') ageGroup: string) {
-    return this.subCategoryService.deleteAgeGroup(ageGroup);
+  async deleteAgeGroup(@Param('ageGroup') ageGroupName: string) {
+    try {
+      // Decode URL-encoded Georgian text
+      const decodedAgeGroupName = decodeURIComponent(ageGroupName);
+      console.log('Deleting age group:', {
+        original: ageGroupName,
+        decoded: decodedAgeGroupName,
+      });
+
+      // Find the age group by name first
+      const ageGroups = await this.ageGroupService.findAll();
+      const existingAgeGroup = ageGroups.find(
+        (ag) => ag.name === decodedAgeGroupName,
+      );
+
+      if (!existingAgeGroup) {
+        throw new BadRequestException(
+          `Age group with name "${decodedAgeGroupName}" not found`,
+        );
+      }
+
+      // Delete using the ObjectId (convert to string)
+      return await this.ageGroupService.remove(existingAgeGroup._id.toString());
+    } catch (error) {
+      console.error('Error deleting age group:', error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException(
+        'Failed to delete age group: ' + error.message,
+      );
+    }
   }
 }

@@ -132,18 +132,22 @@ export function ProductsList() {
       return response.json();
     },
   });
-
-  // Helper functions to get category and subcategory names by ID
+  // Helper functions to get category and subcategory names by ID with translation support
   function getCategoryNameById(categoryId: string): string {
     if (!categoryId) return "Uncategorized";
     if (!categoriesData) return "Loading...";
 
     const category = categoriesData.find(
-      (cat: { id?: string; _id?: string; name: string }) =>
+      (cat: { id?: string; _id?: string; name: string; nameEn?: string }) =>
         cat.id === categoryId || cat._id === categoryId
     );
 
-    return category ? category.name : "Unknown Category";
+    if (!category) return "Unknown Category";
+
+    // Return translated name based on language
+    return language === "en" && category.nameEn
+      ? category.nameEn
+      : category.name;
   }
 
   function getSubcategoryNameById(subcategoryId: string): string {
@@ -151,14 +155,18 @@ export function ProductsList() {
     if (!subcategoriesData) return "Loading...";
 
     const subcategory = subcategoriesData?.find(
-      (subcat: { id?: string; _id?: string; name: string }) =>
+      (subcat: { id?: string; _id?: string; name: string; nameEn?: string }) =>
         subcat.id === subcategoryId || subcat._id === subcategoryId
     );
 
-    return subcategory ? subcategory.name : "Unknown Subcategory";
-  }
+    if (!subcategory) return "Unknown Subcategory";
 
-  // New helper function to get the most accurate category display name
+    // Return translated name based on language
+    return language === "en" && subcategory.nameEn
+      ? subcategory.nameEn
+      : subcategory.name;
+  }
+  // New helper function to get the most accurate category display name with translation
   function getCategoryDisplayName(product: Product): string {
     // For object type mainCategory with name
     if (
@@ -166,7 +174,13 @@ export function ProductsList() {
       typeof product.mainCategory === "object" &&
       product.mainCategory.name
     ) {
-      return product.mainCategory.name;
+      const categoryObj = product.mainCategory as {
+        name: string;
+        nameEn?: string;
+      };
+      return language === "en" && categoryObj.nameEn
+        ? categoryObj.nameEn
+        : categoryObj.name;
     }
 
     // For object type category with name
@@ -175,7 +189,10 @@ export function ProductsList() {
       typeof product.category === "object" &&
       product.category.name
     ) {
-      return product.category.name;
+      const categoryObj = product.category as { name: string; nameEn?: string };
+      return language === "en" && categoryObj.nameEn
+        ? categoryObj.nameEn
+        : categoryObj.name;
     }
 
     // For string type mainCategory that is an ID
@@ -191,7 +208,7 @@ export function ProductsList() {
     return "Uncategorized";
   }
 
-  // New helper function to get the most accurate subcategory display name
+  // New helper function to get the most accurate subcategory display name with translation
   function getSubcategoryDisplayName(product: Product): string {
     // For object type subCategory with name
     if (
@@ -199,7 +216,13 @@ export function ProductsList() {
       typeof product.subCategory === "object" &&
       product.subCategory.name
     ) {
-      return product.subCategory.name;
+      const subcategoryObj = product.subCategory as {
+        name: string;
+        nameEn?: string;
+      };
+      return language === "en" && subcategoryObj.nameEn
+        ? subcategoryObj.nameEn
+        : subcategoryObj.name;
     }
 
     // For string type subCategory that is an ID

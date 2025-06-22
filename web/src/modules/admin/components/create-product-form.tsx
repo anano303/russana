@@ -9,13 +9,14 @@ import { ZodError } from "zod";
 import { ProductFormData as BaseProductFormData } from "@/modules/products/validation/product";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { Color, AgeGroupItem } from "@/types";
 import "./CreateProductForm.css";
 import Image from "next/image";
 import { getAccessToken } from "@/lib/auth";
 import { useUser } from "@/modules/auth/hooks/use-user";
 import { Category, SubCategory } from "@/types";
 import { useStocks } from "@/hooks/useStocks";
-import HeartLoading from "@/components/HeartLoading/HeartLoading";
 
 // Extended ProductFormData to include all needed properties
 interface ProductFormData extends BaseProductFormData {
@@ -122,6 +123,68 @@ export function CreateProductForm({
     },
     enabled: !!selectedCategory,
   });
+
+  // Fetch all colors for proper nameEn support
+  const { data: availableColorsData = [] } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Fetch all age groups for proper nameEn support
+  const { data: availableAgeGroupsData = [] } = useQuery<AgeGroupItem[]>({
+    queryKey: ["ageGroups"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories/attributes/age-groups"
+        );
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Get localized color name based on current language
+  const getLocalizedColorName = (colorName: string): string => {
+    if (language === "en") {
+      // Find the color in availableColorsData to get its English name
+      const colorObj = availableColorsData.find(
+        (color) => color.name === colorName
+      );
+      return colorObj?.nameEn || colorName;
+    }
+    return colorName;
+  };
+
+  // Get localized age group name based on current language
+  const getLocalizedAgeGroupName = (ageGroupName: string): string => {
+    if (language === "en") {
+      // Find the age group in availableAgeGroupsData to get its English name
+      const ageGroupObj = availableAgeGroupsData.find(
+        (ageGroup) => ageGroup.name === ageGroupName
+      );
+      return ageGroupObj?.nameEn || ageGroupName;
+    }
+    return ageGroupName;
+  };
 
   // Update available attributes when subcategory changes
   useEffect(() => {
@@ -749,8 +812,9 @@ export function CreateProductForm({
             required
             disabled={isCategoriesLoading}
           >
+            {" "}
             <option value="">
-              {isCategoriesLoading ? <HeartLoading size="medium" /> : "აირჩიეთ კატეგორია"}
+              {isCategoriesLoading ? "Loading..." : "აირჩიეთ კატეგორია"}
             </option>
             {categories?.map((category) => (
               <option key={category.id} value={category.id}>
@@ -799,20 +863,8 @@ export function CreateProductForm({
                         onChange={() =>
                           handleAttributeChange("ageGroups", ageGroup)
                         }
-                      />
-                      <span>
-                        {language === "en"
-                          ? ageGroup === "ADULTS"
-                            ? "Adults"
-                            : ageGroup === "KIDS"
-                            ? "Kids"
-                            : ageGroup
-                          : ageGroup === "ADULTS"
-                          ? "უფროსები"
-                          : ageGroup === "KIDS"
-                          ? "ბავშვები"
-                          : ageGroup}
-                      </span>
+                      />{" "}
+                      <span>{getLocalizedAgeGroupName(ageGroup)}</span>
                     </label>
                   ))}
                 </div>
@@ -848,7 +900,7 @@ export function CreateProductForm({
                         checked={selectedColors.includes(color)}
                         onChange={() => handleAttributeChange("colors", color)}
                       />
-                      <span>{color}</span>
+                      <span>{getLocalizedColorName(color)}</span>
                     </label>
                   ))}
                 </div>
@@ -863,8 +915,11 @@ export function CreateProductForm({
               key={`${stock.ageGroup} - ${stock.size} - ${stock.color}`}
               className="stock-info"
             >
+              {" "}
               <label>
-                {stock.ageGroup} - {stock.size} - {stock.color}
+                {stock.ageGroup ? getLocalizedAgeGroupName(stock.ageGroup) : ""}{" "}
+                - {stock.size || ""} -{" "}
+                {stock.color ? getLocalizedColorName(stock.color) : ""}
               </label>
               <input
                 id="countInStock"
@@ -1012,9 +1067,7 @@ export function CreateProductForm({
         </div>
 
         <div>
-          <label htmlFor="brandLogo">
-           ბრენდის ლოგო (არასავალდებულო)
-          </label>
+          <label htmlFor="brandLogo">ბრენდის ლოგო (არასავალდებულო)</label>
 
           <div className="brand-logo-container">
             {(user?.storeLogo || typeof formData.brandLogo === "string") && (

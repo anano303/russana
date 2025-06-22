@@ -8,6 +8,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { Color, AgeGroupItem } from "@/types";
 import "./AdminOrderDetails.css";
 
 interface AdminOrderDetailsProps {
@@ -18,6 +21,68 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
   const { toast } = useToast();
   const router = useRouter();
   const { language } = useLanguage();
+
+  // Fetch all colors for proper nameEn support
+  const { data: availableColors = [] } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Fetch all age groups for proper nameEn support
+  const { data: availableAgeGroups = [] } = useQuery<AgeGroupItem[]>({
+    queryKey: ["ageGroups"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories/attributes/age-groups"
+        );
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Get localized color name based on current language
+  const getLocalizedColorName = (colorName: string): string => {
+    if (language === "en") {
+      // Find the color in availableColors to get its English name
+      const colorObj = availableColors.find(
+        (color) => color.name === colorName
+      );
+      return colorObj?.nameEn || colorName;
+    }
+    return colorName;
+  };
+
+  // Get localized age group name based on current language
+  const getLocalizedAgeGroupName = (ageGroupName: string): string => {
+    if (language === "en") {
+      // Find the age group in availableAgeGroups to get its English name
+      const ageGroupObj = availableAgeGroups.find(
+        (ageGroup) => ageGroup.name === ageGroupName
+      );
+      return ageGroupObj?.nameEn || ageGroupName;
+    }
+    return ageGroupName;
+  };
 
   // Helper function to get display name based on language
   const getDisplayName = (item: OrderItem) => {
@@ -108,7 +173,6 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
           {/* Order Items - Now grouped by delivery type with fixed logic */}
           <div className="card">
             <h2>Order Items</h2>
-
             {sellerDeliveryItems.length > 0 && (
               <div className="delivery-group">
                 <div className="delivery-group-header">
@@ -123,7 +187,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                       width={80}
                       height={80}
                       className="item-image"
-                    />
+                    />{" "}
                     <div>
                       <Link
                         href={`/products/${item.productId}`}
@@ -131,6 +195,26 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                       >
                         {getDisplayName(item)}
                       </Link>
+                      {/* Display variant information if available */}
+                      {(item.size || item.color || item.ageGroup) && (
+                        <div className="variant-info">
+                          {item.size && (
+                            <span className="variant-tag">
+                              Size: {item.size}
+                            </span>
+                          )}
+                          {item.color && (
+                            <span className="variant-tag">
+                              Color: {getLocalizedColorName(item.color)}
+                            </span>
+                          )}
+                          {item.ageGroup && (
+                            <span className="variant-tag">
+                              Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <p>
                         {item.qty} x ${item.price.toFixed(2)} = $
                         {(item.qty * item.price).toFixed(2)}
@@ -147,13 +231,12 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                 ))}
               </div>
             )}
-
             {soulartDeliveryItems.length > 0 && (
               <div className="delivery-group">
                 <div className="delivery-group-header">
                   <Truck size={18} />
                   {/* <h3>SoulArt-ის კურიერი</h3> */}
-                </div>
+                </div>{" "}
                 {soulartDeliveryItems.map((item) => (
                   <div key={item.productId} className="order-item">
                     <Image
@@ -170,6 +253,26 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                       >
                         {getDisplayName(item)}
                       </Link>
+                      {/* Display variant information if available */}
+                      {(item.size || item.color || item.ageGroup) && (
+                        <div className="variant-info">
+                          {item.size && (
+                            <span className="variant-tag">
+                              Size: {item.size}
+                            </span>
+                          )}
+                          {item.color && (
+                            <span className="variant-tag">
+                              Color: {getLocalizedColorName(item.color)}
+                            </span>
+                          )}
+                          {item.ageGroup && (
+                            <span className="variant-tag">
+                              Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <p>
                         {item.qty} x ${item.price.toFixed(2)} = $
                         {(item.qty * item.price).toFixed(2)}
@@ -178,8 +281,7 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                   </div>
                 ))}
               </div>
-            )}
-
+            )}{" "}
             {/* If there are no delivery type groups, show items normally */}
             {sellerDeliveryItems.length === 0 &&
               soulartDeliveryItems.length === 0 &&
@@ -199,6 +301,24 @@ export function AdminOrderDetails({ order }: AdminOrderDetailsProps) {
                     >
                       {getDisplayName(item)}
                     </Link>
+                    {/* Display variant information if available */}
+                    {(item.size || item.color || item.ageGroup) && (
+                      <div className="variant-info">
+                        {item.size && (
+                          <span className="variant-tag">Size: {item.size}</span>
+                        )}
+                        {item.color && (
+                          <span className="variant-tag">
+                            Color: {getLocalizedColorName(item.color)}
+                          </span>
+                        )}
+                        {item.ageGroup && (
+                          <span className="variant-tag">
+                            Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <p>
                       {item.qty} x ${item.price.toFixed(2)} = $
                       {(item.qty * item.price).toFixed(2)}

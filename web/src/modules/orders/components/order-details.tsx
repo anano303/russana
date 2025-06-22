@@ -2,6 +2,9 @@
 
 import { CheckCircle2, XCircle, Store } from "lucide-react";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { Color, AgeGroupItem } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { Order, OrderItem } from "@/types/order";
@@ -18,6 +21,68 @@ interface OrderDetailsProps {
 
 export function OrderDetails({ order }: OrderDetailsProps) {
   const { t, language } = useLanguage();
+
+  // Fetch all colors for proper nameEn support
+  const { data: availableColors = [] } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Fetch all age groups for proper nameEn support
+  const { data: availableAgeGroups = [] } = useQuery<AgeGroupItem[]>({
+    queryKey: ["ageGroups"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories/attributes/age-groups"
+        );
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // Get localized color name based on current language
+  const getLocalizedColorName = (colorName: string): string => {
+    if (language === "en") {
+      // Find the color in availableColors to get its English name
+      const colorObj = availableColors.find(
+        (color) => color.name === colorName
+      );
+      return colorObj?.nameEn || colorName;
+    }
+    return colorName;
+  };
+
+  // Get localized age group name based on current language
+  const getLocalizedAgeGroupName = (ageGroupName: string): string => {
+    if (language === "en") {
+      // Find the age group in availableAgeGroups to get its English name
+      const ageGroupObj = availableAgeGroups.find(
+        (ageGroup) => ageGroup.name === ageGroupName
+      );
+      return ageGroupObj?.nameEn || ageGroupName;
+    }
+    return ageGroupName;
+  };
 
   // Group order items by delivery type - fixed to check string equality
   const sellerDeliveryItems = order.orderItems.filter(
@@ -108,9 +173,12 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                   <h3>{t("Seller Delivery")}</h3>
                 </div>
                 {sellerDeliveryItems.map((item) => (
-                  <div key={`${item.productId}-${item.color ?? "c"}-${
-                  item.size ?? "s"
-                }-${item.ageGroup ?? "a"}`} className="order-item">
+                  <div
+                    key={`${item.productId}-${item.color ?? "c"}-${
+                      item.size ?? "s"
+                    }-${item.ageGroup ?? "a"}`}
+                    className="order-item"
+                  >
                     <div className="order-item-image">
                       <Image
                         src={item.image}
@@ -118,7 +186,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                         fill
                         className="object-cover rounded-md"
                       />
-                    </div>
+                    </div>{" "}
                     <div className="order-item-details">
                       <Link
                         href={`/products/${item.productId}`}
@@ -126,6 +194,26 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                       >
                         {getDisplayName(item)}
                       </Link>
+                      {/* Display variant information if available */}
+                      {(item.size || item.color || item.ageGroup) && (
+                        <div className="variant-info">
+                          {item.size && (
+                            <span className="variant-tag">
+                              Size: {item.size}
+                            </span>
+                          )}
+                          {item.color && (
+                            <span className="variant-tag">
+                              Color: {getLocalizedColorName(item.color)}
+                            </span>
+                          )}
+                          {item.ageGroup && (
+                            <span className="variant-tag">
+                              Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <p>
                         {item.qty} x {item.price.toFixed(2)} ₾ ={" "}
                         {(item.qty * item.price).toFixed(2)} ₾
@@ -163,7 +251,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                         fill
                         className="object-cover rounded-md"
                       />
-                    </div>
+                    </div>{" "}
                     <div className="order-item-details">
                       <Link
                         href={`/products/${item.productId}`}
@@ -171,6 +259,26 @@ export function OrderDetails({ order }: OrderDetailsProps) {
                       >
                         {getDisplayName(item)}
                       </Link>
+                      {/* Display variant information if available */}
+                      {(item.size || item.color || item.ageGroup) && (
+                        <div className="variant-info">
+                          {item.size && (
+                            <span className="variant-tag">
+                              Size: {item.size}
+                            </span>
+                          )}
+                          {item.color && (
+                            <span className="variant-tag">
+                              Color: {getLocalizedColorName(item.color)}
+                            </span>
+                          )}
+                          {item.ageGroup && (
+                            <span className="variant-tag">
+                              Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <p>
                         {item.qty} x {item.price.toFixed(2)} ₾={" "}
                         {(item.qty * item.price).toFixed(2)} ₾

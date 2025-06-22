@@ -56,6 +56,15 @@ export interface Color {
   nameEn?: string;
   isActive: boolean;
 }
+
+export interface AgeGroupItem {
+  _id: string;
+  name: string;
+  nameEn?: string;
+  ageRange?: string;
+  description?: string;
+  isActive: boolean;
+}
 export interface Product {
   _id: string;
   user: User;

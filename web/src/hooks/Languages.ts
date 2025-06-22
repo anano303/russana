@@ -447,10 +447,9 @@ export const TRANSLATIONS: Translations = {
 
       // Swimwear subcategories
       "საცურაო კოსტუმები": "საცურაო კოსტუმები",
-    },
-
-    // Admin Categories
+    }, // Admin Categories
     adminCategories: {
+      title: "კატეგორიების მართვა",
       categories: "კატეგორიები",
       subcategories: "ქვეკატეგორიები",
       add: "დამატება",
@@ -458,6 +457,7 @@ export const TRANSLATIONS: Translations = {
       delete: "წაშლა",
       cancel: "გაუქმება",
       update: "განახლება",
+      confirmDelete: "დარწმუნებული ხართ, რომ გსურთ წაშლა?",
       showInactive: "არააქტიურების ჩვენება",
       active: "აქტიური",
       inactive: "არააქტიური",
@@ -478,6 +478,16 @@ export const TRANSLATIONS: Translations = {
       confirmDeleteSubcategory:
         "დარწმუნებული ხართ, რომ გსურთ ქვეკატეგორიის წაშლა?",
       createError: "ქვეკატეგორიის შექმნა ვერ მოხერხდა",
+      editValue: "რედაქტირება",
+      newValue: "ახალი მნიშვნელობა",
+      georgian: "ქართულად",
+      english: "ინგლისურად",
+      enterColor: "შეიყვანეთ ფერი...",
+      enterSize: "შეიყვანეთ ზომა...",
+      enterAgeGroup: "შეიყვანეთ ასაკობრივი ჯგუფი...",
+      enterColorEnglish: "Enter color in English...",
+      enterAgeGroupEnglish: "Enter age group in English...",
+      noDataFound: "მონაცემები არ მოიძებნა",
       updateError: "ქვეკატეგორიის განახლება ვერ მოხერხდა",
       deleteError: "ქვეკატეგორიის წაშლა ვერ მოხერხდა",
       retry: "ხელახლა ცდა",
@@ -887,10 +897,9 @@ export const TRANSLATIONS: Translations = {
 
       // Swimwear subcategories
       "საცურაო კოსტუმები": "Swimsuits",
-    },
-
-    // Admin Categories
+    }, // Admin Categories
     adminCategories: {
+      title: "Categories Management",
       categories: "Categories",
       subcategories: "Subcategories",
       add: "Add",
@@ -898,6 +907,7 @@ export const TRANSLATIONS: Translations = {
       delete: "Delete",
       cancel: "Cancel",
       update: "Update",
+      confirmDelete: "Are you sure you want to delete this?",
       showInactive: "Show Inactive",
       active: "Active",
       inactive: "Inactive",
@@ -918,6 +928,16 @@ export const TRANSLATIONS: Translations = {
       confirmDeleteSubcategory:
         "Are you sure you want to delete this subcategory?",
       createError: "Failed to create subcategory",
+      editValue: "Edit",
+      newValue: "New Value",
+      georgian: "Georgian",
+      english: "English",
+      enterColor: "Enter color...",
+      enterSize: "Enter size...",
+      enterAgeGroup: "Enter age group...",
+      enterColorEnglish: "Enter color in English...",
+      enterAgeGroupEnglish: "Enter age group in English...",
+      noDataFound: "No data found",
       updateError: "Failed to update subcategory",
       deleteError: "Failed to delete subcategory",
       retry: "Retry",

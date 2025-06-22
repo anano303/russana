@@ -10,17 +10,11 @@ import { ShareButtons } from "@/components/share-buttons/share-buttons";
 import { useLanguage } from "@/hooks/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { Color, AgeGroupItem } from "@/types";
 
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useCart } from "@/modules/cart/context/cart-context";
-
-interface Color {
-  _id: string;
-  name: string;
-  nameEn?: string;
-  isActive: boolean;
-}
 
 // Custom AddToCartButton component that uses the cart context
 function AddToCartButton({
@@ -128,7 +122,25 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     retry: 1,
     refetchOnWindowFocus: false,
   });
-
+  // Fetch all age groups for proper nameEn support
+  const { data: availableAgeGroups = [] } = useQuery<AgeGroupItem[]>({
+    queryKey: ["ageGroups"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories/attributes/age-groups"
+        );
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
   // Get localized color name based on current language
   const getLocalizedColorName = (colorName: string): string => {
     if (language === "en") {
@@ -139,6 +151,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       return colorObj?.nameEn || colorName;
     }
     return colorName;
+  };
+
+  // Get localized age group name based on current language
+  const getLocalizedAgeGroupName = (ageGroupName: string): string => {
+    if (language === "en") {
+      // Find the age group in availableAgeGroups to get its English name
+      const ageGroupObj = availableAgeGroups.find(
+        (ageGroup) => ageGroup.name === ageGroupName
+      );
+      return ageGroupObj?.nameEn || ageGroupName;
+    }
+    return ageGroupName;
   };
 
   const availableQuantity = useMemo(() => {
@@ -266,6 +290,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           {!isOutOfStock && (
             <div className="product-options-container">
+              {" "}
               {/* Age Group Selector - only show if product has age groups */}
               {product.ageGroups && product.ageGroups.length > 0 && (
                 <div className="select-container">
@@ -275,9 +300,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     onChange={(e) => setSelectedAgeGroup(e.target.value)}
                     disabled={isOutOfStock || product.ageGroups.length === 0}
                   >
+                    <option value="">
+                      {language === "en"
+                        ? "Select age group"
+                        : "აირჩიეთ ასაკობრივი ჯგუფი"}
+                    </option>
                     {product.ageGroups.map((ageGroup) => (
                       <option key={ageGroup} value={ageGroup}>
-                        {ageGroup}
+                        {getLocalizedAgeGroupName(ageGroup)}
                       </option>
                     ))}
                   </select>
@@ -286,13 +316,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               {/* Size Selector - only show if product has sizes */}
               {product.sizes && product.sizes.length > 0 && (
                 <div className="select-container">
+                  {" "}
                   <select
                     className="option-select"
                     value={selectedSize}
                     onChange={(e) => setSelectedSize(e.target.value)}
                     disabled={isOutOfStock || product.sizes.length === 0}
                   >
-                    <option value=""></option>
+                    <option value="">
+                      {language === "en" ? "Select size" : "აირჩიეთ ზომა"}
+                    </option>
                     {product.sizes.map((size) => (
                       <option key={size} value={size}>
                         {size}
@@ -304,13 +337,16 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               {/* Color selector - only show if product has colors */}
               {product.colors && product.colors.length > 0 && (
                 <div className="select-container">
+                  {" "}
                   <select
                     className="option-select2"
                     value={selectedColor}
                     onChange={(e) => setSelectedColor(e.target.value)}
                     disabled={isOutOfStock || product.colors.length === 0}
                   >
-                    <option value="">აირჩიეთ ფერი</option>
+                    <option value="">
+                      {language === "en" ? "Select color" : "აირჩიეთ ფერი"}
+                    </option>
                     {product.colors.map((color) => (
                       <option key={color} value={color}>
                         {getLocalizedColorName(color)}

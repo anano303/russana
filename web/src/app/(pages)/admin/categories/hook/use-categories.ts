@@ -384,7 +384,7 @@ export const useDeleteSubCategory = () => {
   });
 };
 
-// Fetch all attributes (colors, sizes, age groups)
+// Fetch all attributes (colors, sizes, age groups) - returns simple strings for backward compatibility
 export const useAttributes = () => {
   return useQuery<{
     colors: string[];
@@ -406,6 +406,37 @@ export const useAttributes = () => {
   });
 };
 
+// Fetch all attributes with full objects (includes translations)
+export const useAttributesWithTranslations = () => {
+  return useQuery<{
+    colors: Color[];
+    sizes: string[];
+    ageGroups: AgeGroupItem[];
+  }>({
+    queryKey: ["attributesWithTranslations"],
+    queryFn: async () => {
+      try {
+        console.log("Fetching all attributes with translations");
+        const [colorsResponse, sizesResponse, ageGroupsResponse] =
+          await Promise.all([
+            apiClient.get("/categories/attributes/colors"),
+            apiClient.get("/categories/attributes/sizes"),
+            apiClient.get("/categories/attributes/age-groups"),
+          ]);
+
+        return {
+          colors: colorsResponse.data,
+          sizes: sizesResponse.data,
+          ageGroups: ageGroupsResponse.data,
+        };
+      } catch (error) {
+        console.error("Error fetching attributes with translations:", error);
+        throw new Error("Failed to fetch attributes with translations");
+      }
+    },
+  });
+};
+
 // Color interface
 export interface Color {
   _id?: string;
@@ -413,6 +444,17 @@ export interface Color {
   name: string;
   nameEn?: string;
   hexCode?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+// AgeGroup interface
+export interface AgeGroupItem {
+  _id?: string;
+  id?: string;
+  name: string;
+  nameEn?: string;
+  ageRange?: string;
   description?: string;
   isActive?: boolean;
 }
@@ -603,7 +645,7 @@ export const useDeleteSize = () => {
 
 // Age Groups
 export const useAgeGroups = () => {
-  return useQuery<string[]>({
+  return useQuery<AgeGroupItem[]>({
     queryKey: ["ageGroups"],
     queryFn: async () => {
       const response = await apiClient.get("/categories/attributes/age-groups");
@@ -617,9 +659,14 @@ export const useCreateAgeGroup = () => {
 
   return useMutation({
     mutationFn: async (data: AttributeInput) => {
+      // Transform data to match backend DTO
+      const ageGroupData = {
+        name: data.value || data.name,
+        nameEn: data.nameEn,
+      };
       const response = await apiClient.post(
         "/categories/attributes/age-groups",
-        data
+        ageGroupData
       );
       return response.data;
     },
@@ -648,9 +695,14 @@ export const useUpdateAgeGroup = () => {
       ageGroup: string;
       data: AttributeInput;
     }) => {
+      // Transform data to match backend DTO
+      const ageGroupData = {
+        name: data.value || data.name,
+        nameEn: data.nameEn,
+      };
       const response = await apiClient.put(
         `/categories/attributes/age-groups/${ageGroup}`,
-        data
+        ageGroupData
       );
       return response.data;
     },

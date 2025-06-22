@@ -11,8 +11,6 @@ import { fetchWithAuth } from "@/lib/fetch-with-auth";
 import "./cart-page.css";
 import { Color } from "@/types";
 
-
-
 export function CartPage() {
   const { items, loading } = useCart();
   const router = useRouter();
@@ -34,9 +32,7 @@ export function CartPage() {
     },
     retry: 1,
     refetchOnWindowFocus: false,
-  });
-
-  // Get localized color name based on current language
+  }); // Get localized color name based on current language (exact same logic as product-details.tsx)
   const getLocalizedColorName = (colorName: string): string => {
     if (language === "en") {
       // Find the color in availableColors to get its English name
@@ -74,22 +70,13 @@ export function CartPage() {
         {" "}
         <div className="cart-items">
           {items.map((item) => {
-            // Prepare the item with proper display name and localized color based on language
-            const itemWithDisplayName = {
-              ...item,
-              displayName:
-                language === "en" && item.nameEn ? item.nameEn : item.name,
-              color: item.color
-                ? getLocalizedColorName(item.color)
-                : item.color,
-            };
-
             return (
               <CartItem
                 key={`${item.productId}-${item.color ?? "c"}-${
                   item.size ?? "s"
                 }-${item.ageGroup ?? "a"}`}
-                item={itemWithDisplayName}
+                item={item}
+                getLocalizedColorName={getLocalizedColorName}
               />
             );
           })}

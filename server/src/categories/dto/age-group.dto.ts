@@ -7,6 +7,15 @@ export class CreateAgeGroupDto {
   name: string;
 
   @ApiProperty({
+    description: 'Age group name in English',
+    example: 'Children',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
+
+  @ApiProperty({
     description: 'Age range description',
     example: '3-12 წელი',
     required: false,
@@ -43,6 +52,15 @@ export class UpdateAgeGroupDto {
   @IsString()
   @IsOptional()
   name?: string;
+
+  @ApiProperty({
+    description: 'Age group name in English',
+    example: 'Children',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  nameEn?: string;
 
   @ApiProperty({
     description: 'Age range description',

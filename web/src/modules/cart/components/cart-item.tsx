@@ -1,6 +1,9 @@
 import { CartItem as CartItemType } from "@/types/cart";
 import { useCart } from "../context/cart-context";
 import { useLanguage } from "@/hooks/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { fetchWithAuth } from "@/lib/fetch-with-auth";
+import { Color, AgeGroupItem } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
@@ -8,11 +11,77 @@ import "./cart-item.css";
 
 interface CartItemProps {
   item: CartItemType;
+  getLocalizedColorName?: (colorName: string) => string;
 }
 
-export function CartItem({ item }: CartItemProps) {
+export function CartItem({
+  item,
+  getLocalizedColorName: propGetLocalizedColorName,
+}: CartItemProps) {
   const { updateQuantity, removeItem } = useCart();
   const { t, language } = useLanguage();
+
+  // Fetch all colors for proper nameEn support (only if not provided via props)
+  const { data: availableColors = [] } = useQuery<Color[]>({
+    queryKey: ["colors"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth("/categories/attributes/colors");
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+    enabled: !propGetLocalizedColorName, // Only fetch if not provided via props
+  });
+
+  // Fetch all age groups for proper nameEn support
+  const { data: availableAgeGroups = [] } = useQuery<AgeGroupItem[]>({
+    queryKey: ["ageGroups"],
+    queryFn: async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/categories/attributes/age-groups"
+        );
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch {
+        return [];
+      }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  }); // Get localized color name based on current language (exact same logic as product-details.tsx)
+  const getLocalizedColorName =
+    propGetLocalizedColorName ||
+    ((colorName: string): string => {
+      if (language === "en") {
+        // Find the color in availableColors to get its English name
+        const colorObj = availableColors.find(
+          (color) => color.name === colorName
+        );
+        return colorObj?.nameEn || colorName;
+      }
+      return colorName;
+    });
+  // Get localized age group name based on current language
+  const getLocalizedAgeGroupName = (ageGroupName: string): string => {
+    if (language === "en") {
+      // Find the age group in availableAgeGroups to get its English name
+      const ageGroupObj = availableAgeGroups.find(
+        (ageGroup) => ageGroup.name === ageGroupName
+      );
+      return ageGroupObj?.nameEn || ageGroupName;
+    }
+    return ageGroupName;
+  };
 
   // Display name based on selected language
   const displayName =
@@ -43,7 +112,7 @@ export function CartItem({ item }: CartItemProps) {
           <Link href={`/products/${item.productId}`} className="cart-item-name">
             {displayName}
           </Link>
-          <p className="cart-item-price">{formatPrice(item.price)}</p>
+          <p className="cart-item-price">{formatPrice(item.price)}</p>{" "}
           {/* Display variant information if available */}
           {(item.size || item.color || item.ageGroup) && (
             <div className="cart-item-variants">
@@ -51,10 +120,14 @@ export function CartItem({ item }: CartItemProps) {
                 <span className="variant-tag">Size: {item.size}</span>
               )}
               {item.color && (
-                <span className="variant-tag">Color: {item.color}</span>
+                <span className="variant-tag">
+                  Color: {getLocalizedColorName(item.color)}
+                </span>
               )}
               {item.ageGroup && (
-                <span className="variant-tag">Age: {item.ageGroup}</span>
+                <span className="variant-tag">
+                  Age: {getLocalizedAgeGroupName(item.ageGroup)}
+                </span>
               )}
             </div>
           )}
