@@ -22,6 +22,10 @@ async function bootstrap() {
         'https://www.russana.vercel.app',
         'https://russana.vercel.app',
         'https://russana.vercel.app/home',
+        'https://russana-web.vercel.app', // Add this
+        'https://www.russana-web.vercel.app', // Add this
+        'https://russana-git-main-aberoshvilis-projects.vercel.app', // Add preview URLs
+        'https://russana-aberoshvilis-projects.vercel.app', // Add preview URLs
         'http://localhost:3000',
         'https://localhost:3000',
         'http://localhost:4000',
@@ -32,10 +36,12 @@ async function bootstrap() {
       if (
         !origin ||
         allowedOrigins.indexOf(origin) !== -1 ||
-        origin.match(/localhost/)
+        origin.match(/localhost/) ||
+        origin.includes('.vercel.app') // Allow all Vercel domains
       ) {
         callback(null, true);
       } else {
+        console.warn(`CORS blocked origin: ${origin}`);
         callback(new Error('Not allowed by CORS'), false);
       }
     },
@@ -47,7 +53,13 @@ async function bootstrap() {
       'forum-id',
       'Origin',
       'Accept',
+      'X-Requested-With',
+      'Access-Control-Request-Method',
+      'Access-Control-Request-Headers',
     ],
+    exposedHeaders: ['Content-Length', 'X-Kuma-Revision'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   app.enableVersioning({

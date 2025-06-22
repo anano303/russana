@@ -37,6 +37,16 @@ export class AgeGroupService {
     return ageGroup;
   }
 
+  async findByName(name: string): Promise<AgeGroup | null> {
+    try {
+      const ageGroup = await this.ageGroupModel.findOne({ name }).exec();
+      return ageGroup;
+    } catch (error) {
+      console.error('Error finding age group by name:', error);
+      return null;
+    }
+  }
+
   async create(createAgeGroupDto: CreateAgeGroupDto): Promise<AgeGroup> {
     const existingAgeGroup = await this.ageGroupModel
       .findOne({ name: createAgeGroupDto.name })
