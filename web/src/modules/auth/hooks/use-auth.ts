@@ -54,6 +54,25 @@ function extractErrorMessage(error: unknown): string {
 
       // Handle single error message
       if (data.message && typeof data.message === "string") {
+        // Map common backend error messages to user-friendly messages
+        if (
+          data.message.includes("already exists") ||
+          data.message.includes("duplicate") ||
+          data.message.includes("Failed to create user") ||
+          (data.message === "Failed to create user" &&
+            axiosError.response.status === 400)
+        ) {
+          return "ეს ელ-ფოსტა უკვე რეგისტრირებულია";
+        }
+
+        if (data.message.includes("invalid email")) {
+          return "არასწორი ელ-ფოსტის ფორმატი";
+        }
+
+        if (data.message.includes("password")) {
+          return "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს";
+        }
+
         return data.message;
       }
 
@@ -61,6 +80,15 @@ function extractErrorMessage(error: unknown): string {
       if (data.error && typeof data.error === "string") {
         return data.error;
       }
+    }
+
+    // Handle specific HTTP status codes
+    if (axiosError.response?.status === 400) {
+      return "მონაცემები არასწორია. გთხოვთ, შეამოწმოთ შეყვანილი ინფორმაცია.";
+    }
+
+    if (axiosError.response?.status === 409) {
+      return "ეს ელ-ფოსტა უკვე რეგისტრირებულია";
     }
 
     // Handle network errors

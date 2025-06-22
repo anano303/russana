@@ -262,11 +262,10 @@ export const TRANSLATIONS: Translations = {
       en: "ENG",
       ge: "ქარ",
     },
-
-    // Authentication & Registration
     auth: {
       login: "შესვლა",
       register: "რეგისტრაცია",
+      name: "სახელი",
       email: "ელ-ფოსტა",
       password: "პაროლი",
       confirmPassword: "გაიმეორეთ პაროლი",
@@ -283,7 +282,7 @@ export const TRANSLATIONS: Translations = {
       registerWelcome: "მოგესალებით ჩვენს სამყაროში!",
       registerSubtitle: "გთხოვთ, შეავსოთ რეგისტრაციის ფორმა",
       requiredField: "სავალდებულო ველი",
-      invalidEmail: "არასწორი ელ-ფოსტა",
+      invalidEmail: "არასწორი ელ-ფოსტის ფორმატი",
       passwordTooShort: "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს",
       passwordsDontMatch: "პაროლები არ ემთხვევა",
       termsAgreement: "ვეთანხმები მომსახურების პირობებს",
@@ -299,11 +298,22 @@ export const TRANSLATIONS: Translations = {
       redirectingToLogin: "მიმდინარეობს გადამისამართება შესვლის გვერდზე",
       loginSuccess: "წარმატებით შეხვედით",
       loginFailed: "შესვლა ვერ მოხერხდა",
+      invalidCredentials: "არასწორი მეილი ან პაროლი",
       registrationFailed: "რეგისტრაცია ვერ მოხერხდა",
+      emailAlreadyExists: "ეს ელ-ფოსტა უკვე რეგისტრირებულია",
+      invalidData:
+        "მონაცემები არასწორია. გთხოვთ, შეამოწმოთ შეყვანილი ინფორმაცია.",
       orContinueWith: "ან გააგრძელეთ",
       forgotPasswordTitle: "განაახლეთ პაროლი",
       forgotPasswordSubtitle: "გთხოვთ, შეავსოთ პაროლის აღდგენის ფორმა",
       welcomeBack: "კეთილი იყოს თქვენი დაბრუნება!",
+      // Validation error messages
+      nameRequired: "სახელის მითითება აუცილებელია",
+      nameTooShort: "სახელი უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს",
+      nameInvalid: "არასწორი სახელი",
+      emailInvalid: "არასწორი ელ-ფოსტის ფორმატი",
+      passwordRequired: "პაროლის მითითება აუცილებელია",
+      passwordMinLength: "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს",
     },
 
     // Contact form
@@ -821,11 +831,10 @@ export const TRANSLATIONS: Translations = {
       en: "ENG",
       ge: "GEO",
     },
-
-    // Authentication & Registration
     auth: {
       login: "Login",
       register: "Register",
+      name: "Name",
       email: "Email",
       password: "Password",
       confirmPassword: "Confirm Password",
@@ -858,11 +867,21 @@ export const TRANSLATIONS: Translations = {
       redirectingToLogin: "Redirecting to login page",
       loginSuccess: "Login Successful",
       loginFailed: "Login Failed",
+      invalidCredentials: "Invalid email or password",
       registrationFailed: "Registration Failed",
+      emailAlreadyExists: "This email is already registered",
+      invalidData: "Invalid data. Please check your input.",
       orContinueWith: "or continue with",
       forgotPasswordTitle: "Reset Your Password",
       forgotPasswordSubtitle: "Please fill in the password recovery form",
       welcomeBack: "Welcome back!",
+      // Validation error messages
+      nameRequired: "Name is required",
+      nameTooShort: "Name must be at least 3 characters",
+      nameInvalid: "Invalid name",
+      emailInvalid: "Invalid email address",
+      passwordRequired: "Password is required",
+      passwordMinLength: "Password must be at least 6 characters",
     },
 
     // Contact form
@@ -1119,12 +1138,14 @@ export const TRANSLATIONS: Translations = {
         "Please specify delivery time if seller handles delivery.",
       authError: "Authorization failed. Please log in again.",
       createUpdateError: "Failed to add/update product",
-      generalError: "Something went wrong", // Success messages
+      generalError: "Something went wrong",
+      // Success messages
       productAddedSuccess: "Product added successfully!",
       productUpdatedSuccess: "Product updated successfully!",
       productCreatedToast: "Product Created",
       productUpdatedToast: "Product Updated",
-      successTitle: "Success!", // Buttons and actions
+      successTitle: "Success!",
+      // Buttons and actions
       removeImage: "✕",
       uploadReminder: "Please select at least one image",
       fixErrorsBeforeSubmit: "Fix errors before submitting",
