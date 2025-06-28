@@ -14,6 +14,7 @@ export const products = [
     categoryStructure: {
       main: "paintings",
       sub: "Electronics",
+      
     },
     reviews: [
       {
