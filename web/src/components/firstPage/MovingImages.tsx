@@ -7,8 +7,14 @@ import Beep from "./beep";
 import cap from "./assets/cap.png";
 import bag from "./assets/bag.png";
 import dress from "./assets/dress.png";
+import dress2 from "./assets/dress2.png";
+import dress3 from "./assets/dress3.png";
+import dress4 from "./assets/dress4.png";
 import swimsuit from "./assets/swimsuit.png";
-import tshirt from "./assets/t-shirt.png";
+import tshirt from "./assets/tshirt.png";
+import tshirt2 from "./assets/tshirt2.png";
+
+import { StaticImageData } from "next/image";
 
 type ShapeType = "heart" | "star";
 
@@ -22,125 +28,132 @@ interface AnimatedImage {
   id: string;
   src: StaticImageData;
   shape: ShapeType;
+  color: string;
   overlayStyle: OverlayStyle;
   popupOverlayStyle: OverlayStyle;
   x: string;
   y: string;
 }
 
-import { StaticImageData } from "next/image";
-
 const imageConfigs: {
   src: StaticImageData;
   shape: ShapeType;
+  color: string;
   overlayStyle: OverlayStyle;
   popupOverlayStyle: OverlayStyle;
 }[] = [
   {
-    src: cap,
-    shape: "heart",
-    overlayStyle: {
-      top: "-2px",
-      left: "-4px",
-      scale: 0.1,
-    },
-    popupOverlayStyle: {
-      top: "-40px",
-      left: "-40px",
-      scale: 1.01,
-    },
-  },
-  {
-    src: bag,
-    shape: "heart",
-    overlayStyle: {
-      top: "10px",
-      left: "-4px",
-      scale: 0.1,
-    },
-    popupOverlayStyle: {
-      top: "45px",
-      left: "-24px",
-      scale: 0.6,
-    },
-  },
-  {
     src: dress,
     shape: "heart",
-    overlayStyle: {
-      top: "-8px",
-      left: "-6px",
-      scale: 0.1,
-    },
-    popupOverlayStyle: {
-      top: "-85px",
-      left: "-22px",
-      scale: 0.45,
-    },
+    color: "#333300",
+    overlayStyle: { top: "-16px", left: "-0.5", scale: 0.05 },
+    popupOverlayStyle: { top: "-115px", left: "4px", scale: 0.35 },
   },
   {
     src: swimsuit,
     shape: "heart",
-    overlayStyle: {
-      top: "2px",
-      left: "-6px",
-      scale: 0.1,
-    },
-    popupOverlayStyle: {
-      top: "12px",
-      left: "-32px",
-      scale: 0.6,
-    },
+    color: "#cc3366",
+    overlayStyle: { top: "2px", left: "-1.5px", scale: 0.1 },
+    popupOverlayStyle: { top: "12px", left: "-2px", scale: 0.6 },
   },
   {
     src: tshirt,
     shape: "star",
-    overlayStyle: {
-      top: "-6px",
-      left: "-2px",
-      scale: 0.16,
-    },
-    popupOverlayStyle: {
-      top: "-80px",
-      left: "-4px",
-      scale: 0.8,
-    },
+    color: "#ffcc33",
+    overlayStyle: { top: "-2px", left: "0.5px", scale: 0.16 },
+    popupOverlayStyle: { top: "-20px", left: "-4px", scale: 1.3 },
+  },
+  {
+    src: bag,
+    shape: "heart",
+    color: "#cc0000",
+    overlayStyle: { top: "10px", left: "-1px", scale: 0.1 },
+    popupOverlayStyle: { top: "45px", left: "8px", scale: 0.6 },
+  },
+  {
+    src: dress4,
+    shape: "heart",
+    color: "#cc6633",
+    overlayStyle: { top: "-16px", left: "-0.5px", scale: 0.03 },
+    popupOverlayStyle: { top: "-85px", left: "-1px", scale: 0.35 },
+  },
+  {
+    src: dress3,
+    shape: "heart",
+    color: "#663333",
+    overlayStyle: { top: "-16px", left: "-2px", scale: 0.05 },
+    popupOverlayStyle: { top: "-115px", left: "-2px", scale: 0.35 },
+  },
+  {
+    src: tshirt2,
+    shape: "heart",
+    color: "#cc0000",
+    overlayStyle: { top: "-2px", left: "-2px", scale: 0.05 },
+    popupOverlayStyle: { top: "-10px", left: "0.5px", scale: 0.5 },
+  },
+  {
+    src: dress4,
+    shape: "heart",
+    color: "#cc3366",
+    overlayStyle: { top: "-16px", left: "-0.5px", scale: 0.03 },
+    popupOverlayStyle: { top: "-85px", left: "-1px", scale: 0.35 },
+  },
+  {
+    src: swimsuit,
+    shape: "heart",
+    color: "#ffcc33",
+    overlayStyle: { top: "2px", left: "-1.5px", scale: 0.1 },
+    popupOverlayStyle: { top: "12px", left: "-2px", scale: 0.6 },
+  },
+  {
+    src: dress2,
+    shape: "heart",
+    color: "#f44336",
+    overlayStyle: { top: "-16px", left: "-2px", scale: 0.05 },
+    popupOverlayStyle: { top: "-115px", left: "-2px", scale: 0.35 },
   },
 ];
 
 const MovingImages = () => {
   const [animatedImages, setAnimatedImages] = useState<AnimatedImage[]>([]);
-  const [imageIndex, setImageIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<AnimatedImage | null>(null);
 
+  const spawnImage = (index: number) => {
+    const config = imageConfigs[index];
+    const newImage: AnimatedImage = {
+      id: `img-${Date.now()}`,
+      src: config.src,
+      shape: config.shape,
+      color: config.color,
+      overlayStyle: config.overlayStyle,
+      popupOverlayStyle: config.popupOverlayStyle,
+      x: `${Math.random() * 500 - 250}px`,
+      y: `${Math.random() * 500 - 250}px`,
+    };
+
+    setAnimatedImages((prev) => {
+      const updated = [...prev, newImage];
+      if (updated.length > 10) updated.shift();
+      return updated;
+    });
+
+    setTimeout(() => {
+      setAnimatedImages((prev) => prev.filter((img) => img.id !== newImage.id));
+    }, 30000);
+  };
+
   useEffect(() => {
+    let index = 0;
+    spawnImage(index);
+    index++;
+
     const interval = setInterval(() => {
-      const config = imageConfigs[imageIndex];
-      const newImage: AnimatedImage = {
-        id: `img-${Date.now()}`,
-        src: config.src,
-        shape: config.shape,
-        overlayStyle: config.overlayStyle,
-        popupOverlayStyle: config.popupOverlayStyle,
-        x: `${Math.random() * 500 - 250}px`,
-        y: `${Math.random() * 500 - 250}px`,
-      };
-
-      setAnimatedImages((prev) => {
-        const updated = [...prev, newImage];
-        if (updated.length > 10) updated.shift();
-        return updated;
-      });
-
-      setTimeout(() => {
-        setAnimatedImages((prev) => prev.filter((img) => img.id !== newImage.id));
-      }, 30000);
-
-      setImageIndex((prev) => (prev + 1) % imageConfigs.length);
+      spawnImage(index);
+      index = (index + 1) % imageConfigs.length;
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [imageIndex]);
+  }, []);
 
   return (
     <>
@@ -155,7 +168,10 @@ const MovingImages = () => {
             }}
             onClick={() => setSelectedImage(img)}
           >
-            <div className="image-wrapper2" style={{ position: "relative", width: "60px", height: "60px" }}>
+            <div
+              className="image-wrapper2"
+              style={{ position: "relative", width: "60px", height: "60px" }}
+            >
               <Image
                 src={img.src}
                 alt="animated-img"
@@ -172,7 +188,11 @@ const MovingImages = () => {
                   transform: `scale(${img.overlayStyle.scale})`,
                 }}
               >
-                <Beep soundSrc="/beep.wav" shape={img.shape} />
+                <Beep
+                  soundSrc="/beep.wav"
+                  shape={img.shape}
+                  color={img.color}
+                />
               </div>
             </div>
           </div>
@@ -198,9 +218,21 @@ const MovingImages = () => {
                   transform: `scale(${selectedImage.popupOverlayStyle.scale})`,
                 }}
               >
-                <Beep soundSrc="/beep.wav" shape={selectedImage.shape} />
+                <Beep
+                  soundSrc="/beep.wav"
+                  shape={selectedImage.shape}
+                  color={selectedImage.color}
+                />
               </div>
             </div>
+
+            {/* ✅ X ღილაკი მობილურზე */}
+            <button
+              className="popup-close-button"
+              onClick={() => setSelectedImage(null)}
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}

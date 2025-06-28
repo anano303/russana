@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useRouter } from "next/navigation";
 import MovingImages from "../components/firstPage/MovingImages";
 import "./entry-page.css";
@@ -17,11 +16,10 @@ const EntryGate = () => {
     <div className="entry-page relative w-full h-screen flex flex-col items-center justify-center bg-black text-white">
       <MovingImages />
       <button className="entry-button" onClick={handleEnterSite}>
-        საიტზე შესვლა
+        ჯერ დააპიპინე 🎶👇,   მერე  შედი 👣
       </button>
     </div>
   );
 };
-
 
 export default EntryGate;

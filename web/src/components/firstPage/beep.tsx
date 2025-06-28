@@ -6,6 +6,7 @@ import './beep.css';
 interface BeepProps {
   soundSrc: string;
   shape?: 'heart' | 'star';
+  color?: string;
 }
 
 interface Particle {
@@ -15,7 +16,7 @@ interface Particle {
   emoji: string;
 }
 
-const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
+const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart', color = 'red' }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [pressed, setPressed] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
@@ -53,6 +54,7 @@ const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
       {shape === 'heart' && (
         <div
           className={`heart ${pressed ? 'pressed' : ''}`}
+          style={{ backgroundColor: color }}
           onMouseDown={handlePress}
           onTouchStart={handlePress}
         ></div>
@@ -60,6 +62,7 @@ const Beep: React.FC<BeepProps> = ({ soundSrc, shape = 'heart' }) => {
       {shape === 'star' && (
         <div
           className={`star ${pressed ? 'pressed' : ''}`}
+          style={{ background: color }}
           onMouseDown={handlePress}
           onTouchStart={handlePress}
         ></div>

@@ -9,17 +9,17 @@
   z-index: 0;
 }
 
-.moving-images-absolute-container::before {
+/* .moving-images-absolute-container::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url(/bgImage.jpg);
+  background-image: url(/bgImage.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.4; /* 🎯 აქ აკონტროლებ გამჭვირვალობას */
+  opacity: 0.4; 
   z-index: -1;
-}
+} */
 
 .floating-item {
   position: absolute;
@@ -131,4 +131,33 @@
 .popup-beep {
   position: absolute;
   pointer-events: all;
+}
+
+.popup-close-button {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background-color: #cf0a0a;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: bold;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  display: none;
+  z-index: 10000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+  padding: 0;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .popup-close-button {
+    display: flex;
+  }
 }
